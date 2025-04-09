@@ -1,4 +1,3 @@
-from data.modules.data_management import UnpackManager
 from data.modules.ui.ui_element import UIElement, UIC
 from data.modules.ui.ui_button import UIButton
 from data.modules.ui.ui_label import UILabel
@@ -9,61 +8,61 @@ from pygame.mouse import get_pressed as m_get_pressed
 class UITextInput(UIElement):
     def __init__(self, rect: Rect, **kwargs):
         super().__init__(rect, **kwargs)
-        UIC.addElement('uiTextInput')
-        self.deufault_text = UnpackManager('default_text',kwargs,'Enter Text...')
-        self.maxLetters = UnpackManager('maxLetters',kwargs,32)
+        UIC.add_element('uiTextInput')
+        self.default_text = kwargs.get('default_text','Enter Text...')
+        self.max_letters = kwargs.get('max_letters',32)
         self.text = ''
         self.active = False
-        self.mode = UnpackManager('mode',kwargs,False)
+        self.mode = kwargs.get('mode',False)
         self.count = 0
         if 'app' in kwargs:
             self.app = kwargs['app']
         else:
             raise Exception('No App. No Game!')
-        self.enterButton = UIButton(rect,ux={'size':self.dest},onPressCallback=self.setActive,parent=self.parent,layer=self.layer+1,group=self.group)
-        self.textLabel = UILabel(rect,ux={'size':self.dest},parent=self.parent,layer=self.layer+1,group=self.group)
-        self.textLabel.UX.text = self.deufault_text
-        self.textLabel.setImage(self.textLabel.UX.gen())
+        self.enter_button = UIButton(rect,ux={'size':self.dest},on_press_callback=self.set_active,parent=self.parent,layer=self.layer+1,group=self.group)
+        self.text_label = UILabel(rect,ux={'size':self.dest},parent=self.parent,layer=self.layer+1,group=self.group)
+        self.text_label.UX.text = self.default_text
+        self.text_label.set_image(self.text_label.UX.gen())
         self.delete = False
-    def setI(self,text):
-        self.textLabel.UX.text = text
+    def set_i(self,text):
+        self.text_label.UX.text = text
         self.text = text
-        self.textLabel.setImage(self.textLabel.UX.gen())
-    def setActive(self,*_):
+        self.text_label.set_image(self.text_label.UX.gen())
+    def set_active(self,*_):
         self.active = not self.active
-    def setText(self):
+    def set_text(self):
         """
         Check Pygame events for KEYDOWN Events and save them in self.text
         """
-        if not self.enterButton.isHovered and m_get_pressed()[0]:
+        if not self.enter_button.is_hovered and m_get_pressed()[0]:
             self.active = False
         CTRL = self.app.keyboardInputs['strg']#! Deprecated
-        pressedList = kb_get_pressed()
-        if pressedList[K_RETURN]:
+        pressed_list = kb_get_pressed()
+        if pressed_list[K_RETURN]:
             
             self.active = False
-        if pressedList[K_BACKSPACE] and not pressedList[K_RETURN] and not self.delete:
+        if pressed_list[K_BACKSPACE] and not pressed_list[K_RETURN] and not self.delete:
             self.text = self.text[:-1]
             self.delete = True
-        elif not pressedList[K_BACKSPACE]:
+        elif not pressed_list[K_BACKSPACE]:
             self.delete = False
 
             
         for key in self.app.keyboardInputs['currentKeys']:#! Deprecated
-            if not pressedList[K_RETURN]:
+            if not pressed_list[K_RETURN]:
                 self.appChars(key)
-        if self.text == '' and self.textLabel.UX.text != self.deufault_text:
-            self.textLabel.UX.text = self.deufault_text
-            self.textLabel.setImage(self.textLabel.UX.gen())
+        if self.text == '' and self.text_label.UX.text != self.default_text:
+            self.text_label.UX.text = self.default_text
+            self.text_label.set_image(self.text_label.UX.gen())
         if self.active:
-            self.textLabel.UX.text = f'{self.getTextEx()}'
-            self.textLabel.setImage(self.textLabel.UX.gen())
+            self.text_label.UX.text = f'{self.getTextEx()}'
+            self.text_label.set_image(self.text_label.UX.gen())
             
                     
         
     def appChars(self,char):
         self.text = str(self.text)
-        if len(str(self.text)) < self.maxLetters:
+        if len(str(self.text)) < self.max_letters:
             self.text += char
     def getText(self):
             """
@@ -78,7 +77,7 @@ class UITextInput(UIElement):
     def update(self):
         self.count += GLOBAL_DELTA_TIME.get()
         if self.active:
-            self.setText()
+            self.set_text()
             if self.mode == 'only_numbers':
                 text = ''
                 for i,char in enumerate(self.text):
@@ -93,11 +92,11 @@ class UITextInput(UIElement):
                 self.text = text
             elif self.mode == 'float':
                 text = ''
-                spText = self.text.split('.')
-                if spText.__len__() == 2:
-                    if not spText[0].replace('-','').isdecimal():
+                sp_text = self.text.split('.')
+                if sp_text.__len__() == 2:
+                    if not sp_text[0].replace('-','').isdecimal():
                         
-                        if not spText[1].isdecimal() and spText[1] != '':
+                        if not sp_text[1].isdecimal() and sp_text[1] != '':
                             
                             self.text = ''
         return super().update()

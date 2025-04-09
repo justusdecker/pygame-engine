@@ -1,4 +1,3 @@
-from data.modules.data_management import UnpackManager
 from data.modules.log import LOG
 from pygame import Surface, Rect
 from pygame.mouse import get_pos as mouse_pos, get_pressed as mouse_pressed
@@ -8,7 +7,7 @@ class UICounter:
     def __init__(self):
         self.count = {}
         self.all = 0
-    def addElement(self,key):
+    def add_element(self,key):
         self.all += 1
         
         if key in self.count:
@@ -17,7 +16,7 @@ class UICounter:
             self.count[key] = 1
             
         LOG.nlog(1,'created UIE of Type: $ | e: $',[key,self.count[key]])
-    def remElement(self,key):
+    def rem_element(self,key):
         if key in self.count:
             self.count[key] -= 1
         LOG.nlog(1,'removed UIE of Type: $ | e: $',[key,self.count[key]])
@@ -34,25 +33,25 @@ UIIDCOUNT = UIID()
 class UIManager: #
     def __init__(self) -> None:
         self.queue = {}
-        UIC.addElement('uiManager')
-    def addToQueue(self,object,layer):
+        UIC.add_element('uiManager')
+    def add_to_queue(self,object,layer):
         if not layer in self.queue:
             self.queue[layer] = []
         
         self.queue[layer].append(object)
         
-        LOG.nlog(1,'$ added to queue on layer $',[object.elementId,layer])
-    def removeFromQueue(self,id):
+        LOG.nlog(1,'$ added to queue on layer $',[object.element_id,layer])
+    def remove_from_queue(self,id):
         for layer in self.queue:
             for idx,obj in enumerate(self.queue[layer]):
-                if obj.elementId == id:
+                if obj.element_id == id:
                     self.queue[layer].pop(idx)
                     LOG.nlog(1,'$ removed from queue  $',[obj.id,layer])
                     
 
         
         
-    def renderQueue(self,
+    def render_queue(self,
                     app,
                     groups:list | tuple = ('default',),
                     ignoreList=[]):
@@ -62,15 +61,15 @@ class UIManager: #
             if layer in ignoreList: continue
             for object in self.queue[layer]:
 
-                if object.group.groupName in groups:
+                if object.group.group_name in groups:
                         
                     _updates.append(object)
                     if object.visible:
-                        app.window.surface.blit(object.getImage(),object.getAbsPosition())
+                        app.window.surface.blit(object.get_image(),object.get_abs_position())
         _updates.reverse()
         for object in _updates:
             object.update() 
-            if object.thisFramePressed:
+            if object.this_frame_pressed:
                 break
             #! Check Frame is checked
 
@@ -78,10 +77,10 @@ UIM = UIManager()
 
 class UIGroup:
     def __init__(self,
-                 groupName):
-        self.groupName = groupName
-        UIC.addElement('uiGroup')
-UIDefaultGroup = UIGroup('default')
+                 group_name):
+        self.group_name = group_name
+        UIC.add_element('uiGroup')
+UI_DEFAULT_GROUP = UIGroup('default')
 class UIElement:
     def __init__(self,
                  rect: Rect,
@@ -98,93 +97,93 @@ class UIElement:
                 name    :   str         =   ''
                 ? Makes finding much easier
                 parent  :   UIElement   = None
-                group   :UIGroup        = UIDefaultGroup
+                group   :UIGroup        = UI_DEFAULT_GROUP
         """
         self.rect = rect.copy()
         
-        UIC.addElement('uiElement')
+        UIC.add_element('uiElement')
         self.pos = rect.x,rect.y
         self.dest = rect.w,rect.h
         
-        self.group = UnpackManager('group',kwargs,UIDefaultGroup)
+        self.group = kwargs.get('group',UI_DEFAULT_GROUP)
         
-        self.elementId = UIIDCOUNT.add()
-        self.elementName = kwargs['name'] if 'name' in kwargs else ''
+        self.element_id = UIIDCOUNT.add()
+        self.element_name = kwargs['name'] if 'name' in kwargs else ''
         
-        self.setLayer(kwargs['layer'] if 'layer' in kwargs else 0)
+        self.set_layer(kwargs['layer'] if 'layer' in kwargs else 0)
         
-        self.setVisibility(kwargs['visible'] if 'visible' in kwargs else True)
+        self.set_visibility(kwargs['visible'] if 'visible' in kwargs else True)
         
-        self.setCanvas(kwargs['canvas'] if 'canvas' in kwargs else None)
+        self.set_canvas(kwargs['canvas'] if 'canvas' in kwargs else None)
         
-        self.setAnchor(kwargs['anchor'] if 'anchor' in kwargs else 'top_left')
+        self.set_anchor(kwargs['anchor'] if 'anchor' in kwargs else 'top_left')
         
-        self.setParent(kwargs['parent'] if 'parent' in kwargs else None)
+        self.set_parent(kwargs['parent'] if 'parent' in kwargs else None)
         
-        UIM.addToQueue(self,self.layer)
+        UIM.add_to_queue(self,self.layer)
         
         #Clickable Stuff
-        self.isHovered = False
-        self.isPressed = False
+        self.is_hovered = False
+        self.is_pressed = False
         self.stop = False
-        self.thisFrameHovered = False
-        self.thisFrameUnHovered = False
-        self.thisFramePressed = False
-        self.thisFrameUnPressed = False
-        self.lastFrameHover = False
+        self.this_frame_hovered = False
+        self.this_frame_un_hovered = False
+        self.this_frame_pressed = False
+        self.this_frame_un_pressed = False
+        self.last_frame_hover = False
         
-    def check(self,absPos,dest):
+    def check(self,abs_pos,dest):
         #! Defines thisFrame Values
-        self.thisFrameHovered = False
-        self.thisFrameUnHovered = False
-        self.thisFramePressed = False
-        self.thisFrameUnPressed = False
+        self.this_frame_hovered = False
+        self.this_frame_un_hovered = False
+        self.this_frame_pressed = False
+        self.this_frame_un_pressed = False
         click = mouse_pressed()[0]
         
         if not self.stop:
             
-            x,y,w,h = absPos[0],absPos[1],dest[0],dest[1]
+            x,y,w,h = abs_pos[0],abs_pos[1],dest[0],dest[1]
             g,l = mouse_pos()
             
             if g > x and l > y and g < x + w and l < y + h: #? Check Hovering
-                self.isHovered = True
-                if not self.lastFrameHover:
-                    self.thisFrameHovered = True
-                    self.lastFrameHover = True
+                self.is_hovered = True
+                if not self.last_frame_hover:
+                    self.this_frame_hovered = True
+                    self.last_frame_hover = True
             else:
-                self.isHovered = False
-                if self.lastFrameHover:
-                    self.lastFrameHover = False
-                    self.thisFrameUnHovered = True
+                self.is_hovered = False
+                if self.last_frame_hover:
+                    self.last_frame_hover = False
+                    self.this_frame_un_hovered = True
             
-            if not self.isHovered and click:# ? Check not over!
+            if not self.is_hovered and click:# ? Check not over!
                 self.stop = True
                 return
 
-            if not click and self.isPressed:    # ? Check Unpress Condition
-                self.isPressed = False
-                self.thisFrameUnPressed = True
+            if not click and self.is_pressed:    # ? Check Unpress Condition
+                self.is_pressed = False
+                self.this_frame_un_pressed = True
 
-            if self.isHovered and click and not self.isPressed:    # ? Check Pressed Condition
-                self.isPressed = True
-                self.thisFramePressed = True
+            if self.is_hovered and click and not self.is_pressed:    # ? Check Pressed Condition
+                self.is_pressed = True
+                self.this_frame_pressed = True
             
         if not click: # ? Reset Blocking!
             self.stop = False     
     def kill(self):
-        UIM.removeFromQueue(self.elementId)
+        UIM.remove_from_queue(self.element_id)
         del self
     def update(self):
         if self.visible:
-            return self.check(self.getAbsPosition(),self.dest)
+            return self.check(self.get_abs_position(),self.dest)
     
-    def getImage(self):
+    def get_image(self):
         if not hasattr(self,'surface'):
             self.surface = Surface((1,1))
         return self.surface
     
-    def getAbsPosition(self):
-        x,y = self.getParentOffsets()
+    def get_abs_position(self):
+        x,y = self.get_parent_offsets()
         match self.anchor: #? Manipulates the offset by a certain value
             case 'center':
                 if self.parent is None:
@@ -197,27 +196,27 @@ class UIElement:
                 else:
                     return x + self.pos[0],y + self.pos[1]
     
-    def getPosition(self) -> list:
+    def get_position(self) -> list:
         return self.pos
     
-    def getDest(self) -> list:
+    def get_dest(self) -> list:
         return self.dest
     
-    def getLayer(self) -> int:
+    def get_layer(self) -> int:
         return self.layer
     
-    def getParentOffsets(self) -> list:
-        xOffset,yOffset = 0,0
+    def get_parent_offsets(self) -> list:
+        x_offset,y_offset = 0,0
         parent = self.parent
         
         while parent is not None:
-            xOffset += parent.pos[0]
-            yOffset += parent.pos[1]
+            x_offset += parent.pos[0]
+            y_offset += parent.pos[1]
             parent = parent.parent
             
-        return xOffset,yOffset
+        return x_offset,y_offset
     
-    def getAllParents(self) -> list[UIElement]:
+    def get_all_parents(self) -> list[UIElement]:
         parents = []
         parent = self.parent
         while parent is not None:
@@ -226,23 +225,23 @@ class UIElement:
             
         return parents
     
-    def getParent(self) -> UIElement:
+    def get_parent(self) -> UIElement:
         return self.parent
     
-    def setLayer(self,layer:int) -> None:
+    def set_layer(self,layer:int) -> None:
         self.layer: int = layer
     
-    def setParent(self,parent: UIElement) -> None:
+    def set_parent(self,parent: UIElement) -> None:
         self.parent: UIElement = parent
     
-    def setAnchor(self,position:str) -> None:
+    def set_anchor(self,position:str) -> None:
         self.anchor: str = position
         
-    def setImage(self,surface:Surface) -> None:
+    def set_image(self,surface:Surface) -> None:
         self.surface: Surface = surface
         
-    def setCanvas(self,value:Rect) -> None:
+    def set_canvas(self,value:Rect) -> None:
         self.canvas: Rect = value
         
-    def setVisibility(self,value:bool) -> None:
+    def set_visibility(self,value:bool) -> None:
         self.visible: bool = value

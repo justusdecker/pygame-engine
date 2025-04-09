@@ -3,8 +3,7 @@
 from data.modules.ui.ui_element import UIElement, UIC
 from pygame import Surface, Rect, Color, SRCALPHA
 from data.modules.ui.ui_font import FONTDRAW
-from data.modules.ui.ui_calculation import getCenter
-from data.modules.data_management import UnpackManager
+from data.modules.ui.ui_calculation import get_center
 from pygame.draw import rect as rect_draw
 from data.modules.constants import (DEFAULT_BACKGROUND_COLOR,
                                     TEXT_COLOR,
@@ -15,54 +14,54 @@ class UXButton:
     def __init__(self,
                  **options) -> None:
         
-        self.size = UnpackManager('size',options,(64,24))
-        self.borderRadius = UnpackManager('borderRadius',options,15)
+        self.size = options.get('size',(64,24))
+        self.border_radius = options.get('border_radius',15)
         
         
-        self.normalTextColor = UnpackManager('normal_text_color',options,Color(TEXT_COLOR))
-        self.hoveredTextColor = UnpackManager('hovered_text_color',options,Color(HIGHLIGHT_TEXT_COLOR))
-        self.pressedTextColor = UnpackManager('pressed_text_color',options,Color(PRESSED_TEXT_COLOR))
+        self.normal_text_color = options.get('normal_text_color',Color(TEXT_COLOR))
+        self.hovered_text_color = options.get('hovered_text_color',Color(HIGHLIGHT_TEXT_COLOR))
+        self.pressed_text_color = options.get('pressed_text_color',Color(PRESSED_TEXT_COLOR))
         
-        self.normalColor = UnpackManager('normal_color',options,Color(DEFAULT_BACKGROUND_COLOR))
-        self.hoveredColor = UnpackManager('hovered_color',options,Color(DEFAULT_BACKGROUND_COLOR))
-        self.pressedColor = UnpackManager('pressed_color',options,Color(DEFAULT_BACKGROUND_COLOR))
+        self.normal_color = options.get('normal_color',Color(DEFAULT_BACKGROUND_COLOR))
+        self.hovered_color = options.get('hovered_color',Color(DEFAULT_BACKGROUND_COLOR))
+        self.pressed_color = options.get('pressed_color',Color(DEFAULT_BACKGROUND_COLOR))
         
-        self.text = UnpackManager('text',options,'')
+        self.text = options.get('text','')
         self.draw()
     def getAllImages(self):
-        return self.normalImage,self.hoveredImage,self.pressedImage 
+        return self.normal_image,self.hovered_image,self.pressed_image 
     def draw(self):
-        self.normalImage , self.hoveredImage , self.pressedImage = self.gen(
+        self.normal_image , self.hovered_image , self.pressed_image = self.gen(
             [
-                (self.normalTextColor,self.normalColor),
-                (self.hoveredTextColor,self.hoveredColor),
-                (self.pressedTextColor,self.pressedColor)
+                (self.normal_text_color,self.normal_color),
+                (self.hovered_text_color,self.hovered_color),
+                (self.pressed_text_color,self.pressed_color)
             ]
         )
         
     def gen(self,array:list=[]):
         _ret = []
-        for textColor,backgroundColor in array:
+        for text_color,background_color in array:
             SURF = Surface(self.size,SRCALPHA)
             rect_draw(
                 SURF,
-                backgroundColor,
+                background_color,
                 (
                     0,
                     0,
                     *self.size
                     ),
-                border_radius = self.borderRadius
+                border_radius = self.border_radius
             )
             
             img = FONTDRAW.draw(
                 self.text,
-                color=textColor
+                color=text_color
                 )
             
             SURF.blit(
                 img,
-                getCenter(
+                get_center(
                     self.size,
                     img.get_size()
                     )
@@ -74,42 +73,41 @@ class UIButton(UIElement):
     def __init__(self,
                  rect:Rect,
                  **kwargs) -> None:
-        UIC.addElement('uiButton')
+        UIC.add_element('uiButton')
         
         
         self.UX = UXButton(
-            **UnpackManager(
+            **kwargs.get(
                 'ux',
-                kwargs,
                 {}
                 )
             )
             
-        self.setImage(self.UX.normalImage)
+        self.set_image(self.UX.normal_image)
         super().__init__(rect,**kwargs)
         
-        self.oHC = UnpackManager('onHoveredCallback',kwargs,self.noCallback)
+        self.oHC = kwargs.get('on_hovered_callback',self.noCallback)
         
-        self.oPC = UnpackManager('onPressCallback',kwargs,self.noCallback)
+        self.oPC = kwargs.get('on_press_callback',self.noCallback)
         
-        self.oUHC = UnpackManager('onUnHoverCallback',kwargs,self.noCallback)
+        self.oUHC = kwargs.get('on_un_hover_callback',self.noCallback)
         
-        self.oUPC = UnpackManager('onUnPressCallback',kwargs,self.noCallback)
+        self.oUPC = kwargs.get('on_un_press_callback',self.noCallback)
         
-    def noCallback(self,btn):
+    def noCallback(self,*btn):
         pass
     def update(self):
         #Change Texture on the fly
-        if self.thisFrameHovered:
-            self.setImage(self.UX.hoveredImage)
+        if self.this_frame_hovered:
+            self.set_image(self.UX.hovered_image)
             self.oHC(self)
-        if self.thisFramePressed:
-            self.setImage(self.UX.pressedImage)
+        if self.this_frame_pressed:
+            self.set_image(self.UX.pressed_image)
             self.oPC(self)
-        if self.thisFrameUnPressed:
-            self.setImage(self.UX.normalImage)
+        if self.this_frame_un_pressed:
+            self.set_image(self.UX.normal_image)
             self.oUPC(self)
-        if self.thisFrameUnHovered:
-            self.setImage(self.UX.normalImage)
+        if self.this_frame_un_hovered:
+            self.set_image(self.UX.normal_image)
             self.oUHC(self)
         super().update()

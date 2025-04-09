@@ -33,7 +33,7 @@ class App:
             group=self.group_test
             )
         
-        self.thumbnail.setImage(image.load("data\\bin\\img\\test.png"))
+        self.thumbnail.set_image(image.load("data\\bin\\img\\test.png"))
         self.nameLabel = UILabel(
             Rect(
                 48,
@@ -90,8 +90,8 @@ class App:
     def run(self):
         while self.is_running:
             self.window.surface.fill((128,128,128))
-            UIM.renderQueue(self,['test'])
-            self.progress_bar.UX.currentProgress += GLOBAL_DELTA_TIME.get() * .25
+            UIM.render_queue(self,['test'])
+            self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.window.update()
             
             self.event_handler()

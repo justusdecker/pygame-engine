@@ -1,5 +1,3 @@
-
-from data.modules.data_management import UnpackManager
 from data.modules.ui.ui_element import UIElement, UIC
 from data.modules.constants import MEDIUM_BACKGROUND_COLOR,TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR
 from pygame.draw import rect as rect_draw
@@ -8,12 +6,12 @@ class UXSwitch:
     def __init__(self,
                  **options) -> None:
         
-        self.size = UnpackManager('size',options,(24,24))
-        self.borderRadius = UnpackManager('borderRadius',options,6)
-        self.bg =  UnpackManager('bg_color',options,Color(MEDIUM_BACKGROUND_COLOR))
-        self.normalColor = UnpackManager('normal_color',options,Color(TEXT_COLOR))
-        self.hoveredColor = UnpackManager('hovered_color',options,Color(HIGHLIGHT_TEXT_COLOR))
-        self.pressedColor = UnpackManager('pressed_color',options,Color(PRESSED_TEXT_COLOR))
+        self.size = options.get('size',(24,24))
+        self.border_radius = options.get('border_radius',6)
+        self.bg =  options.get('bg_color',Color(MEDIUM_BACKGROUND_COLOR))
+        self.normal_color = options.get('normal_color',Color(TEXT_COLOR))
+        self.hovered_color = options.get('hovered_color',Color(HIGHLIGHT_TEXT_COLOR))
+        self.pressed_color = options.get('pressed_color',Color(PRESSED_TEXT_COLOR))
         
         #On: Pressed
         #on: Hove
@@ -22,22 +20,22 @@ class UXSwitch:
         #off hove
         #off normal
         
-        self.normalOffImage,self.hoveredOffImage, self.pressedOffImage,self.normalOnImage,self.hoveredOnImage, self.pressedOnImage = self.draw()
+        self.normal_off_image,self.hovered_off_image, self.pressed_off_image,self.normal_on_image,self.hovered_on_image, self.pressed_on_image = self.draw()
     def draw(self):
         return self.gen([
-            (self.normalColor,False),
-            (self.hoveredColor,False),
-            (self.pressedColor,False),
-            (self.normalColor,True),
-            (self.hoveredColor,True),
-            (self.pressedColor,True),
+            (self.normal_color,False),
+            (self.hovered_color,False),
+            (self.pressed_color,False),
+            (self.normal_color,True),
+            (self.hovered_color,True),
+            (self.pressed_color,True),
         ])
     def gen(self,array:list=[]):
         _ret = []
         
         
         
-        for foregroundColor,state in array:
+        for foreground_color,state in array:
             SURF = Surface(self.size,SRCALPHA)
             rect_draw(
                     SURF,
@@ -47,19 +45,19 @@ class UXSwitch:
                         0,
                         *self.size
                         ),
-                    border_radius = self.borderRadius
+                    border_radius = self.border_radius
                 )
             if state:
                 rect_draw(
                     SURF,
-                    foregroundColor,
+                    foreground_color,
                     (
                         2,
                         2,
                         20,
                         20
                         ),
-                    border_radius = self.borderRadius
+                    border_radius = self.border_radius
                 )
                 
             
@@ -70,28 +68,28 @@ class UXSwitch:
 class UISwitch(UIElement):
     def __init__(self, rect: Rect, **kwargs):
         super().__init__(rect,**kwargs)
-        UIC.addElement('uiSwitch')
-        self.toggle = UnpackManager('initialValue',kwargs,False)
+        UIC.add_element('uiSwitch')
+        self.toggle = kwargs.get('initialValue',False)
         self.UX = UXSwitch()
-        self.setImage(self.UX.normalOffImage)
-        self.oHC = UnpackManager('onHoveredCallback',kwargs,self.noCallback)
+        self.set_image(self.UX.normal_off_image)
+        self.oHC = kwargs.get('onHoveredCallback',self.noCallback)
         
-        self.oPC = UnpackManager('onPressCallback',kwargs,self.noCallback)
+        self.oPC = kwargs.get('onPressCallback',self.noCallback)
         
-        self.oUHC = UnpackManager('onUnHoverCallback',kwargs,self.noCallback)
+        self.oUHC = kwargs.get('onUnHoverCallback',self.noCallback)
     def noCallback(self,_):
         pass
     def update(self):
         #Change Texture on the fly
-        if self.thisFrameHovered:
-            self.setImage([self.UX.hoveredOffImage,self.UX.hoveredOnImage][self.toggle])
+        if self.this_frame_hovered:
+            self.set_image([self.UX.hovered_off_image,self.UX.hovered_on_image][self.toggle])
             self.oHC(self)
-        if self.thisFramePressed:
+        if self.this_frame_pressed:
             self.toggle = not self.toggle
-            self.setImage([self.UX.normalOffImage,self.UX.normalOnImage][self.toggle])
+            self.set_image([self.UX.normal_off_image,self.UX.normal_on_image][self.toggle])
             self.oPC(self)
-        if self.thisFrameUnHovered:
-            self.setImage([self.UX.normalOffImage,self.UX.normalOnImage][self.toggle])
+        if self.this_frame_un_hovered:
+            self.set_image([self.UX.normal_off_image,self.UX.normal_on_image][self.toggle])
             self.oUHC(self)
         super().update()
    
