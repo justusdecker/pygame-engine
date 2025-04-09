@@ -7,6 +7,8 @@ from data.modules.ui.ui_element import UIGroup,UIM
 from data.modules.ui.ui_image import UIImage
 from data.modules.ui.ui_label import UILabel
 from data.modules.ui.ui_button import UIButton
+from data.modules.ui.ui_switch import UISwitch
+from data.modules.ui.ui_drop_down import UIDropDown
 def test_print(*args):
     print(args, "Hello World!")
 class App:
@@ -45,6 +47,31 @@ class App:
             Rect(0,0,128,24),
             ux={'text':'root' , 'size':(128,24),'onPressCallback': test_print},
             group=self.group_test)
+        self.btn = UISwitch(
+            Rect(0,24,128,24),
+            ux={'size':(128,24),'onPressCallback': test_print},
+            group=self.group_test)
+        
+        self.fileDD = UIDropDown(
+            Rect(
+                256,
+                0,
+                48,
+                24
+                ),
+            ux= {
+                'size': (48,24),
+                'text': 'File'
+                },
+            childsInstances= [
+                ('New',test_print),
+                ('Load',test_print),
+                ('Save',test_print),
+                ('Exit',test_print)
+                ],
+            layer=100,
+            group= self.group_test
+            )
     def run(self):
         while self.is_running:
             self.window.surface.fill((128,128,128))
