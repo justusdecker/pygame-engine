@@ -10,6 +10,9 @@ from data.modules.ui.ui_button import UIButton
 from data.modules.ui.ui_switch import UISwitch
 from data.modules.ui.ui_drop_down import UIDropDown
 from data.modules.ui.ui_progress_bar import UIProgressBar
+from data.modules.ui.ui_calendar import UICalendar
+from data.modules.ui.ui_time_select import UITimeSelect
+from data.modules.ui.ui_text_input import UITextInput
 def test_print(*args):
     print(args, "Hello World!")
 class App:
@@ -79,8 +82,11 @@ class App:
                 0,
                 128,
                 24
-                ),
+                ),group= self.group_test
         )
+        self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
+        self.time_select = UITimeSelect(Rect(512,512,48,24),group= self.group_test)
+        self.text_input = UITextInput(Rect(256,512,48,24),app=self,group= self.group_test)
     def run(self):
         while self.is_running:
             self.window.surface.fill((128,128,128))
