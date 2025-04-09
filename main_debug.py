@@ -2,7 +2,13 @@ from data.modules.constants import *
 from data.modules.window import Window
 from pygame.event import get as get_events
 from pygame import QUIT,quit as pg_quit,Rect,image
-from data.modules.ui.ui_elements import UIGroup,UIImage,UILabel,UIM
+
+from data.modules.ui.ui_element import UIGroup,UIM
+from data.modules.ui.ui_image import UIImage
+from data.modules.ui.ui_label import UILabel
+from data.modules.ui.ui_button import UIButton
+def test_print(*args):
+    print(args, "Hello World!")
 class App:
     def __init__(self):
         self.window = Window()
@@ -34,6 +40,11 @@ class App:
             text='',
             group=self.group_test
             )
+        self.nameLabel.render("test")
+        self.btn = UIButton(
+            Rect(0,0,128,24),
+            ux={'text':'root' , 'size':(128,24),'onPressCallback': test_print},
+            group=self.group_test)
     def run(self):
         while self.is_running:
             self.window.surface.fill((128,128,128))
