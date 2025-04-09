@@ -9,6 +9,7 @@ from data.modules.ui.ui_label import UILabel
 from data.modules.ui.ui_button import UIButton
 from data.modules.ui.ui_switch import UISwitch
 from data.modules.ui.ui_drop_down import UIDropDown
+from data.modules.ui.ui_progress_bar import UIProgressBar
 def test_print(*args):
     print(args, "Hello World!")
 class App:
@@ -72,10 +73,19 @@ class App:
             layer=100,
             group= self.group_test
             )
+        self.progress_bar = UIProgressBar(
+            Rect(
+                512,
+                0,
+                128,
+                24
+                ),
+        )
     def run(self):
         while self.is_running:
             self.window.surface.fill((128,128,128))
             UIM.renderQueue(self,['test'])
+            self.progress_bar.UX.currentProgress += GLOBAL_DELTA_TIME.get() * .25
             self.window.update()
             
             self.event_handler()
