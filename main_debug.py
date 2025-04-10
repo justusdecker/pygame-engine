@@ -14,12 +14,13 @@ from data.modules.ui.ui_calendar import UICalendar
 from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
 from data.modules.tests.tile_based_game import Map
+from data.modules.app import Application
 def test_print(*args):
     print(args, "Hello World!")
-class App:
+
+class App(Application):
     def __init__(self):
-        self.window = Window()
-        self.is_running = True
+        super().__init__()
         self.group_test = UIGroup('test')
         self.thumbnail = UIImage(
             Rect(
@@ -93,20 +94,13 @@ class App:
         self.map = Map(self)
     def run(self):
         while self.is_running:
-            self.window.surface.fill((128,128,128))
+            GLOBAL_DELTA_TIME.before()
             self.map.update()
             UIM.render_queue(self,['test'])
             self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
-            
-            self.window.update()
-            
-            self.event_handler()
-            
-    def event_handler(self):
-        for event in get_events():
-            if event.type == QUIT:
-                pg_quit()
-                self.is_running = False
+            self.update()
+            GLOBAL_DELTA_TIME.after()
+
 if __name__ == "__main__":
     APP = App()
     APP.run()
