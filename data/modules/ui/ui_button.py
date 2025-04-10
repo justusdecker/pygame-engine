@@ -26,6 +26,8 @@ class UXButton:
         self.hovered_color = options.get('hovered_color',Color(DEFAULT_BACKGROUND_COLOR))
         self.pressed_color = options.get('pressed_color',Color(DEFAULT_BACKGROUND_COLOR))
         
+        self.font = options.get('font',FONTDRAW)
+        
         self.text = options.get('text','')
         self.draw()
     def getAllImages(self):
@@ -54,10 +56,12 @@ class UXButton:
                 border_radius = self.border_radius
             )
             
-            img = FONTDRAW.draw(
+            img = self.font.draw(
                 self.text,
-                color=text_color
+                color=text_color,
+                size = self.font.font.get_height()
                 )
+            rect_draw(img,(255,0,0),(0,0,img.get_width(),img.get_height()-1),width=1)
             
             SURF.blit(
                 img,

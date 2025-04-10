@@ -1,9 +1,9 @@
 from pygame import font
 from pygame import Color
 class FONT:
-    def __init__(self) -> None:
+    def __init__(self,name:str='bahnschrift',size:int=13) -> None:
         font.init()
-        self.font = font.SysFont('bahnschrift',13)
+        self.font = font.SysFont(name,size)
     def draw(self,
              text: str = '',
              aa: bool = True,
