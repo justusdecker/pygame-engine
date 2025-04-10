@@ -2,10 +2,11 @@ from data.modules.ui.ui_element import UIElement, UIC
 from data.modules.constants import MEDIUM_BACKGROUND_COLOR,TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR
 from pygame.draw import rect as rect_draw
 from pygame import Surface, Rect, Color, SRCALPHA
+
 class UXSwitch:
     def __init__(self,
                  **options) -> None:
-        
+        super().__init__(**options)
         self.size = options.get('size',(24,24))
         self.border_radius = options.get('border_radius',6)
         self.bg =  options.get('bg_color',Color(MEDIUM_BACKGROUND_COLOR))

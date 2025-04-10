@@ -13,6 +13,7 @@ from data.modules.ui.ui_progress_bar import UIProgressBar
 from data.modules.ui.ui_calendar import UICalendar
 from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
+from data.modules.tests.tile_based_game import Map
 def test_print(*args):
     print(args, "Hello World!")
 class App:
@@ -49,11 +50,12 @@ class App:
         self.nameLabel.render("test")
         self.btn = UIButton(
             Rect(0,0,128,24),
-            ux={'text':'root' , 'size':(128,24),'onPressCallback': test_print},
-            group=self.group_test)
+            ux={'text':'root' , 'size':(128,24)},
+            group=self.group_test,
+            on_press_callback=test_print)
         self.btn = UISwitch(
             Rect(0,24,128,24),
-            ux={'size':(128,24),'onPressCallback': test_print},
+            ux={'size':(128,24),'on_press_callback': test_print},
             group=self.group_test)
         
         self.fileDD = UIDropDown(
@@ -87,11 +89,15 @@ class App:
         self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
         self.time_select = UITimeSelect(Rect(512,512,48,24),group= self.group_test)
         self.text_input = UITextInput(Rect(256,512,48,24),app=self,group= self.group_test)
+        
+        self.map = Map(self)
     def run(self):
         while self.is_running:
             self.window.surface.fill((128,128,128))
+            self.map.update()
             UIM.render_queue(self,['test'])
             self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
+            
             self.window.update()
             
             self.event_handler()
