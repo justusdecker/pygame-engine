@@ -16,6 +16,7 @@ from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
 from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
+
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -31,6 +32,7 @@ class App(Application):
             GLOBAL_DELTA_TIME.before()
 
             UIM.render_queue(self)
+
             self.update()
             GLOBAL_DELTA_TIME.after()
 

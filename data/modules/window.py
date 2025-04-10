@@ -6,8 +6,8 @@ class Window:
         self.surface = set_mode(RESOLUTION)
     def render(self,
                object:Surface,
-               pos:tuple[int,int],
-               offset:tuple[int,int]):
+               pos:tuple[int,int] = (0,0),
+               offset:tuple[int,int] = (0,0)):
         self.surface.blit(object,(pos[0] + offset[0],pos[1] + pos[1]))
     def update(self):
         display_update()

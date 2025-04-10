@@ -9,7 +9,7 @@ from data.modules.constants import (DEFAULT_BACKGROUND_COLOR,
                                     TEXT_COLOR,
                                     PRESSED_TEXT_COLOR,
                                     HIGHLIGHT_TEXT_COLOR)
-
+from data.modules.ui.ui_debug import outliner
 class UXButton:
     def __init__(self,
                  **options) -> None:
@@ -61,7 +61,8 @@ class UXButton:
                 color=text_color,
                 size = self.font.font.get_height()
                 )
-            rect_draw(img,(255,0,0),(0,0,img.get_width(),img.get_height()-1),width=1)
+            
+            outliner(img,Rect(0,0,img.get_width()-1,img.get_height()-1),0)
             
             SURF.blit(
                 img,
@@ -70,6 +71,7 @@ class UXButton:
                     img.get_size()
                     )
                 )
+            outliner(SURF,Rect(0,0,SURF.get_width()-1,SURF.get_height()-1),1)
             _ret.append(SURF)
         return _ret
 
