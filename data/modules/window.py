@@ -1,9 +1,12 @@
-from pygame.display import set_mode,update as display_update
+from pygame.display import set_mode,update as display_update,set_caption,set_icon
 from pygame import Surface
-from data.modules.constants import RESOLUTION
+from data.modules.constants import RESOLUTION, TITLE, ICON_PATH
 class Window:
     def __init__(self):
         self.surface = set_mode(RESOLUTION)
+        set_caption(TITLE)
+        if ICON_PATH:
+            set_icon(ICON_PATH)
     def render(self,
                object:Surface,
                pos:tuple[int,int] = (0,0),

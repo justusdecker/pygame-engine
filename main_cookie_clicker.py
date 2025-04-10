@@ -1,7 +1,6 @@
 from data.modules.constants import *
-from data.modules.window import Window
-from pygame.event import get as get_events
-from pygame import QUIT,quit as pg_quit,Rect,image
+
+from pygame import Rect
 from data.modules.ui.ui_font import FONT
 
 from data.modules.ui.ui_element import UIGroup,UIM
@@ -24,8 +23,12 @@ class App(Application):
     def __init__(self):
         super().__init__()
         self.mine_button = UIButton(
-            Rect(HALF_WIDTH-(WIDTH//4),HALF_HEIGHT-(HEIGHT//4),HALF_WIDTH,HALF_HEIGHT),
-            ux={'text':"MINE",'size': (HALF_WIDTH,HALF_HEIGHT),'font':FONT(size=40)}
+            Rect(HALF_WIDTH-QUARTER_WIDTH,HALF_HEIGHT-QUARTER_HEIGHT,HALF_WIDTH,HALF_HEIGHT),
+            ux={
+                'text':"MINE",
+                'size': (HALF_WIDTH,HALF_HEIGHT),
+                'font':FONT(size=40)
+                }
         )
     def run(self):
         while self.is_running:
