@@ -62,8 +62,7 @@ class UXButton:
                 size = self.font.font.get_height()
                 )
             
-            outliner(img,Rect(0,0,img.get_width()-1,img.get_height()-1),0)
-            
+
             SURF.blit(
                 img,
                 get_center(
@@ -71,7 +70,7 @@ class UXButton:
                     img.get_size()
                     )
                 )
-            outliner(SURF,Rect(0,0,SURF.get_width()-1,SURF.get_height()-1),1)
+
             _ret.append(SURF)
         return _ret
 

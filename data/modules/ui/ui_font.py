@@ -24,7 +24,7 @@ class FONT:
              color: tuple | list | Color = Color('#454545'),
              size: int = 13):
         self.font.set_point_size(size)
-        
+        if not text: return Surface((1,1),SRCALPHA)
         return self.cut_off(self.font.render(text,aa,color))
     
 FONTDRAW = FONT()

@@ -1,7 +1,8 @@
 from data.modules.constants import *
 
-from pygame import Rect,image
+from pygame import Rect,image, Color
 from data.modules.ui.ui_font import FONT
+from pygame.display import set_caption
 
 from data.modules.ui.ui_element import UIGroup,UIM
 from data.modules.ui.ui_image import UIImage
@@ -20,15 +21,26 @@ from data.modules.animation import Animation
 def test_print(*args):
     print(args, "Hello World!")
 
+class CookieClicker:
+    def __init__(self):
+        self.cookies = 0
+        self.lvl_click = 1
+    def click(self):
+        self.cookies += self.lvl_click
+
 class App(Application):
     def __init__(self):
         super().__init__()
+        self.cc = CookieClicker()
         self.mine_button = UIButton(
-            Rect(HALF_WIDTH-QUARTER_WIDTH,HALF_HEIGHT-QUARTER_HEIGHT,HALF_WIDTH,HALF_HEIGHT),
+            Rect(HALF_WIDTH-(QUARTER_HEIGHT//2),HALF_HEIGHT-(QUARTER_HEIGHT//2),QUARTER_HEIGHT,QUARTER_HEIGHT),
             ux={
-                'text':"MINE",
-                'size': (HALF_WIDTH,HALF_HEIGHT),
-                'font':FONT(size=40)
+                'size': (QUARTER_HEIGHT,QUARTER_HEIGHT),
+                'font':FONT(size=40),
+                'border_radius':45,
+                'normal_color': (0,0,0,0),
+                'hovered_color': (0,0,0,0),
+                'pressed_color': (0,0,0,0)
                 }
         )
         self.animation = Animation(self,
@@ -37,58 +49,50 @@ class App(Application):
                                        {
             "x_offset": 0,
             "y_offset": 0,
-            "scale": [.5,.5]
-        },
-                                       {
+            "scale": [.3,.3]
+        },{
             "x_offset": 0,
-            "y_offset": 25,
-            "scale": [.5,.47]
-        },
-                                       {
+            "y_offset": 10,
+            "scale": [.28,.3]
+        },{
             "x_offset": 0,
-            "y_offset": 50,
-            "scale": [.5,.45]
-        },
-                                       {
+            "y_offset": 20,
+            "scale": [.25,.3]
+        },{
             "x_offset": 0,
-            "y_offset": 200,
-            "scale": [.5,.40]
-        },
-                                       {
+            "y_offset": 40,
+            "scale": [.3,.25]
+        },{
             "x_offset": 0,
-            "y_offset": 300,
-            "scale": [.6,.3]
-        },
-                                       {
+            "y_offset": 40,
+            "scale": [.35,.15]
+        },{
             "x_offset": 0,
-            "y_offset": 350,
-            "scale": [.65,.25]
-        },
-                                       {
+            "y_offset": 40,
+            "scale": [.3,.25]
+        },{
             "x_offset": 0,
-            "y_offset": 200,
-            "scale": [.6,.4]
-        },
-                                       {
+            "y_offset": 20,
+            "scale": [.25,.3]
+        },{
             "x_offset": 0,
-            "y_offset": 50,
-            "scale": [.5,.45]
-        },
-                                       {
-            "x_offset": 0,
-            "y_offset": 25,
-            "scale": [.5,.47]
+            "y_offset": 10,
+            "scale": [.28,.3]
         }
                                    ],
-                                   (HALF_WIDTH,HALF_HEIGHT*.8),loops=-1,time_multiplier=30)
+                                   (HALF_WIDTH,HALF_HEIGHT),time_multiplier=50)
     def run(self):
-        self.animation.start_animation()
+        
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             self.window.surface.fill((0,0,0))
-            self.animation.update()
-            UIM.render_queue(self)
             
+            UIM.render_queue(self)
+            self.animation.update()
+            if self.mine_button.this_frame_pressed:
+                self.animation.start_animation()
+                self.cc.click()
+                set_caption(f"Cookies: {self.cc.cookies}")
             self.update()
             GLOBAL_DELTA_TIME.after()
 
