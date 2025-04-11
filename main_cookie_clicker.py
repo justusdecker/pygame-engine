@@ -3,6 +3,7 @@ from data.modules.constants import *
 from pygame import Rect,image, Color
 from data.modules.ui.ui_font import FONT
 from pygame.display import set_caption
+from pygame.mixer import music,init as mixer_init
 
 from data.modules.ui.ui_element import UIGroup,UIM
 from data.modules.ui.ui_image import UIImage
@@ -31,6 +32,7 @@ class CookieClicker:
 class App(Application):
     def __init__(self):
         super().__init__()
+        mixer_init()
         self.cc = CookieClicker()
         self.mine_button = UIButton(
             Rect(HALF_WIDTH-(QUARTER_HEIGHT//2),HALF_HEIGHT-(QUARTER_HEIGHT//2),QUARTER_HEIGHT,QUARTER_HEIGHT),
@@ -41,8 +43,22 @@ class App(Application):
                 'normal_color': (0,0,0,0),
                 'hovered_color': (0,0,0,0),
                 'pressed_color': (0,0,0,0)
-                }
+                },
+            on_press_callback = self.on_cookie_click
         )
+        self.lvl_click_upgrade_button = UIButton(
+            Rect(0,0,WIDTH*.1,HEIGHT*.1),
+            ux={
+                
+                'text': f'Strength\n{int(self.cc.lvl_click * 11.1)}',
+                'size': (WIDTH*.15,HEIGHT*.1),
+                'font':FONT(size=20),
+                'border_radius':45
+                },
+            on_press_callback = self.on_upgrade_click
+        )
+
+
         self.animation = Animation(self,
                                    image.load("data\\bin\\img\\cookie.png"),
                                    [
@@ -81,6 +97,21 @@ class App(Application):
         }
                                    ],
                                    (HALF_WIDTH,HALF_HEIGHT),time_multiplier=50)
+    def on_upgrade_click(self,*_):
+        val = int(self.cc.lvl_click * 11.1)
+        nex = int((self.cc.lvl_click+1) * 11.1)
+        if self.cc.cookies >= val:
+            self.lvl_click_upgrade_button.UX.text = f"Strength\n{nex}"
+            self.lvl_click_upgrade_button.UX.draw()
+            
+            self.cc.cookies -= val
+            self.cc.lvl_click += 1
+    def on_cookie_click(self,*_):
+        music.load("data\\bin\\click.mp3")
+        music.play()
+        self.animation.start_animation()
+        self.cc.click()
+        set_caption(f"Cookies: {self.cc.cookies}")
     def run(self):
         
         while self.is_running:
@@ -89,10 +120,7 @@ class App(Application):
             
             UIM.render_queue(self)
             self.animation.update()
-            if self.mine_button.this_frame_pressed:
-                self.animation.start_animation()
-                self.cc.click()
-                set_caption(f"Cookies: {self.cc.cookies}")
+
             self.update()
             GLOBAL_DELTA_TIME.after()
 

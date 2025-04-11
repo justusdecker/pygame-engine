@@ -41,7 +41,7 @@ class UXButton:
             ]
         )
         
-    def gen(self,array:list=[]):
+    def gen(self,array:list):
         _ret = []
         for text_color,background_color in array:
             SURF = Surface(self.size,SRCALPHA)
