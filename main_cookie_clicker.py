@@ -57,6 +57,10 @@ class App(Application):
                 },
             on_press_callback = self.on_upgrade_click
         )
+        self.cookie_label = UILabel(
+            Rect(QUARTER_WIDTH,0,HALF_WIDTH,HEIGHT*.1),
+            
+        )
 
 
         self.animation = Animation(self,
