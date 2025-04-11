@@ -11,6 +11,6 @@ class Window:
                object:Surface,
                pos:tuple[int,int] = (0,0),
                offset:tuple[int,int] = (0,0)):
-        self.surface.blit(object,(pos[0] + offset[0],pos[1] + pos[1]))
+        self.surface.blit(object,(pos[0] + offset[0],pos[1] + offset[1]))
     def update(self):
         display_update()
