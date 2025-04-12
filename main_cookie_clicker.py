@@ -44,21 +44,21 @@ class CookieClicker:
         CURSOR = self.upgrades['cursor'] * 0.1 * self.u_cursor
         GRANDMA = self.upgrades['grandma'] * self.u_grandma
         FARM = self.upgrades['farm'] * 8 * self.u_farm
-        MINE = self.upgrades['mine'] * 8 * self.u_mine
-        FACTORY = self.upgrades['factory'] * 47 * self.u_factory
+        MINE = self.upgrades['mine'] * 47 * self.u_mine
+        FACTORY = self.upgrades['factory'] * 65 * self.u_factory
         
         return CURSOR + GRANDMA + FARM + MINE + FACTORY
     def update(self):
         self.cookies += GLOBAL_DELTA_TIME.get() * self.get_auto_clicker()
     def get_price(self,key):
         return int({'cursor': 15 + (15 * self.upgrades['cursor'] * 0.2),
-         'grandma': 100 + (100*self.upgrades['grandma']*0.2),
+         'grandma': 100 + (100*self.upgrades['grandma']*0.2),#!Calculation is not correct!
          'farm': 1_100 + (1_100*self.upgrades['farm']*0.2),
          'mine': 12_000 + (12_000*self.upgrades['mine']*0.2),
          'factory': 130_000 + (130_000*self.upgrades['factory']*0.2)
          }[key])
     def upgrade(self,lvl:str):
-        price = self.get_price('cursor')
+        price = self.get_price(lvl)
         if self.get() >= price:
             self.cookies -= price
             self.upgrades[lvl] += 1
@@ -163,6 +163,24 @@ class App(Application):
                 },
             on_press_callback = self.cc.buy_mine
         )
+        self.lvl_factory_upgrade_button = UIButton(
+            Rect(0,HEIGHT*.4,WIDTH*.15,HEIGHT*.1),
+            ux={
+                
+                'text': f'Factory: {self.cc.get_price("factory")}',
+                'size': (WIDTH*.15,HEIGHT*.1),
+                'font':FONT(size=20),
+                'border_radius':45,
+                'normal_text_color': Color('#FFE5CC'),
+                'hovered_text_color': Color('#FFF5FF'),
+                'pressed_text_color': Color('#D2BFAC'),
+                'normal_color': Color('#CC6600'),
+                'hovered_color': Color('#CC6600'),
+                'pressed_color': Color('#CC6600')
+                },
+            on_press_callback = self.cc.buy_factory
+        )
+        
         self.cookie_label = UILabel(
             Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),
             ux = {
@@ -240,6 +258,9 @@ class App(Application):
             if self.lvl_mine_upgrade_button.this_frame_hovered:
                 self.lvl_mine_upgrade_button.UX.text = f'Mine: {self.cc.get_price("mine")}'
                 self.lvl_mine_upgrade_button.UX.draw()
+            if self.lvl_factory_upgrade_button.this_frame_hovered:
+                self.lvl_factory_upgrade_button.UX.text = f'Factory: {self.cc.get_price("factory")}'
+                self.lvl_factory_upgrade_button.UX.draw()
             UIM.render_queue(self)
             self.animation.update()
             self.cc.update()
