@@ -29,6 +29,7 @@ class UXLabel:
         self.text_color = options.get('text_color',Color(TEXT_COLOR))
         self.background_color = options.get('background_color',Color(DEFAULT_BACKGROUND_COLOR))
         self.text = options.get('text','')
+        self.font = options.get('font',FONTDRAW)
         self.anchor = options.get('anchor','center')
         self.surface = self.gen()
         
@@ -46,9 +47,10 @@ class UXLabel:
             border_radius = self.border_radius
         )
         
-        img = FONTDRAW.draw(
+        img = self.font.draw(
             self.text,
-            color=self.text_color
+            color=self.text_color,
+            size = self.font.font.get_height()
             )
         match self.anchor:
             case 'center':

@@ -2,7 +2,6 @@ from data.modules.constants import *
 
 from pygame import Rect,image, Color
 from data.modules.ui.ui_font import FONT
-from pygame.display import set_caption
 from pygame.mixer import music,init as mixer_init
 
 from data.modules.ui.ui_element import UIGroup,UIM
@@ -47,19 +46,31 @@ class App(Application):
             on_press_callback = self.on_cookie_click
         )
         self.lvl_click_upgrade_button = UIButton(
-            Rect(0,0,WIDTH*.1,HEIGHT*.1),
+            Rect(0,0,WIDTH*.15,HEIGHT*.1),
             ux={
                 
                 'text': f'Strength\n{int(self.cc.lvl_click * 11.1)}',
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
-                'border_radius':45
+                'border_radius':45,
+                'normal_text_color': Color('#FFE5CC'),
+                'hovered_text_color': Color('#FFF5FF'),
+                'pressed_text_color': Color('#D2BFAC'),
+                'normal_color': Color('#CC6600'),
+                'hovered_color': Color('#CC6600'),
+                'pressed_color': Color('#CC6600')
                 },
             on_press_callback = self.on_upgrade_click
         )
         self.cookie_label = UILabel(
-            Rect(QUARTER_WIDTH,0,HALF_WIDTH,HEIGHT*.1),
-            
+            Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),
+            ux = {
+                'text': '0',
+                'size': (QUARTER_WIDTH,HEIGHT*.1),
+                'font': FONT(size=40),
+                'background_color': Color('#CC6600'),
+                'text_color': Color('#FFE5CC')
+            }
         )
 
 
@@ -101,6 +112,9 @@ class App(Application):
         }
                                    ],
                                    (HALF_WIDTH,HALF_HEIGHT),time_multiplier=50)
+    def update_cookie_label(self):
+        self.cookie_label.UX.text = str(self.cc.cookies)
+        self.cookie_label.set_image(self.cookie_label.UX.gen())
     def on_upgrade_click(self,*_):
         val = int(self.cc.lvl_click * 11.1)
         nex = int((self.cc.lvl_click+1) * 11.1)
@@ -110,17 +124,19 @@ class App(Application):
             
             self.cc.cookies -= val
             self.cc.lvl_click += 1
+            self.update_cookie_label()
+            
     def on_cookie_click(self,*_):
         music.load("data\\bin\\click.mp3")
         music.play()
         self.animation.start_animation()
         self.cc.click()
-        set_caption(f"Cookies: {self.cc.cookies}")
+        self.update_cookie_label()
     def run(self):
         
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
-            self.window.surface.fill((0,0,0))
+            self.window.surface.fill(Color('#FFB266'))
             
             UIM.render_queue(self)
             self.animation.update()
