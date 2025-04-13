@@ -53,6 +53,7 @@ class CookieClicker:
     def update(self):
         self.cookies += GLOBAL_DELTA_TIME.get() * self.get_auto_clicker()
     def get_multiplicator_price(self,key):
+        if self.multiplicators[key] > 2: return False
         return {'cursor': (100,1000),
          'grandma': (5000,10000),
          'farm': (50_000,200_000),
@@ -67,11 +68,12 @@ class CookieClicker:
          'factory': 130_000 + (130_000*self.upgrades['factory']*0.2)
          }[key])
     def upgrade_multiplicator(self,lvl:str):
-        if self.multiplicators[lvl] <= 2:
-            price = self.get_multiplicator_price(lvl)
-            if self.get() >= price:
-                self.cookies -= price
-                self.multiplicators[lvl] += 1
+
+        price = self.get_multiplicator_price(lvl)
+        if not price: return
+        if self.get() >= price:
+            self.cookies -= price
+            self.multiplicators[lvl] += 1
     def upgrade(self,lvl:str):
         price = self.get_price(lvl)
         if self.get() >= price:
@@ -87,10 +89,16 @@ class CookieClicker:
         self.upgrade_multiplicator('grandma')    
     def buy_farm(self,*_):
         self.upgrade('farm')
+    def buy_farm_multiplicator(self,*_):
+        self.upgrade_multiplicator('farm')   
     def buy_mine(self,*_):
         self.upgrade('mine')
+    def buy_mine_multiplicator(self,*_):
+        self.upgrade_multiplicator('mine')   
     def buy_factory(self,*_):
         self.upgrade('factory')
+    def buy_factory_multiplicator(self,*_):
+        self.upgrade_multiplicator('factory')   
     def click(self):
         self.cookies += 1
     def get(self):
@@ -202,6 +210,25 @@ class App(Application):
                 },
             on_press_callback = self.cc.buy_farm
         )
+        
+        self.lvl_farm_multiplicator_upgrade_button = UIButton(
+            Rect(WIDTH*.15,HEIGHT*.2,WIDTH*.15,HEIGHT*.1),
+            ux={
+                
+                'text': f'Multiplicator: {self.cc.get_multiplicator_price("farm")}',
+                'size': (WIDTH*.15,HEIGHT*.1),
+                'font':FONT(size=20),
+                'border_radius':45,
+                'normal_text_color': Color('#FFE5CC'),
+                'hovered_text_color': Color('#FFF5FF'),
+                'pressed_text_color': Color('#D2BFAC'),
+                'normal_color': Color('#CC6600'),
+                'hovered_color': Color('#CC6600'),
+                'pressed_color': Color('#CC6600')
+                },
+            on_press_callback = self.cc.buy_farm_multiplicator
+        )
+        
         self.lvl_mine_upgrade_button = UIButton(
             Rect(0,HEIGHT*.3,WIDTH*.15,HEIGHT*.1),
             ux={
@@ -219,6 +246,24 @@ class App(Application):
                 },
             on_press_callback = self.cc.buy_mine
         )
+        
+        self.lvl_mine_multiplicator_upgrade_button = UIButton(
+            Rect(WIDTH*.15,HEIGHT*.3,WIDTH*.15,HEIGHT*.1),
+            ux={
+                
+                'text': f'Multiplicator: {self.cc.get_multiplicator_price("mine")}',
+                'size': (WIDTH*.15,HEIGHT*.1),
+                'font':FONT(size=20),
+                'border_radius':45,
+                'normal_text_color': Color('#FFE5CC'),
+                'hovered_text_color': Color('#FFF5FF'),
+                'pressed_text_color': Color('#D2BFAC'),
+                'normal_color': Color('#CC6600'),
+                'hovered_color': Color('#CC6600'),
+                'pressed_color': Color('#CC6600')
+                },
+            on_press_callback = self.cc.buy_mine_multiplicator
+        )
         self.lvl_factory_upgrade_button = UIButton(
             Rect(0,HEIGHT*.4,WIDTH*.15,HEIGHT*.1),
             ux={
@@ -235,6 +280,24 @@ class App(Application):
                 'pressed_color': Color('#CC6600')
                 },
             on_press_callback = self.cc.buy_factory
+        )
+        
+        self.lvl_factory_multiplicator_upgrade_button = UIButton(
+            Rect(WIDTH*.15,HEIGHT*.4,WIDTH*.15,HEIGHT*.1),
+            ux={
+                
+                'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',
+                'size': (WIDTH*.15,HEIGHT*.1),
+                'font':FONT(size=20),
+                'border_radius':45,
+                'normal_text_color': Color('#FFE5CC'),
+                'hovered_text_color': Color('#FFF5FF'),
+                'pressed_text_color': Color('#D2BFAC'),
+                'normal_color': Color('#CC6600'),
+                'hovered_color': Color('#CC6600'),
+                'pressed_color': Color('#CC6600')
+                },
+            on_press_callback = self.cc.buy_factory_multiplicator
         )
         
         self.cookie_label = UILabel(
@@ -318,8 +381,30 @@ class App(Application):
                 self.lvl_factory_upgrade_button.UX.text = f'Factory: {self.cc.get_price("factory")}'
                 self.lvl_factory_upgrade_button.UX.draw()
             if self.lvl_cursor_multiplicator_upgrade_button.this_frame_hovered:
-                self.lvl_cursor_multiplicator_upgrade_button.UX.text = f'Multiplicator: {self.cc.get_multiplicator_price("cursor")}'
+                price = self.cc.get_multiplicator_price("cursor")
+                text = f'Multiplicator: {price}' if price else 'MAX'
+                self.lvl_cursor_multiplicator_upgrade_button.UX.text = text
                 self.lvl_cursor_multiplicator_upgrade_button.UX.draw()
+            if self.lvl_grandma_multiplicator_upgrade_button.this_frame_hovered:
+                price = self.cc.get_multiplicator_price("grandma")
+                text = f'Multiplicator: {price}' if price else 'MAX'
+                self.lvl_grandma_multiplicator_upgrade_button.UX.text = text
+                self.lvl_grandma_multiplicator_upgrade_button.UX.draw()
+            if self.lvl_farm_multiplicator_upgrade_button.this_frame_hovered:
+                price = self.cc.get_multiplicator_price("farm")
+                text = f'Multiplicator: {price}' if price else 'MAX'
+                self.lvl_farm_multiplicator_upgrade_button.UX.text = text
+                self.lvl_farm_multiplicator_upgrade_button.UX.draw()
+            if self.lvl_mine_multiplicator_upgrade_button.this_frame_hovered:
+                price = self.cc.get_multiplicator_price("mine")
+                text = f'Multiplicator: {price}' if price else 'MAX'
+                self.lvl_mine_multiplicator_upgrade_button.UX.text = text
+                self.lvl_mine_multiplicator_upgrade_button.UX.draw()
+            if self.lvl_factory_multiplicator_upgrade_button.this_frame_hovered:
+                price = self.cc.get_multiplicator_price("factory")
+                text = f'Multiplicator: {price}' if price else 'MAX'
+                self.lvl_factory_multiplicator_upgrade_button.UX.text = text
+                self.lvl_factory_multiplicator_upgrade_button.UX.draw()
             UIM.render_queue(self)
             self.animation.update()
             self.cc.update()
