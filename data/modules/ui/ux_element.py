@@ -18,7 +18,8 @@ UXButtonElement
 """
 class ColorGroup:
     def __init__(self, colors: list[str]):
-        self.array = [Color(color) for color in colors]
+        
+        self.array = [Color(color) if color else Color(0,0,0,0) for color in colors]
         
 class UXElement:
     """

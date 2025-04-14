@@ -18,6 +18,8 @@ from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
 from data.modules.animation import Animation
 from data.modules.audio_handler import AudioHandler
+BUTTON_COLORS = {'tcg':('#FFE5CC','#FFF5FF','#D2BFAC'),'bcg':('#CC6600',)}
+
 
 def test_print(*args):
     print(args, "Hello World!")
@@ -116,9 +118,7 @@ class App(Application):
                 'size': (QUARTER_HEIGHT,QUARTER_HEIGHT),
                 'font':FONT(size=40),
                 'border_radius':45,
-                'normal_color': (0,0,0,0),
-                'hovered_color': (0,0,0,0),
-                'pressed_color': (0,0,0,0)
+                'bcg': ('',)
                 },
             on_press_callback = self.on_cookie_click
         )
@@ -130,12 +130,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_cursor
         )
@@ -148,12 +143,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_cursor_multiplicator
         )
@@ -166,12 +156,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_grandma
         )
@@ -184,12 +169,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_grandma_multiplicator
         )
@@ -202,12 +182,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_farm
         )
@@ -220,12 +195,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_farm_multiplicator
         )
@@ -238,12 +208,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_mine
         )
@@ -256,12 +221,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_mine_multiplicator
         )
@@ -273,12 +233,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_factory
         )
@@ -291,12 +246,7 @@ class App(Application):
                 'size': (WIDTH*.15,HEIGHT*.1),
                 'font':FONT(size=20),
                 'border_radius':45,
-                'normal_text_color': Color('#FFE5CC'),
-                'hovered_text_color': Color('#FFF5FF'),
-                'pressed_text_color': Color('#D2BFAC'),
-                'normal_color': Color('#CC6600'),
-                'hovered_color': Color('#CC6600'),
-                'pressed_color': Color('#CC6600')
+                **BUTTON_COLORS
                 },
             on_press_callback = self.cc.buy_factory_multiplicator
         )
