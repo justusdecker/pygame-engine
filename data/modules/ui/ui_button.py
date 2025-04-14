@@ -5,39 +5,27 @@ from pygame import Surface, Rect, Color, SRCALPHA
 from data.modules.ui.ui_font import FONTDRAW
 from data.modules.ui.ui_calculation import get_center
 from pygame.draw import rect as rect_draw
+from data.modules.ui.ux_element import UXElement
 from data.modules.constants import (DEFAULT_BACKGROUND_COLOR,
                                     TEXT_COLOR,
                                     PRESSED_TEXT_COLOR,
                                     HIGHLIGHT_TEXT_COLOR)
 from data.modules.ui.ui_debug import outliner
-class UXButton:
+class UXButton(UXElement):
     def __init__(self,
                  **options) -> None:
-        
-        self.size = options.get('size',(64,24))
-        self.border_radius = options.get('border_radius',15)
-        
-        
-        self.normal_text_color = options.get('normal_text_color',Color(TEXT_COLOR))
-        self.hovered_text_color = options.get('hovered_text_color',Color(HIGHLIGHT_TEXT_COLOR))
-        self.pressed_text_color = options.get('pressed_text_color',Color(PRESSED_TEXT_COLOR))
-        
-        self.normal_color = options.get('normal_color',Color(DEFAULT_BACKGROUND_COLOR))
-        self.hovered_color = options.get('hovered_color',Color(DEFAULT_BACKGROUND_COLOR))
-        self.pressed_color = options.get('pressed_color',Color(DEFAULT_BACKGROUND_COLOR))
-        
-        self.font = options.get('font',FONTDRAW)
-        
-        self.text = options.get('text','')
+        if not 'tcg' in options: options['tcg'] = (TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR)
+        if not 'bcg' in options: options['bcg'] = (DEFAULT_BACKGROUND_COLOR,)
+        super().__init__(**options)
         self.draw()
     def getAllImages(self):
         return self.normal_image,self.hovered_image,self.pressed_image 
     def draw(self):
         self.normal_image , self.hovered_image , self.pressed_image = self.gen(
             [
-                (self.normal_text_color,self.normal_color),
-                (self.hovered_text_color,self.hovered_color),
-                (self.pressed_text_color,self.pressed_color)
+                (self.get_color(self.text_color_group,0),self.get_color(self.background_color_group,0)),
+                (self.get_color(self.text_color_group,1),self.get_color(self.background_color_group,1)),
+                (self.get_color(self.text_color_group,2),self.get_color(self.background_color_group,2))
             ]
         )
         

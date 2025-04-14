@@ -19,6 +19,7 @@ UXButtonElement
 class ColorGroup:
     def __init__(self, colors: list[str]):
         self.array = [Color(color) for color in colors]
+        
 class UXElement:
     """
     .. size:: ``tuple[int,int]``
@@ -40,3 +41,7 @@ class UXElement:
         self.background_color_group = ColorGroup(options.get('bcg',[]))
         self.text = options.get('text','')
         self.font = options.get('font',FONTDRAW)
+    def get_color(self,group:ColorGroup,index:int):
+        if index < len(group.array):
+            return group.array[index]
+        return group.array[len(group.array)-1]    #Missing color indicator
