@@ -17,6 +17,7 @@ from data.modules.ui.ui_text_input import UITextInput
 from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
 from data.modules.animation import Animation
+from data.modules.audio_handler import AudioHandler
 
 def test_print(*args):
     print(args, "Hello World!")
@@ -107,7 +108,7 @@ class CookieClicker:
 class App(Application):
     def __init__(self):
         super().__init__()
-        mixer_init()
+        self.audio_handler = AudioHandler(sfx_lib={'click': "data\\bin\\click.mp3"})
         self.cc = CookieClicker()
         self.mine_button = UIButton(
             Rect(HALF_WIDTH-(QUARTER_HEIGHT//2),HALF_HEIGHT-(QUARTER_HEIGHT//2),QUARTER_HEIGHT,QUARTER_HEIGHT),
@@ -355,8 +356,7 @@ class App(Application):
         self.cookie_label.set_image(self.cookie_label.UX.gen())
             
     def on_cookie_click(self,*_):
-        music.load("data\\bin\\click.mp3")
-        music.play()
+        self.audio_handler.play_sound('click')
         self.animation.start_animation()
         self.cc.click()
     def run(self):

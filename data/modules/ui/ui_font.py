@@ -1,4 +1,5 @@
 from pygame import font, Color,Surface,SRCALPHA
+
 class FONT:
     def __init__(self,name:str='bahnschrift',size:int=13) -> None:
         font.init()
@@ -23,6 +24,7 @@ class FONT:
              aa: bool = True,
              color: tuple | list | Color = Color('#454545'),
              size: int = 13):
+        
         self.font.set_point_size(size)
         if not text: return Surface((1,1),SRCALPHA)
         return self.cut_off(self.font.render(text,aa,color))
