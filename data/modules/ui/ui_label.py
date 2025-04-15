@@ -4,32 +4,15 @@ from pygame import Surface, Rect, Color, SRCALPHA
 from data.modules.ui.ui_font import FONTDRAW
 from data.modules.ui.ui_calculation import get_center,get_top_center
 from data.modules.constants import DEFAULT_BACKGROUND_COLOR,TEXT_COLOR
-class UXLabel:
-    """
-    Options
-    ^^^^^^^
-    
-    .. size:: 
-    
-        type: ``tuple``
-        
-        default: ``(128,24)``
-    
-    .. border_radius::
-    
-        type: ``int``
-        
-        default: ``15``
-    
-
-    """
+from data.modules.ui.ux_element import UXElement
+class UXLabel(UXElement):
     def __init__(self,**options) -> None:
-        self.size = options.get('size',(128,24))
-        self.border_radius = options.get('border_radius',15)
+        if not 'tcg' in options: options['tcg'] = (TEXT_COLOR,)
+        if not 'bcg' in options: options['bcg'] = (DEFAULT_BACKGROUND_COLOR,)
+        super().__init__(**options)
+        
         self.text_color = options.get('text_color',Color(TEXT_COLOR))
         self.background_color = options.get('background_color',Color(DEFAULT_BACKGROUND_COLOR))
-        self.text = options.get('text','')
-        self.font = options.get('font',FONTDRAW)
         self.anchor = options.get('anchor','center')
         self.surface = self.gen()
         

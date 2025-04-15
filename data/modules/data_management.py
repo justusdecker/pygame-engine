@@ -1,6 +1,34 @@
 from os import path,mkdir,remove
 from json import load,dumps
 from data.modules.log import LOG
+from bitarray import bitarray
+
+def xor(value,bit_index:int):
+    return value ^ (1 << bit_index)
+    
+def xor_complex(value:bitarray) -> bitarray:
+    num = int(value.to01(),2)
+    for i in range(num.bit_length()):
+        num = xor(num,i)
+    return bitarray(f'{num:08b}')
+
+from io import FileIO
+class DataManagementBitarray:
+    def __init__(self):
+        pass
+    def load(self,file_path:str) -> bitarray:
+        ba = bitarray(0)
+        with FileIO(file_path,'rb') as f_in:
+            ba.fromfile(f_in)
+        return ba
+    def write(self,file_path:str, data:bitarray) -> None:
+        
+        with FileIO(file_path,'wb') as f_out:
+            data.tofile(f_out)
+    
+    def encrypt(self,shift):
+        pass
+            
 class DataManagement:
     """
     Many Modules for loading and saving files
