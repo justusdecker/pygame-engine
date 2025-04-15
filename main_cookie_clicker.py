@@ -1,8 +1,9 @@
 from data.modules.constants import *
-
-from pygame import Rect,image, Color
+from math import sin
+from pygame import Rect,image, Color, Surface,SRCALPHA
+from pygame.draw import line
 from pygame.mouse import get_pos
-from pygame.transform import scale
+from pygame.transform import scale,flip
 from data.modules.ui.ui_font import FONT,FONTDRAW
 from random import randint
 
@@ -23,10 +24,34 @@ UPGRADE_BUTTON_UX = {'size': BUTTON_DEST, 'font':FONT(size=20), 'border_radius':
 def test_print(*args):
     print(args, "Hello World!")
 
+class MilkWaves:
+    def __init__(self,app):
+        self.app = app
+        
+        self.shifter = 0
+        self.updown_shifter = 0
+        self.generate()
+    def generate(self):
+        self.b = [sin((i*.00025)+self.shifter) for i in range(WIDTH)]
+        self.m = [abs(sin((i*.005)+self.shifter)) for i in range(WIDTH)]
+        self.f = [abs(sin((i*.015)+self.shifter)) for i in range(WIDTH)]
+    def update(self):
+        self.shifter += GLOBAL_DELTA_TIME.get() * .25
+        self.generate()
+        surf = Surface((WIDTH,HEIGHT*2),SRCALPHA)
+        for l,c in [(self.b,'#F2C9A0'),(self.m,'#F0D0B0'),(self.f,'#FFF3E6')]:
+            for index,pos in enumerate(l):
+                line(self.app.window.surface,Color(c),(index,HEIGHT),(index,(pos*HEIGHT*.1)+(HEIGHT*.9)))
+        surf = flip(surf,False,True)
+        self.app.window.render(surf,(0,HEIGHT*.6))
+
 class CookieClicker:
     def __init__(self):
         self.cookies = 0
         self.last_cookie = 0
+        
+        self.click_upgrades = 0
+        
         self.upgrades = {
             'cursor': 0,
             'grandma': 0,
@@ -49,6 +74,17 @@ class CookieClicker:
         FACTORY = self.upgrades['factory'] * 65 * self.multiplicators['factory']
         
         return CURSOR + GRANDMA + FARM + MINE + FACTORY
+    def get_click_price(self):
+        prices = [1000,10000,100000]
+        if self.click_upgrades >= len(prices): return 'MAX'
+        return prices[self.click_upgrades]
+    def upgrade_click(self,*_):
+        prices = [1000,10000,100000]
+        if self.click_upgrades >= len(prices): return
+        price = prices[self.click_upgrades]
+        if self.get() >= price:
+            self.cookies -= price
+            self.click_upgrades += 1
     def update(self):
         self.cookies += GLOBAL_DELTA_TIME.get() * self.get_auto_clicker()
     def get_multiplicator_price(self,key):
@@ -79,14 +115,15 @@ class CookieClicker:
         if self.get() >= price:
             self.cookies -= price
             self.upgrades[key] += 1
+    def get_click_strength(self) -> int:
+        return (self.click_upgrades*2) if self.click_upgrades else 1
     def click(self):
-        self.cookies += 1
+        self.cookies += self.get_click_strength()
     def get(self):
         return int(self.cookies)
 
 class CookieRain:
     def __init__(self,app):
-
         self.app = app
         self.cookie_image = scale(image.load('data\\bin\\img\\cookie.png'),(HEIGHT*.05,HEIGHT*.05))
         self.objects = [ [randint(0,int(WIDTH*.95)),randint(-int(HEIGHT*1.05),int(HEIGHT*.95))] for i in range(100) ]
@@ -109,13 +146,14 @@ class FloatingText:
             object[1] -= GLOBAL_DELTA_TIME.get() * 30
             object[0][1] -= GLOBAL_DELTA_TIME.get() * 50
             if object[1] <= 1: continue
-            self.app.window.render(FONTDRAW.draw("1",size=int(object[1]),color=Color('#FFE5CC')),object[0])
+            self.app.window.render(FONTDRAW.draw(str(self.app.cc.get_click_strength()),size=int(object[1]),color=Color('#FFE5CC')),object[0])
         self.objects = [i for i in self.objects if i[1] > 0]
 
 class App(Application):
     def __init__(self):
         super().__init__()
         self.audio_handler = AudioHandler(sfx_lib={'click': "data\\bin\\click.mp3"})
+        self.mw = MilkWaves(self)
         self.cc = CookieClicker()
         self.cr = CookieRain(self)
         self.ft = FloatingText(self)
@@ -151,6 +189,8 @@ class App(Application):
         self.lvl_factory_upgrade_button = UIButton( Rect(0,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Factory: {self.cc.get_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'factory')
         
         self.lvl_factory_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'factory')
+        
+        self.lvl_click_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.5,*BUTTON_DEST),ux={'text': f'Click: {self.cc.get_click_price()}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_click,element_name = 'click')
         
         self.cookie_label = UILabel(
             Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),
@@ -215,9 +255,10 @@ class App(Application):
         
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
-
+            self.CLK.tick(60)
             self.window.surface.fill(Color('#FFB266'))
             self.cr.update()
+            self.mw.update()
             #! Button image dont change !
             if self.lvl_cursor_upgrade_button.this_frame_hovered:
                 self.lvl_cursor_upgrade_button.UX.text = f'Cursor: {self.cc.get_price("cursor")}'
@@ -259,6 +300,11 @@ class App(Application):
                 text = f'Multiplicator: {price}' if price else 'MAX'
                 self.lvl_factory_multiplicator_upgrade_button.UX.text = text
                 self.lvl_factory_multiplicator_upgrade_button.UX.draw()
+            if self.lvl_click_upgrade_button.this_frame_hovered:
+                price = self.cc.get_click_price()
+                text = f'Click: {price}' if price else 'MAX'
+                self.lvl_click_upgrade_button.UX.text = text
+                self.lvl_click_upgrade_button.UX.draw()
             UIM.render_queue(self)
             self.animation.update()
             self.cc.update()

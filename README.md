@@ -1,6 +1,7 @@
 Current Project:
-- Get a cookie clicker clone working & update
 <img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/cookie_clicker_clone_project.png">
+- Get a cookie clicker clone working & update
+
 Use:
     - Essential stuff in the UI Elements will be fixed or expanded
     - The new datamanagement system will be:

@@ -1,12 +1,13 @@
 from data.modules.constants import *
 from data.modules.window import Window
 from pygame.event import get as get_events
-from pygame import QUIT,quit as pg_quit,Rect,image
+from pygame import QUIT,quit as pg_quit,Clock
 
 class Application:
     def __init__(self):
         self.window = Window()
         self.is_running = True
+        self.CLK = Clock()
 
     def update(self):
 
