@@ -20,6 +20,9 @@ from data.modules.animation import Animation
 from data.modules.audio_handler import AudioHandler
 BUTTON_COLORS = {'tcg':('#FFE5CC','#FFF5FF','#D2BFAC'),'bcg':('#CC6600',)}
 
+BUTTON_DEST = (WIDTH*.15,HEIGHT*.1)
+
+UPGRADE_BUTTON_UX = {'size': BUTTON_DEST, 'font':FONT(size=20), 'border_radius':45, **BUTTON_COLORS}
 
 def test_print(*args):
     print(args, "Hello World!")
@@ -113,7 +116,7 @@ class App(Application):
         self.audio_handler = AudioHandler(sfx_lib={'click': "data\\bin\\click.mp3"})
         self.cc = CookieClicker()
         self.mine_button = UIButton(
-            Rect(HALF_WIDTH-(QUARTER_HEIGHT//2),HALF_HEIGHT-(QUARTER_HEIGHT//2),QUARTER_HEIGHT,QUARTER_HEIGHT),
+            Rect(HALF_WIDTH-(QUARTER_HEIGHT >> 1),HALF_HEIGHT-(QUARTER_HEIGHT >> 1),QUARTER_HEIGHT,QUARTER_HEIGHT),
             ux={
                 'size': (QUARTER_HEIGHT,QUARTER_HEIGHT),
                 'font':FONT(size=40),
@@ -122,134 +125,28 @@ class App(Application):
                 },
             on_press_callback = self.on_cookie_click
         )
-        self.lvl_cursor_upgrade_button = UIButton(
-            Rect(0,0,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Cursor: {self.cc.get_price("cursor")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_cursor
-        )
         
-        self.lvl_cursor_multiplicator_upgrade_button = UIButton(
-            Rect(WIDTH*.15,0,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Multiplicator: {self.cc.get_multiplicator_price("cursor")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_cursor_multiplicator
-        )
+        #? Level Up & Multiplicator Buttons
         
-        self.lvl_grandma_upgrade_button = UIButton(
-            Rect(0,HEIGHT*.1,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Grandma: {self.cc.get_price("grandma")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_grandma
-        )
+        self.lvl_cursor_upgrade_button = UIButton( Rect(0,0,*BUTTON_DEST), ux={ 'text': f'Cursor: {self.cc.get_price("cursor")}', **UPGRADE_BUTTON_UX }, on_press_callback = self.cc.buy_cursor)
         
-        self.lvl_grandma_multiplicator_upgrade_button = UIButton(
-            Rect(WIDTH*.15,HEIGHT*.1,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Multiplicator: {self.cc.get_multiplicator_price("grandma")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_grandma_multiplicator
-        )
+        self.lvl_cursor_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,0,*BUTTON_DEST), ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("cursor")}', **UPGRADE_BUTTON_UX}, on_press_callback = self.cc.buy_cursor_multiplicator)
         
-        self.lvl_farm_upgrade_button = UIButton(
-            Rect(0,HEIGHT*.2,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Farm: {self.cc.get_price("farm")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_farm
-        )
+        self.lvl_grandma_upgrade_button = UIButton( Rect(0,HEIGHT*.1,*BUTTON_DEST), ux={'text': f'Grandma: {self.cc.get_price("grandma")}', **UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_grandma)
         
-        self.lvl_farm_multiplicator_upgrade_button = UIButton(
-            Rect(WIDTH*.15,HEIGHT*.2,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Multiplicator: {self.cc.get_multiplicator_price("farm")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_farm_multiplicator
-        )
+        self.lvl_grandma_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.1,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("grandma")}', **UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_grandma_multiplicator)
         
-        self.lvl_mine_upgrade_button = UIButton(
-            Rect(0,HEIGHT*.3,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Mine: {self.cc.get_price("mine")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_mine
-        )
+        self.lvl_farm_upgrade_button = UIButton( Rect(0,HEIGHT*.2,*BUTTON_DEST),ux={'text': f'Farm: {self.cc.get_price("farm")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_farm)
         
-        self.lvl_mine_multiplicator_upgrade_button = UIButton(
-            Rect(WIDTH*.15,HEIGHT*.3,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Multiplicator: {self.cc.get_multiplicator_price("mine")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_mine_multiplicator
-        )
-        self.lvl_factory_upgrade_button = UIButton(
-            Rect(0,HEIGHT*.4,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Factory: {self.cc.get_price("factory")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_factory
-        )
+        self.lvl_farm_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.2,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("farm")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_farm_multiplicator)
         
-        self.lvl_factory_multiplicator_upgrade_button = UIButton(
-            Rect(WIDTH*.15,HEIGHT*.4,WIDTH*.15,HEIGHT*.1),
-            ux={
-                
-                'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',
-                'size': (WIDTH*.15,HEIGHT*.1),
-                'font':FONT(size=20),
-                'border_radius':45,
-                **BUTTON_COLORS
-                },
-            on_press_callback = self.cc.buy_factory_multiplicator
-        )
+        self.lvl_mine_upgrade_button = UIButton( Rect(0,HEIGHT*.3,*BUTTON_DEST),ux={'text': f'Mine: {self.cc.get_price("mine")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_mine)
+        
+        self.lvl_mine_multiplicator_upgrade_button = UIButton(Rect(WIDTH*.15,HEIGHT*.3,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("mine")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_mine_multiplicator)
+        
+        self.lvl_factory_upgrade_button = UIButton( Rect(0,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Factory: {self.cc.get_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_factory)
+        
+        self.lvl_factory_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_factory_multiplicator)
         
         self.cookie_label = UILabel(
             Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),

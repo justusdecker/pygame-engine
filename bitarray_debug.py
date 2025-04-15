@@ -7,6 +7,7 @@ DATA = bitarray('1011011110110111')
 
 print(DATA)
 DATA = xor_complex(DATA)
+
 print(DATA)
 ch = get_checksum(DATA,16)
 print(f'{ch=} {DATA=}')

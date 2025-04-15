@@ -10,7 +10,7 @@ def xor_complex(value:bitarray) -> bitarray:
     num = int(value.to01(),2)
     for i in range(num.bit_length()):
         num = xor(num,i)
-    return bitarray(f'{num:08b}')
+    return bitarray(f'0{num:08b}')
 def get_checksum(value:bitarray,size:int=32):
     """
     Checks the length of the given value!
