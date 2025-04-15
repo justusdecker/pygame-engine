@@ -2,7 +2,7 @@ from data.modules.constants import *
 from math import sin
 from pygame import Rect,image, Color, Surface,SRCALPHA
 from pygame.draw import line
-from pygame.mouse import get_pos
+from pygame.mouse import get_pos,set_visible,get_pressed
 from pygame.transform import scale,flip
 from data.modules.ui.ui_font import FONT,FONTDRAW
 from random import randint
@@ -152,6 +152,10 @@ class FloatingText:
 class App(Application):
     def __init__(self):
         super().__init__()
+        set_visible(False)
+        self.mouse_image_normal = scale(image.load('data\\bin\\img\\mouse.png'),(32,32))
+        self.mouse_image_hover = scale(image.load('data\\bin\\img\\mouse_hovered.png'),(32,32))
+        self.mouse_image_pressed = scale(image.load('data\\bin\\img\\mouse_pressed.png'),(32,32))
         self.audio_handler = AudioHandler(sfx_lib={'click': "data\\bin\\click.mp3"})
         self.mw = MilkWaves(self)
         self.cc = CookieClicker()
@@ -191,6 +195,10 @@ class App(Application):
         self.lvl_factory_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'factory')
         
         self.lvl_click_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.5,*BUTTON_DEST),ux={'text': f'Click: {self.cc.get_click_price()}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_click,element_name = 'click')
+        
+        #! for each upgrade button:
+        #   - add a price label
+        #   - add a inventory view label
         
         self.cookie_label = UILabel(
             Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),
@@ -251,6 +259,7 @@ class App(Application):
         self.animation.start_animation()
         self.cc.click()
         self.ft.add_object()
+        
     def run(self):
         
         while self.is_running:
@@ -259,57 +268,18 @@ class App(Application):
             self.window.surface.fill(Color('#FFB266'))
             self.cr.update()
             self.mw.update()
-            #! Button image dont change !
-            if self.lvl_cursor_upgrade_button.this_frame_hovered:
-                self.lvl_cursor_upgrade_button.UX.text = f'Cursor: {self.cc.get_price("cursor")}'
-                self.lvl_cursor_upgrade_button.UX.draw()
-            if self.lvl_grandma_upgrade_button.this_frame_hovered:
-                self.lvl_grandma_upgrade_button.UX.text = f'Grandma: {self.cc.get_price("grandma")}'
-                self.lvl_grandma_upgrade_button.UX.draw()
-            if self.lvl_farm_upgrade_button.this_frame_hovered:
-                self.lvl_farm_upgrade_button.UX.text = f'Farm: {self.cc.get_price("farm")}'
-                self.lvl_farm_upgrade_button.UX.draw()
-            if self.lvl_mine_upgrade_button.this_frame_hovered:
-                self.lvl_mine_upgrade_button.UX.text = f'Mine: {self.cc.get_price("mine")}'
-                self.lvl_mine_upgrade_button.UX.draw()
-            if self.lvl_factory_upgrade_button.this_frame_hovered:
-                self.lvl_factory_upgrade_button.UX.text = f'Factory: {self.cc.get_price("factory")}'
-                self.lvl_factory_upgrade_button.UX.draw()
-            if self.lvl_cursor_multiplicator_upgrade_button.this_frame_hovered:
-                price = self.cc.get_multiplicator_price("cursor")
-                text = f'Multiplicator: {price}' if price else 'MAX'
-                self.lvl_cursor_multiplicator_upgrade_button.UX.text = text
-                self.lvl_cursor_multiplicator_upgrade_button.UX.draw()
-            if self.lvl_grandma_multiplicator_upgrade_button.this_frame_hovered:
-                price = self.cc.get_multiplicator_price("grandma")
-                text = f'Multiplicator: {price}' if price else 'MAX'
-                self.lvl_grandma_multiplicator_upgrade_button.UX.text = text
-                self.lvl_grandma_multiplicator_upgrade_button.UX.draw()
-            if self.lvl_farm_multiplicator_upgrade_button.this_frame_hovered:
-                price = self.cc.get_multiplicator_price("farm")
-                text = f'Multiplicator: {price}' if price else 'MAX'
-                self.lvl_farm_multiplicator_upgrade_button.UX.text = text
-                self.lvl_farm_multiplicator_upgrade_button.UX.draw()
-            if self.lvl_mine_multiplicator_upgrade_button.this_frame_hovered:
-                price = self.cc.get_multiplicator_price("mine")
-                text = f'Multiplicator: {price}' if price else 'MAX'
-                self.lvl_mine_multiplicator_upgrade_button.UX.text = text
-                self.lvl_mine_multiplicator_upgrade_button.UX.draw()
-            if self.lvl_factory_multiplicator_upgrade_button.this_frame_hovered:
-                price = self.cc.get_multiplicator_price("factory")
-                text = f'Multiplicator: {price}' if price else 'MAX'
-                self.lvl_factory_multiplicator_upgrade_button.UX.text = text
-                self.lvl_factory_multiplicator_upgrade_button.UX.draw()
-            if self.lvl_click_upgrade_button.this_frame_hovered:
-                price = self.cc.get_click_price()
-                text = f'Click: {price}' if price else 'MAX'
-                self.lvl_click_upgrade_button.UX.text = text
-                self.lvl_click_upgrade_button.UX.draw()
             UIM.render_queue(self)
             self.animation.update()
             self.cc.update()
             self.update_cookie_label()
             self.ft.update()
+            if get_pressed()[0]:
+                self.window.render(self.mouse_image_pressed ,get_pos())
+            elif any([any([obj.is_hovered for obj in UIM.queue[layer]]) for layer in UIM.queue]):
+                self.window.render(self.mouse_image_hover ,get_pos())
+            else:
+                self.window.render(self.mouse_image_normal ,get_pos())
+
             self.update()
             GLOBAL_DELTA_TIME.after()
 
