@@ -1,7 +1,10 @@
 from data.modules.constants import *
 
 from pygame import Rect,image, Color
-from data.modules.ui.ui_font import FONT
+from pygame.mouse import get_pos
+from pygame.transform import scale
+from data.modules.ui.ui_font import FONT,FONTDRAW
+from random import randint
 
 from data.modules.ui.ui_element import UIM
 
@@ -23,6 +26,7 @@ def test_print(*args):
 class CookieClicker:
     def __init__(self):
         self.cookies = 0
+        self.last_cookie = 0
         self.upgrades = {
             'cursor': 0,
             'grandma': 0,
@@ -80,11 +84,41 @@ class CookieClicker:
     def get(self):
         return int(self.cookies)
 
+class CookieRain:
+    def __init__(self,app):
+
+        self.app = app
+        self.cookie_image = scale(image.load('data\\bin\\img\\cookie.png'),(HEIGHT*.05,HEIGHT*.05))
+        self.objects = [ [randint(0,int(WIDTH*.95)),randint(-int(HEIGHT*1.05),int(HEIGHT*.95))] for i in range(100) ]
+    def create(self,):
+        return [randint(0,int(WIDTH*.95)),-randint(int(HEIGHT*1.05),int(HEIGHT*1.15))] # randint(int(HEIGHT*1.05),int(HEIGHT*1.1))
+    def update(self):
+        for object in self.objects:
+            object[1] += GLOBAL_DELTA_TIME.get()*50
+            self.app.window.render(self.cookie_image,object)
+        self.objects = [i if i[1] < HEIGHT else self.create() for i in self.objects]
+class FloatingText:
+    def __init__(self,app):
+
+        self.app = app
+        self.objects = []
+    def add_object(self,):
+        self.objects.append([list(get_pos()),HEIGHT*.05])
+    def update(self):
+        for object in self.objects:
+            object[1] -= GLOBAL_DELTA_TIME.get() * 30
+            object[0][1] -= GLOBAL_DELTA_TIME.get() * 50
+            if object[1] <= 1: continue
+            self.app.window.render(FONTDRAW.draw("1",size=int(object[1]),color=Color('#FFE5CC')),object[0])
+        self.objects = [i for i in self.objects if i[1] > 0]
+
 class App(Application):
     def __init__(self):
         super().__init__()
         self.audio_handler = AudioHandler(sfx_lib={'click': "data\\bin\\click.mp3"})
         self.cc = CookieClicker()
+        self.cr = CookieRain(self)
+        self.ft = FloatingText(self)
         self.mine_button = UIButton(
             Rect(HALF_WIDTH-(QUARTER_HEIGHT >> 1),HALF_HEIGHT-(QUARTER_HEIGHT >> 1),QUARTER_HEIGHT,QUARTER_HEIGHT),
             ux={
@@ -176,11 +210,14 @@ class App(Application):
         self.audio_handler.play_sound('click')
         self.animation.start_animation()
         self.cc.click()
+        self.ft.add_object()
     def run(self):
         
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
+
             self.window.surface.fill(Color('#FFB266'))
+            self.cr.update()
             #! Button image dont change !
             if self.lvl_cursor_upgrade_button.this_frame_hovered:
                 self.lvl_cursor_upgrade_button.UX.text = f'Cursor: {self.cc.get_price("cursor")}'
@@ -226,6 +263,7 @@ class App(Application):
             self.animation.update()
             self.cc.update()
             self.update_cookie_label()
+            self.ft.update()
             self.update()
             GLOBAL_DELTA_TIME.after()
 
