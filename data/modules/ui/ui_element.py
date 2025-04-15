@@ -108,7 +108,7 @@ class UIElement:
         self.group = kwargs.get('group',UI_DEFAULT_GROUP)
         
         self.element_id = UIIDCOUNT.add()
-        self.element_name = kwargs['name'] if 'name' in kwargs else ''
+        self.element_name = kwargs['element_name'] if 'element_name' in kwargs else ''
         
         self.set_layer(kwargs['layer'] if 'layer' in kwargs else 0)
         

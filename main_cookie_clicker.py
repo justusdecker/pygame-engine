@@ -2,19 +2,12 @@ from data.modules.constants import *
 
 from pygame import Rect,image, Color
 from data.modules.ui.ui_font import FONT
-from pygame.mixer import music,init as mixer_init
 
-from data.modules.ui.ui_element import UIGroup,UIM
-from data.modules.ui.ui_image import UIImage
+from data.modules.ui.ui_element import UIM
+
 from data.modules.ui.ui_label import UILabel
 from data.modules.ui.ui_button import UIButton
-from data.modules.ui.ui_switch import UISwitch
-from data.modules.ui.ui_drop_down import UIDropDown
-from data.modules.ui.ui_progress_bar import UIProgressBar
-from data.modules.ui.ui_calendar import UICalendar
-from data.modules.ui.ui_time_select import UITimeSelect
-from data.modules.ui.ui_text_input import UITextInput
-from data.modules.tests.tile_based_game import Map
+
 from data.modules.app import Application
 from data.modules.animation import Animation
 from data.modules.audio_handler import AudioHandler
@@ -30,7 +23,6 @@ def test_print(*args):
 class CookieClicker:
     def __init__(self):
         self.cookies = 0
-        
         self.upgrades = {
             'cursor': 0,
             'grandma': 0,
@@ -45,9 +37,6 @@ class CookieClicker:
             'mine': 1,
             'factory': 1
         }
-        #efficiency upgrades / doubles the default output
-        
-        self.lvl_click = 1
     def get_auto_clicker(self):
         CURSOR = self.upgrades['cursor'] * 0.1 * self.multiplicators['cursor']
         GRANDMA = self.upgrades['grandma'] * self.multiplicators['grandma']
@@ -73,38 +62,19 @@ class CookieClicker:
          'mine': 12_000 + (12_000*self.upgrades['mine']*0.2),
          'factory': 130_000 + (130_000*self.upgrades['factory']*0.2)
          }[key])
-    def upgrade_multiplicator(self,lvl:str):
-
-        price = self.get_multiplicator_price(lvl)
+    def upgrade_multiplicator(self,button:UIButton):
+        key = button.element_name
+        price = self.get_multiplicator_price(key)
         if not price: return
         if self.get() >= price:
             self.cookies -= price
-            self.multiplicators[lvl] += 1
-    def upgrade(self,lvl:str):
-        price = self.get_price(lvl)
+            self.multiplicators[key] += 1
+    def upgrade(self,button:UIButton):
+        key = button.element_name
+        price = self.get_price(key)
         if self.get() >= price:
             self.cookies -= price
-            self.upgrades[lvl] += 1
-    def buy_cursor_multiplicator(self,*_):
-        self.upgrade_multiplicator('cursor')
-    def buy_cursor(self,*_):
-        self.upgrade('cursor')
-    def buy_grandma(self,*_):
-        self.upgrade('grandma')
-    def buy_grandma_multiplicator(self,*_):
-        self.upgrade_multiplicator('grandma')    
-    def buy_farm(self,*_):
-        self.upgrade('farm')
-    def buy_farm_multiplicator(self,*_):
-        self.upgrade_multiplicator('farm')   
-    def buy_mine(self,*_):
-        self.upgrade('mine')
-    def buy_mine_multiplicator(self,*_):
-        self.upgrade_multiplicator('mine')   
-    def buy_factory(self,*_):
-        self.upgrade('factory')
-    def buy_factory_multiplicator(self,*_):
-        self.upgrade_multiplicator('factory')   
+            self.upgrades[key] += 1
     def click(self):
         self.cookies += 1
     def get(self):
@@ -128,25 +98,25 @@ class App(Application):
         
         #? Level Up & Multiplicator Buttons
         
-        self.lvl_cursor_upgrade_button = UIButton( Rect(0,0,*BUTTON_DEST), ux={ 'text': f'Cursor: {self.cc.get_price("cursor")}', **UPGRADE_BUTTON_UX }, on_press_callback = self.cc.buy_cursor)
+        self.lvl_cursor_upgrade_button = UIButton( Rect(0,0,*BUTTON_DEST), ux={ 'text': f'Cursor: {self.cc.get_price("cursor")}', **UPGRADE_BUTTON_UX }, on_press_callback = self.cc.upgrade,element_name = 'cursor')
         
-        self.lvl_cursor_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,0,*BUTTON_DEST), ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("cursor")}', **UPGRADE_BUTTON_UX}, on_press_callback = self.cc.buy_cursor_multiplicator)
+        self.lvl_cursor_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,0,*BUTTON_DEST), ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("cursor")}', **UPGRADE_BUTTON_UX}, on_press_callback = self.cc.upgrade_multiplicator,element_name = 'cursor')
         
-        self.lvl_grandma_upgrade_button = UIButton( Rect(0,HEIGHT*.1,*BUTTON_DEST), ux={'text': f'Grandma: {self.cc.get_price("grandma")}', **UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_grandma)
+        self.lvl_grandma_upgrade_button = UIButton( Rect(0,HEIGHT*.1,*BUTTON_DEST), ux={'text': f'Grandma: {self.cc.get_price("grandma")}', **UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'grandma')
         
-        self.lvl_grandma_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.1,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("grandma")}', **UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_grandma_multiplicator)
+        self.lvl_grandma_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.1,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("grandma")}', **UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'grandma')
         
-        self.lvl_farm_upgrade_button = UIButton( Rect(0,HEIGHT*.2,*BUTTON_DEST),ux={'text': f'Farm: {self.cc.get_price("farm")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_farm)
+        self.lvl_farm_upgrade_button = UIButton( Rect(0,HEIGHT*.2,*BUTTON_DEST),ux={'text': f'Farm: {self.cc.get_price("farm")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'farm')
         
-        self.lvl_farm_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.2,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("farm")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_farm_multiplicator)
+        self.lvl_farm_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.2,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("farm")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'farm')
         
-        self.lvl_mine_upgrade_button = UIButton( Rect(0,HEIGHT*.3,*BUTTON_DEST),ux={'text': f'Mine: {self.cc.get_price("mine")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_mine)
+        self.lvl_mine_upgrade_button = UIButton( Rect(0,HEIGHT*.3,*BUTTON_DEST),ux={'text': f'Mine: {self.cc.get_price("mine")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'mine')
         
-        self.lvl_mine_multiplicator_upgrade_button = UIButton(Rect(WIDTH*.15,HEIGHT*.3,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("mine")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_mine_multiplicator)
+        self.lvl_mine_multiplicator_upgrade_button = UIButton(Rect(WIDTH*.15,HEIGHT*.3,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("mine")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'mine')
         
-        self.lvl_factory_upgrade_button = UIButton( Rect(0,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Factory: {self.cc.get_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_factory)
+        self.lvl_factory_upgrade_button = UIButton( Rect(0,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Factory: {self.cc.get_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'factory')
         
-        self.lvl_factory_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.buy_factory_multiplicator)
+        self.lvl_factory_multiplicator_upgrade_button = UIButton( Rect(WIDTH*.15,HEIGHT*.4,*BUTTON_DEST),ux={'text': f'Multiplicator: {self.cc.get_multiplicator_price("factory")}',**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'factory')
         
         self.cookie_label = UILabel(
             Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),
@@ -154,8 +124,8 @@ class App(Application):
                 'text': '0',
                 'size': (QUARTER_WIDTH,HEIGHT*.1),
                 'font': FONT(size=40),
-                'background_color': Color('#CC6600'),
-                'text_color': Color('#FFE5CC')
+                'bcg': ('#CC6600',),
+                'tcg': ('#FFE5CC',)
             }
         )
 

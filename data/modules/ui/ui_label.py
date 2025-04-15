@@ -10,9 +10,6 @@ class UXLabel(UXElement):
         if not 'tcg' in options: options['tcg'] = (TEXT_COLOR,)
         if not 'bcg' in options: options['bcg'] = (DEFAULT_BACKGROUND_COLOR,)
         super().__init__(**options)
-        
-        self.text_color = options.get('text_color',Color(TEXT_COLOR))
-        self.background_color = options.get('background_color',Color(DEFAULT_BACKGROUND_COLOR))
         self.anchor = options.get('anchor','center')
         self.surface = self.gen()
         
@@ -21,7 +18,7 @@ class UXLabel(UXElement):
         SURF = Surface(self.size,SRCALPHA)
         rect_draw(
             SURF,
-            self.background_color,
+            self.get_color(self.background_color_group,0),
             (
                 0,
                 0,
@@ -32,7 +29,7 @@ class UXLabel(UXElement):
         
         img = self.font.draw(
             self.text,
-            color=self.text_color,
+            color=self.get_color(self.text_color_group,0),
             size = self.font.font.get_height()
             )
         match self.anchor:
