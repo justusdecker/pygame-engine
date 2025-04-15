@@ -11,7 +11,24 @@ def xor_complex(value:bitarray) -> bitarray:
     for i in range(num.bit_length()):
         num = xor(num,i)
     return bitarray(f'{num:08b}')
-
+def get_checksum(value:bitarray,size:int=32):
+    """
+    Checks the length of the given value!
+    default: 32 bit size
+    if length > size: the function will raise an ValueError
+    """
+    ch_sum = value.__len__()
+    print(ch_sum)
+    if ch_sum > size: raise ValueError(f'the value is greater than given size!')
+    return bitarray(f'{(size - ch_sum)*'0'}{ch_sum:08b}')
+def validate_checksum(value:bitarray,size:int=32):
+    val = value.to01()
+    print(val[:-size],val[-size:])
+    a = get_checksum(bitarray(val[:-size]),size).to01()
+    b = bitarray(val[-size:]).to01()
+    print(len(a),len(b))
+    print(a,b,val)
+    return a == b
 from io import FileIO
 class DataManagementBitarray:
     def __init__(self):

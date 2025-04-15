@@ -1,18 +1,17 @@
-from data.modules.data_management import DataManagementBitarray,xor_complex
+from data.modules.data_management import DataManagementBitarray,xor_complex,get_checksum,validate_checksum
 from bitarray import bitarray
 DMBA = DataManagementBitarray()
-DATA = bitarray("01001000")
-
 print('Logic Gates Tests:')
 
+DATA = bitarray('1011011110110111')
+
+print(DATA)
+DATA = xor_complex(DATA)
+print(DATA)
+ch = get_checksum(DATA,16)
+print(f'{ch=} {DATA=}')
+DATA = DATA + ch
+print(DATA)
 
 
-DATA = DMBA.load('test.data')
-print(DATA.to01())
-print(xor_complex(DATA).to01())
-    
-DMBA.write('test.data',DATA)
-input('rewrite')
-DATA = DMBA.load('test.data')
-
-DMBA.write('test.data',DATA)
+print(f'vc: {validate_checksum(DATA,16)}')
