@@ -12,7 +12,7 @@ class UXLabel(UXElement):
         super().__init__(**options)
         self.anchor = options.get('anchor','center')
         self.surface = self.gen()
-        
+
     def gen(self):
 
         SURF = Surface(self.size,SRCALPHA)
