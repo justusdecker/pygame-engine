@@ -18,6 +18,7 @@ from data.modules.app import Application
 def test_print(*args):
     print(args, "Hello World!")
 
+
 class App(Application):
     def __init__(self):
         super().__init__()

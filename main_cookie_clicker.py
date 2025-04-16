@@ -1,21 +1,36 @@
-from data.modules.constants import *
 from math import sin
 from pygame import Rect,image, Color, Surface,SRCALPHA
 from pygame.draw import line
 from pygame.mouse import get_pos,set_visible,get_pressed
 from pygame.transform import scale,flip
-from data.modules.ui.ui_font import FONT,FONTDRAW
 from random import randint
 
+from data.modules.constants import *
+from data.modules.ui.ui_font import FONT,FONTDRAW
 from data.modules.ui.ui_element import UIM
-
 from data.modules.ui.ui_label import UILabel
 from data.modules.ui.ui_button import UIButton
-
 from data.modules.app import Application
 from data.modules.animation import Animation
 from data.modules.audio_handler import AudioHandler
-BUTTON_COLORS = {'tcg':('#FFE5CC00',),'bcg':('#CC660000',)}
+
+"""
+Documentation
+******
+Globals
+-----
+.. TRANSPARENT:: background color
+.. BUTTON_COLORS:: default transparent
+.. BUTTON_DEST:: default button size
+.. UPGRADE_BUTTON_UX:: defines the default UXElement to save memory & organize the code
+.. KEYFRAMES:: the cookie animation keyframes
+.. UPGRADE_KEYFRAMES:: the upgrade animation keyframes used for all upgrades
+.. LABEL_IVENTORY_UX:: defines a default UXElement to save memory & organize the code
+.. LABEL_COST_UX:: defines a default UXElement to save memory & organize the code
+"""
+
+TRANSPARENT = ((0,0,0,0),)
+BUTTON_COLORS = {'tcg':TRANSPARENT,'bcg':TRANSPARENT}
 
 BUTTON_DEST = (HEIGHT*.1,HEIGHT*.1)
 
@@ -93,7 +108,7 @@ UPGRADE_KEYFRAMES = [
 LABEL_INVENTORY_UX = {
     'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
     'font': FONT(size=15),
-    'bcg': ('#CC660000',),
+    'bcg': TRANSPARENT,
     'tcg': ('#FFE5CC',)
 }
 
@@ -104,10 +119,7 @@ LABEL_COST_UX = {
     'tcg': ('#FFE5CC',)
 }
 
-def test_print(*args):
-    print(args, "Hello World!")
-
-def get_shortened_number(x:int) -> str:
+def get_num_short(x:int) -> str:
     if not str(x).isdecimal(): return 'MAX'
     x = int(x)
 
@@ -118,11 +130,15 @@ def get_shortened_number(x:int) -> str:
     else: return f'{x}'
 
 class MilkWaves:
+    """
+    .. step_1:: Generate 3 different Waves
+    .. step_2:: Draw the waves one the screen
+    .. step_3:: shift each frame a bit to the left
+    """
     def __init__(self,app):
         self.app = app
         
         self.shifter = 0
-        self.updown_shifter = 0
         self.generate()
     def generate(self):
         self.b = [sin((i*.00025)+self.shifter) for i in range(WIDTH)]
@@ -179,7 +195,7 @@ class CookieClicker:
         if self.get() >= price:
             self.cookies -= price
             self.click_upgrades += 1
-            self.app.lbl_mul_cost_cursor.render(str(get_shortened_number(self.get_click_price())))
+            self.app.lbl_mul_cost_cursor.render(str(get_num_short(self.get_click_price())))
             self.app.lbl_mul_inv_click.render(str(self.click_upgrades))
     def update(self):
         self.cookies += GLOBAL_DELTA_TIME.get() * self.get_auto_clicker()
@@ -208,23 +224,23 @@ class CookieClicker:
             match button.element_name:
                 case 'cursor':
                     self.app.animation_mul_cursor.start_animation()
-                    self.app.lbl_mul_cost_cursor.render(str(get_shortened_number(self.get_multiplicator_price('cursor'))))
+                    self.app.lbl_mul_cost_cursor.render(str(get_num_short(self.get_multiplicator_price('cursor'))))
                     self.app.lbl_mul_inv_cursor.render(str(self.multiplicators['cursor']-1))
                 case 'grandma':
                     self.app.animation_mul_grandma.start_animation()
-                    self.app.lbl_mul_cost_grandma.render(str(get_shortened_number(self.get_multiplicator_price('grandma'))))
+                    self.app.lbl_mul_cost_grandma.render(str(get_num_short(self.get_multiplicator_price('grandma'))))
                     self.app.lbl_mul_inv_grandma.render(str(self.multiplicators['grandma']-1))
                 case 'farm':
                     self.app.animation_mul_farm.start_animation()
-                    self.app.lbl_mul_cost_farm.render(str(get_shortened_number(self.get_multiplicator_price('farm'))))
+                    self.app.lbl_mul_cost_farm.render(str(get_num_short(self.get_multiplicator_price('farm'))))
                     self.app.lbl_mul_inv_farm.render(str(self.multiplicators['farm']-1))
                 case 'mine':
                     self.app.animation_mul_mine.start_animation()
-                    self.app.lbl_mul_cost_mine.render(str(get_shortened_number(self.get_multiplicator_price('mine'))))
+                    self.app.lbl_mul_cost_mine.render(str(get_num_short(self.get_multiplicator_price('mine'))))
                     self.app.lbl_mul_inv_mine.render(str(self.multiplicators['mine']-1))
                 case 'factory':
                     self.app.animation_mul_factory.start_animation()
-                    self.app.lbl_mul_cost_factory.render(str(get_shortened_number(self.get_multiplicator_price('factory'))))
+                    self.app.lbl_mul_cost_factory.render(str(get_num_short(self.get_multiplicator_price('factory'))))
                     self.app.lbl_mul_inv_factory.render(str(self.multiplicators['factory']-1))
     def upgrade(self,button:UIButton):
         key = button.element_name
@@ -236,23 +252,23 @@ class CookieClicker:
             match button.element_name:
                 case 'cursor':
                     self.app.animation_cursor.start_animation()
-                    self.app.lbl_cost_cursor.render(str(get_shortened_number(self.get_price('cursor'))))
+                    self.app.lbl_cost_cursor.render(str(get_num_short(self.get_price('cursor'))))
                     self.app.lbl_inv_cursor.render(str(self.upgrades['cursor']))
                 case 'grandma':
                     self.app.animation_grandma.start_animation()
-                    self.app.lbl_cost_grandma.render(str(get_shortened_number(self.get_price('grandma'))))
+                    self.app.lbl_cost_grandma.render(str(get_num_short(self.get_price('grandma'))))
                     self.app.lbl_inv_grandma.render(str(self.upgrades['grandma']))
                 case 'farm':
                     self.app.animation_farm.start_animation()
-                    self.app.lbl_cost_farm.render(str(get_shortened_number(self.get_price('farm'))))
+                    self.app.lbl_cost_farm.render(str(get_num_short(self.get_price('farm'))))
                     self.app.lbl_inv_farm.render(str(self.upgrades['farm']))
                 case 'mine':
                     self.app.animation_mine.start_animation()
-                    self.app.lbl_cost_mine.render(str(get_shortened_number(self.get_price('mine'))))
+                    self.app.lbl_cost_mine.render(str(get_num_short(self.get_price('mine'))))
                     self.app.lbl_inv_mine.render(str(self.upgrades['mine']))
                 case 'factory':
                     self.app.animation_factory.start_animation()
-                    self.app.lbl_cost_factory.render(str(get_shortened_number(self.get_price('factory'))))
+                    self.app.lbl_cost_factory.render(str(get_num_short(self.get_price('factory'))))
                     self.app.lbl_inv_factory.render(str(self.upgrades['factory']))
     def get_click_strength(self) -> int:
         return (self.click_upgrades*2) if self.click_upgrades else 1
@@ -267,20 +283,29 @@ class CookieRain:
         self.cookie_image = scale(image.load('data\\bin\\img\\cookie.png'),(HEIGHT*.05,HEIGHT*.05))
         self.objects = [ [randint(0,int(WIDTH*.95)),randint(-int(HEIGHT*1.05),int(HEIGHT*.95))] for i in range(100) ]
     def create(self,):
+        "Create a new cookie"
         return [randint(0,int(WIDTH*.95)),-randint(int(HEIGHT*1.05),int(HEIGHT*1.15))] # randint(int(HEIGHT*1.05),int(HEIGHT*1.1))
     def update(self):
+        """
+        Raining cookies are simple
+        Move each cookie
+        If cookie is lower than the screen height then delete the current & create a new one
+        Render the cookie
+        """
         for object in self.objects:
             object[1] += GLOBAL_DELTA_TIME.get()*50
             self.app.window.render(self.cookie_image,object)
         self.objects = [i if i[1] < HEIGHT else self.create() for i in self.objects]
 class FloatingText:
     def __init__(self,app):
-
         self.app = app
         self.objects = []
     def add_object(self,):
         self.objects.append([list(get_pos()),HEIGHT*.05])
     def update(self):
+        """
+        Each number flows a bit higher & gets smaller each frame
+        """
         for object in self.objects:
             object[1] -= GLOBAL_DELTA_TIME.get() * 30
             object[0][1] -= GLOBAL_DELTA_TIME.get() * 50
@@ -304,13 +329,14 @@ class App(Application):
         self.cc = CookieClicker(self)
         self.cr = CookieRain(self)
         self.ft = FloatingText(self)
+        
         self.mine_button = UIButton(
             Rect(HALF_WIDTH-(QUARTER_HEIGHT >> 1),HALF_HEIGHT-(QUARTER_HEIGHT >> 1),QUARTER_HEIGHT,QUARTER_HEIGHT),
             ux={
                 'size': (QUARTER_HEIGHT,QUARTER_HEIGHT),
                 'font':FONT(size=40),
                 'border_radius':45,
-                'bcg': ('',)
+                'bcg': TRANSPARENT
                 },
             on_press_callback = self.on_cookie_click
         )
@@ -365,27 +391,27 @@ class App(Application):
         
         #? Level Up & Multiplicator Label
         
-        self.lbl_cost_cursor = UILabel( Rect(0,BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('cursor'))),**LABEL_COST_UX})
+        self.lbl_cost_cursor = UILabel( Rect(0,BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_price('cursor'))),**LABEL_COST_UX})
         
-        self.lbl_cost_grandma = UILabel( Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('grandma'))),**LABEL_COST_UX})
+        self.lbl_cost_grandma = UILabel( Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_price('grandma'))),**LABEL_COST_UX})
         
-        self.lbl_cost_farm = UILabel( Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('farm'))),**LABEL_COST_UX})
+        self.lbl_cost_farm = UILabel( Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_price('farm'))),**LABEL_COST_UX})
         
-        self.lbl_cost_mine = UILabel( Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('mine'))),**LABEL_COST_UX})
+        self.lbl_cost_mine = UILabel( Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_price('mine'))),**LABEL_COST_UX})
         
-        self.lbl_cost_factory = UILabel( Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('factory'))),**LABEL_COST_UX})
+        self.lbl_cost_factory = UILabel( Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_price('factory'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_cursor = UILabel( Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('cursor'))),**LABEL_COST_UX})
+        self.lbl_mul_cost_cursor = UILabel( Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_multiplicator_price('cursor'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_grandma = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('grandma'))),**LABEL_COST_UX})
+        self.lbl_mul_cost_grandma = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_multiplicator_price('grandma'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_farm = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('farm'))),**LABEL_COST_UX})
+        self.lbl_mul_cost_farm = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_multiplicator_price('farm'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_mine = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('mine'))),**LABEL_COST_UX})
+        self.lbl_mul_cost_mine = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_multiplicator_price('mine'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_factory = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('factory'))),**LABEL_COST_UX})
+        self.lbl_mul_cost_factory = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_multiplicator_price('factory'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_cursor = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*6)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_click_price())),**LABEL_COST_UX})
+        self.lbl_mul_cost_cursor = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*6)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_num_short(self.cc.get_click_price())),**LABEL_COST_UX})
         
         #? Level Up & Multiplicator Animations
         
@@ -419,7 +445,7 @@ class App(Application):
                 'text': '0',
                 'size': (QUARTER_WIDTH,HEIGHT*.1),
                 'font': FONT(size=40),
-                'bcg': ('#CC660000',),
+                'bcg': TRANSPARENT,
                 'tcg': ('#FFE5CC',)
             }
         )
@@ -427,16 +453,13 @@ class App(Application):
         self.info_label = UILabel(
             Rect(WIDTH*.8,HEIGHT*-.1,WIDTH*.2,HEIGHT*.3),
             ux = {
-                'text': '(c) 2025 Justus Decker\n0.0.36 pygame-engine-project',
+                'text': '(c) 2025 Justus Decker\n0.0.41 pygame-engine-project',
                 'size': (QUARTER_WIDTH,HEIGHT*.3),
                 'font': FONT(size=10),
-                'bcg': ('#CC660000',),
+                'bcg': TRANSPARENT,
                 'tcg': ('#FFE5CC',)
             }
         )
-    def update_cookie_label(self):
-        self.cookie_label.UX.text = f"{get_shortened_number(self.cc.get())}" + (f"+{self.cc.get_auto_clicker():.1f}" if self.cc.get_auto_clicker() else '')
-        self.cookie_label.set_image(self.cookie_label.UX.gen())
             
     def on_cookie_click(self,*_):
         self.audio_handler.play_sound('click')
@@ -445,7 +468,6 @@ class App(Application):
         self.ft.add_object()
         
     def run(self):
-        
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             self.CLK.tick(60)
@@ -472,7 +494,7 @@ class App(Application):
             UIM.render_queue(self)
             
             self.cc.update()
-            self.update_cookie_label()
+            self.cookie_label.render(f"{get_num_short(self.cc.get())}" + (f"+{self.cc.get_auto_clicker():.1f}" if self.cc.get_auto_clicker() else ''))
             self.ft.update()
             if get_pressed()[0]:
                 self.window.render(self.mouse_image_pressed ,get_pos())
