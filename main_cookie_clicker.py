@@ -157,7 +157,7 @@ class MilkWaves:
 class CookieClicker:
     def __init__(self,app):
         self.app = app
-        self.cookies = 10000000
+        self.cookies = 0
         self.last_cookie = 0
         
         self.click_upgrades = 0
@@ -453,7 +453,7 @@ class App(Application):
         self.info_label = UILabel(
             Rect(WIDTH*.8,HEIGHT*-.1,WIDTH*.2,HEIGHT*.3),
             ux = {
-                'text': '(c) 2025 Justus Decker\n0.0.41 pygame-engine-project',
+                'text': '(c) 2025 Justus Decker\n0.0.43 pygame-engine-project',
                 'size': (QUARTER_WIDTH,HEIGHT*.3),
                 'font': FONT(size=10),
                 'bcg': TRANSPARENT,
