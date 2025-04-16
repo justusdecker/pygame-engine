@@ -1,5 +1,6 @@
 from math import sin
 from pygame import Rect,image, Color, Surface,SRCALPHA
+from pygame.display import set_icon
 from pygame.draw import line
 from pygame.mouse import get_pos,set_visible,get_pressed
 from pygame.transform import scale,flip
@@ -14,6 +15,8 @@ from data.modules.ui.ui_button import UIButton
 from data.modules.app import Application
 from data.modules.animation import Animation
 from data.modules.audio_handler import AudioHandler
+set_icon(image.load(f'{IMAGE_PATH}cookie_clicker_logo.ico'))
+
 
 """
 Documentation
@@ -451,16 +454,6 @@ class App(Application):
             }
         )
         
-        self.info_label = UILabel(
-            Rect(WIDTH*.8,HEIGHT*-.1,WIDTH*.2,HEIGHT*.3),
-            ux = {
-                'text': '(c) 2025 Justus Decker\n0.0.43 pygame-engine-project',
-                'size': (QUARTER_WIDTH,HEIGHT*.3),
-                'font': FONT(size=10),
-                'bcg': TRANSPARENT,
-                'tcg': ('#FFE5CC',)
-            }
-        )
             
     def on_cookie_click(self,*_):
         self.audio_handler.play_sound('click')
