@@ -94,6 +94,7 @@ def test_print(*args):
     print(args, "Hello World!")
 
 def get_shortened_number(x:int) -> str:
+    if not str(x).isdecimal(): return 'MAX'
     x = int(x)
 
     if x >= 1_000_000:
@@ -164,7 +165,8 @@ class CookieClicker:
         if self.get() >= price:
             self.cookies -= price
             self.click_upgrades += 1
-            
+            self.app.lbl_mul_cost_cursor.render(str(get_shortened_number(self.get_click_price())))
+            self.app.lbl_mul_inv_click.render(str(self.click_upgrades))
     def update(self):
         self.cookies += GLOBAL_DELTA_TIME.get() * self.get_auto_clicker()
     def get_multiplicator_price(self,key):
@@ -191,25 +193,25 @@ class CookieClicker:
             self.multiplicators[key] += 1
             match button.element_name:
                 case 'cursor':
-                    self.app.lvl_cursor_multiplicator_upgrade_animation.start_animation()
-                    self.app.lvl_cursor_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('cursor'))))
-                    self.app.lvl_cursor_multiplicator_cost_label.render(str(self.multiplicators['cursor']-1))
+                    self.app.animation_mul_cursor.start_animation()
+                    self.app.lbl_mul_cost_cursor.render(str(get_shortened_number(self.get_multiplicator_price('cursor'))))
+                    self.app.lbl_mul_inv_cursor.render(str(self.multiplicators['cursor']-1))
                 case 'grandma':
-                    self.app.lvl_grandma_multiplicator_upgrade_animation.start_animation()
-                    self.app.lvl_grandma_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('grandma'))))
-                    self.app.lvl_grandma_multiplicator_cost_label.render(str(self.multiplicators['grandma']-1))
+                    self.app.animation_mul_grandma.start_animation()
+                    self.app.lbl_mul_cost_grandma.render(str(get_shortened_number(self.get_multiplicator_price('grandma'))))
+                    self.app.lbl_mul_inv_grandma.render(str(self.multiplicators['grandma']-1))
                 case 'farm':
-                    self.app.lvl_farm_multiplicator_upgrade_animation.start_animation()
-                    self.app.lvl_farm_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('farm'))))
-                    self.app.lvl_farm_multiplicator_cost_label.render(str(self.multiplicators['farm']-1))
+                    self.app.animation_mul_farm.start_animation()
+                    self.app.lbl_mul_cost_farm.render(str(get_shortened_number(self.get_multiplicator_price('farm'))))
+                    self.app.lbl_mul_inv_farm.render(str(self.multiplicators['farm']-1))
                 case 'mine':
-                    self.app.lvl_mine_multiplicator_upgrade_animation.start_animation()
-                    self.app.lvl_mine_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('mine'))))
-                    self.app.lvl_mine_multiplicator_cost_label.render(str(self.multiplicators['mine']-1))
+                    self.app.animation_mul_mine.start_animation()
+                    self.app.lbl_mul_cost_mine.render(str(get_shortened_number(self.get_multiplicator_price('mine'))))
+                    self.app.lbl_mul_inv_mine.render(str(self.multiplicators['mine']-1))
                 case 'factory':
-                    self.app.lvl_factory_multiplicator_upgrade_animation.start_animation()
-                    self.app.lvl_factory_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('factory'))))
-                    self.app.lvl_factory_multiplicator_cost_label.render(str(self.multiplicators['factory']-1))
+                    self.app.animation_mul_factory.start_animation()
+                    self.app.lbl_mul_cost_factory.render(str(get_shortened_number(self.get_multiplicator_price('factory'))))
+                    self.app.lbl_mul_inv_factory.render(str(self.multiplicators['factory']-1))
     def upgrade(self,button:UIButton):
         key = button.element_name
         price = self.get_price(key)
@@ -219,25 +221,25 @@ class CookieClicker:
             
             match button.element_name:
                 case 'cursor':
-                    self.app.lvl_cursor_upgrade_animation.start_animation()
-                    self.app.lvl_cursor_upgrade_label.render(str(get_shortened_number(self.get_price('cursor'))))
-                    self.app.lvl_cursor_cost_label.render(str(self.upgrades['cursor']))
+                    self.app.animation_cursor.start_animation()
+                    self.app.lbl_cost_cursor.render(str(get_shortened_number(self.get_price('cursor'))))
+                    self.app.lbl_inv_cursor.render(str(self.upgrades['cursor']))
                 case 'grandma':
-                    self.app.lvl_grandma_upgrade_animation.start_animation()
-                    self.app.lvl_grandma_upgrade_label.render(str(get_shortened_number(self.get_price('grandma'))))
-                    self.app.lvl_grandma_cost_label.render(str(self.upgrades['grandma']))
+                    self.app.animation_grandma.start_animation()
+                    self.app.lbl_cost_grandma.render(str(get_shortened_number(self.get_price('grandma'))))
+                    self.app.lbl_inv_grandma.render(str(self.upgrades['grandma']))
                 case 'farm':
-                    self.app.lvl_farm_upgrade_animation.start_animation()
-                    self.app.lvl_farm_upgrade_label.render(str(get_shortened_number(self.get_price('farm'))))
-                    self.app.lvl_farm_cost_label.render(str(self.upgrades['farm']))
+                    self.app.animation_farm.start_animation()
+                    self.app.lbl_cost_farm.render(str(get_shortened_number(self.get_price('farm'))))
+                    self.app.lbl_inv_farm.render(str(self.upgrades['farm']))
                 case 'mine':
-                    self.app.lvl_mine_upgrade_animation.start_animation()
-                    self.app.lvl_mine_upgrade_label.render(str(get_shortened_number(self.get_price('mine'))))
-                    self.app.lvl_mine_cost_label.render(str(self.upgrades['mine']))
+                    self.app.animation_mine.start_animation()
+                    self.app.lbl_cost_mine.render(str(get_shortened_number(self.get_price('mine'))))
+                    self.app.lbl_inv_mine.render(str(self.upgrades['mine']))
                 case 'factory':
-                    self.app.lvl_factory_upgrade_animation.start_animation()
-                    self.app.lvl_factory_upgrade_label.render(str(get_shortened_number(self.get_price('factory'))))
-                    self.app.lvl_factory_cost_label.render(str(self.upgrades['factory']))
+                    self.app.animation_factory.start_animation()
+                    self.app.lbl_cost_factory.render(str(get_shortened_number(self.get_price('factory'))))
+                    self.app.lbl_inv_factory.render(str(self.upgrades['factory']))
     def get_click_strength(self) -> int:
         return (self.click_upgrades*2) if self.click_upgrades else 1
     def click(self):
@@ -300,36 +302,32 @@ class App(Application):
         )
         
         #? Level Up & Multiplicator Buttons
+        #{UIElement}_upgrade_{element_name}
+        self.btn_upgrade_cursor = UIButton( Rect(0,0,*BUTTON_DEST), ux={**UPGRADE_BUTTON_UX }, on_press_callback = self.cc.upgrade,element_name = 'cursor')
         
-        self.lvl_cursor_upgrade_button = UIButton( Rect(0,0,*BUTTON_DEST), ux={**UPGRADE_BUTTON_UX }, on_press_callback = self.cc.upgrade,element_name = 'cursor')
+        self.btn_mul_upgrade_cursor = UIButton( Rect(BUTTON_DEST[0],0,*BUTTON_DEST), ux={**UPGRADE_BUTTON_UX}, on_press_callback = self.cc.upgrade_multiplicator,element_name = 'cursor')
         
-        self.lvl_cursor_multiplicator_upgrade_button = UIButton( Rect(BUTTON_DEST[0],0,*BUTTON_DEST), ux={**UPGRADE_BUTTON_UX}, on_press_callback = self.cc.upgrade_multiplicator,element_name = 'cursor')
+        self.btn_upgrade_grandma = UIButton( Rect(0,HEIGHT*.1,*BUTTON_DEST), ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'grandma')
         
-        self.lvl_grandma_upgrade_button = UIButton( Rect(0,HEIGHT*.1,*BUTTON_DEST), ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'grandma')
+        self.btn_mul_upgrade_grandma = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.1,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'grandma')
         
-        self.lvl_grandma_multiplicator_upgrade_button = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.1,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'grandma')
+        self.btn_upgrade_farm = UIButton( Rect(0,HEIGHT*.2,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'farm')
         
-        self.lvl_farm_upgrade_button = UIButton( Rect(0,HEIGHT*.2,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'farm')
+        self.btn_mul_upgrade_farm = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.2,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'farm')
         
-        self.lvl_farm_multiplicator_upgrade_button = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.2,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'farm')
+        self.btn_upgrade_mine = UIButton( Rect(0,HEIGHT*.3,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'mine')
         
-        self.lvl_mine_upgrade_button = UIButton( Rect(0,HEIGHT*.3,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'mine')
+        self.btn_mul_upgrade_mine = UIButton(Rect(BUTTON_DEST[0],HEIGHT*.3,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'mine')
         
-        self.lvl_mine_multiplicator_upgrade_button = UIButton(Rect(BUTTON_DEST[0],HEIGHT*.3,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'mine')
+        self.btn_upgrade_factory = UIButton( Rect(0,HEIGHT*.4,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'factory')
         
-        self.lvl_factory_upgrade_button = UIButton( Rect(0,HEIGHT*.4,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade,element_name = 'factory')
+        self.btn_mul_upgrade_factory = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.4,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'factory')
         
-        self.lvl_factory_multiplicator_upgrade_button = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.4,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_multiplicator,element_name = 'factory')
-        
-        self.lvl_click_upgrade_button = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.5,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_click,element_name = 'click')
-        
-        #! for each upgrade button:
-        #   - add a price label
-        #   - add a inventory view label
+        self.btn_upgrade_click = UIButton( Rect(BUTTON_DEST[0],HEIGHT*.5,*BUTTON_DEST),ux={**UPGRADE_BUTTON_UX},on_press_callback = self.cc.upgrade_click,element_name = 'click')
         
         #? Level ammount Label
         
-        self.lvl_cursor_cost_label = UILabel(
+        self.lbl_inv_cursor = UILabel(
             Rect(BUTTON_DEST[0]//2,0,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['cursor']),
@@ -340,7 +338,7 @@ class App(Application):
             }
         )
         
-        self.lvl_grandma_cost_label = UILabel(
+        self.lbl_inv_grandma = UILabel(
             Rect(BUTTON_DEST[0]//2,HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['grandma']),
@@ -351,7 +349,7 @@ class App(Application):
             }
         )
         
-        self.lvl_farm_cost_label = UILabel(
+        self.lbl_inv_farm = UILabel(
             Rect(BUTTON_DEST[0]//2,HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['farm']),
@@ -362,7 +360,7 @@ class App(Application):
             }
         )
         
-        self.lvl_mine_cost_label = UILabel(
+        self.lbl_inv_mine = UILabel(
             Rect(BUTTON_DEST[0]//2,HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['mine']),
@@ -373,7 +371,7 @@ class App(Application):
             }
         )
         
-        self.lvl_factory_cost_label = UILabel(
+        self.lbl_inv_factory = UILabel(
             Rect(BUTTON_DEST[0]//2,HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['factory']),
@@ -384,7 +382,7 @@ class App(Application):
             }
         )
         
-        self.lvl_cursor_multiplicator_cost_label = UILabel(
+        self.lbl_mul_inv_cursor = UILabel(
             Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],0,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['cursor']),
@@ -395,7 +393,7 @@ class App(Application):
             }
         )
         
-        self.lvl_grandma_multiplicator_cost_label = UILabel(
+        self.lbl_mul_inv_grandma = UILabel(
             Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['grandma']),
@@ -406,7 +404,7 @@ class App(Application):
             }
         )
         
-        self.lvl_farm_multiplicator_cost_label = UILabel(
+        self.lbl_mul_inv_farm = UILabel(
             Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['farm']),
@@ -417,7 +415,7 @@ class App(Application):
             }
         )
         
-        self.lvl_mine_multiplicator_cost_label = UILabel(
+        self.lbl_mul_inv_mine = UILabel(
             Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['mine']),
@@ -428,7 +426,7 @@ class App(Application):
             }
         )
         
-        self.lvl_factory_multiplicator_cost_label = UILabel(
+        self.lbl_mul_inv_factory = UILabel(
             Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),
             ux = {
                 'text': str(self.cc.upgrades['factory']),
@@ -439,9 +437,20 @@ class App(Application):
             }
         )
         
+        self.lbl_mul_inv_click = UILabel(
+            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.5,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(0),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
         #? Level Up & Multiplicator Label
         
-        self.lvl_cursor_upgrade_label = UILabel(
+        self.lbl_cost_cursor = UILabel(
             Rect(0,BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('cursor'))),
@@ -452,7 +461,7 @@ class App(Application):
             }
         )
         
-        self.lvl_grandma_upgrade_label = UILabel(
+        self.lbl_cost_grandma = UILabel(
             Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('grandma'))),
@@ -463,7 +472,7 @@ class App(Application):
             }
         )
         
-        self.lvl_farm_upgrade_label = UILabel(
+        self.lbl_cost_farm = UILabel(
             Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('farm'))),
@@ -474,7 +483,7 @@ class App(Application):
             }
         )
         
-        self.lvl_mine_upgrade_label = UILabel(
+        self.lbl_cost_mine = UILabel(
             Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('mine'))),
@@ -485,7 +494,7 @@ class App(Application):
             }
         )
         
-        self.lvl_factory_upgrade_label = UILabel(
+        self.lbl_cost_factory = UILabel(
             Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('factory'))),
@@ -496,8 +505,7 @@ class App(Application):
             }
         )
         
-        
-        self.lvl_cursor_multiplicator_upgrade_label = UILabel(
+        self.lbl_mul_cost_cursor = UILabel(
             Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('cursor'))),
@@ -508,7 +516,7 @@ class App(Application):
             }
         )
         
-        self.lvl_grandma_multiplicator_upgrade_label = UILabel(
+        self.lbl_mul_cost_grandma = UILabel(
             Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('grandma'))),
@@ -519,7 +527,7 @@ class App(Application):
             }
         )
         
-        self.lvl_farm_multiplicator_upgrade_label = UILabel(
+        self.lbl_mul_cost_farm = UILabel(
             Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('farm'))),
@@ -530,7 +538,7 @@ class App(Application):
             }
         )
         
-        self.lvl_mine_multiplicator_upgrade_label = UILabel(
+        self.lbl_mul_cost_mine = UILabel(
             Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('mine'))),
@@ -541,7 +549,7 @@ class App(Application):
             }
         )
         
-        self.lvl_factory_multiplicator_upgrade_label = UILabel(
+        self.lbl_mul_cost_factory = UILabel(
             Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('factory'))),
@@ -552,56 +560,64 @@ class App(Application):
             }
         )
         
+        self.lbl_mul_cost_cursor = UILabel(
+            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*6)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
+            ux = {
+                'text': str(get_shortened_number(self.cc.get_click_price())),
+                'size': (BUTTON_DEST[0],HEIGHT*.025),
+                'font': FONT(size=13),
+                'bcg': ('#CC6600AA',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
         #? Level Up & Multiplicator Animations
         
-        self.lvl_click_upgrade_animation = Animation(self,
+        self.animation_click = Animation(self,
                                    self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.lvl_click_upgrade_button.pos[0]+(self.lvl_click_upgrade_button.dest[0]//2),self.lvl_click_upgrade_button.pos[1]+(self.lvl_click_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_click.pos[0]+(self.btn_upgrade_click.dest[0]//2),self.btn_upgrade_click.pos[1]+(self.btn_upgrade_click.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_cursor_multiplicator_upgrade_animation = Animation(self,
+        self.animation_mul_cursor = Animation(self,
                                    self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.lvl_cursor_multiplicator_upgrade_button.pos[0]+(self.lvl_cursor_upgrade_button.dest[0]//2),self.lvl_cursor_upgrade_button.pos[1]+(self.lvl_cursor_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_cursor.pos[0]+(self.btn_upgrade_cursor.dest[0]//2),self.btn_upgrade_cursor.pos[1]+(self.btn_upgrade_cursor.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_grandma_multiplicator_upgrade_animation = Animation(self,
+        self.animation_mul_grandma = Animation(self,
                                    self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.lvl_grandma_multiplicator_upgrade_button.pos[0]+(self.lvl_grandma_multiplicator_upgrade_button.dest[0]//2),self.lvl_grandma_multiplicator_upgrade_button.pos[1]+(self.lvl_grandma_multiplicator_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_grandma.pos[0]+(self.btn_mul_upgrade_grandma.dest[0]//2),self.btn_mul_upgrade_grandma.pos[1]+(self.btn_mul_upgrade_grandma.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_farm_multiplicator_upgrade_animation = Animation(self,
+        self.animation_mul_farm = Animation(self,
                                    self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.lvl_farm_multiplicator_upgrade_button.pos[0]+(self.lvl_farm_multiplicator_upgrade_button.dest[0]//2),self.lvl_farm_multiplicator_upgrade_button.pos[1]+(self.lvl_farm_multiplicator_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_farm.pos[0]+(self.btn_mul_upgrade_farm.dest[0]//2),self.btn_mul_upgrade_farm.pos[1]+(self.btn_mul_upgrade_farm.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_mine_multiplicator_upgrade_animation = Animation(self,
+        self.animation_mul_mine = Animation(self,
                                    self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.lvl_mine_multiplicator_upgrade_button.pos[0]+(self.lvl_mine_multiplicator_upgrade_button.dest[0]//2),self.lvl_mine_multiplicator_upgrade_button.pos[1]+(self.lvl_mine_multiplicator_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_mine.pos[0]+(self.btn_mul_upgrade_mine.dest[0]//2),self.btn_mul_upgrade_mine.pos[1]+(self.btn_mul_upgrade_mine.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_factory_multiplicator_upgrade_animation = Animation(self,
+        self.animation_mul_factory = Animation(self,
                                    self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.lvl_factory_multiplicator_upgrade_button.pos[0]+(self.lvl_factory_multiplicator_upgrade_button.dest[0]//2),self.lvl_factory_multiplicator_upgrade_button.pos[1]+(self.lvl_factory_multiplicator_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_factory.pos[0]+(self.btn_mul_upgrade_factory.dest[0]//2),self.btn_mul_upgrade_factory.pos[1]+(self.btn_mul_upgrade_factory.dest[1]//2)),time_multiplier=50)
         
-        
-        
-
-        self.lvl_cursor_upgrade_animation = Animation(self,
+        self.animation_cursor = Animation(self,
                                    image.load("data\\bin\\img\\cursor.png"),
-                                   UPGRADE_KEYFRAMES,(self.lvl_cursor_upgrade_button.pos[0]+(self.lvl_cursor_upgrade_button.dest[0]//2),self.lvl_cursor_upgrade_button.pos[1]+(self.lvl_cursor_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_cursor.pos[0]+(self.btn_upgrade_cursor.dest[0]//2),self.btn_upgrade_cursor.pos[1]+(self.btn_upgrade_cursor.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_grandma_upgrade_animation = Animation(self,
+        self.animation_grandma = Animation(self,
                                    image.load("data\\bin\\img\\grandma.png"),
-                                   UPGRADE_KEYFRAMES,(self.lvl_grandma_upgrade_button.pos[0]+(self.lvl_grandma_upgrade_button.dest[0]//2),self.lvl_grandma_upgrade_button.pos[1]+(self.lvl_grandma_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_grandma.pos[0]+(self.btn_upgrade_grandma.dest[0]//2),self.btn_upgrade_grandma.pos[1]+(self.btn_upgrade_grandma.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_farm_upgrade_animation = Animation(self,
+        self.animation_farm = Animation(self,
                                    image.load("data\\bin\\img\\farm.png"),
-                                   UPGRADE_KEYFRAMES,(self.lvl_farm_upgrade_button.pos[0]+(self.lvl_farm_upgrade_button.dest[0]//2),self.lvl_farm_upgrade_button.pos[1]+(self.lvl_farm_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_farm.pos[0]+(self.btn_upgrade_farm.dest[0]//2),self.btn_upgrade_farm.pos[1]+(self.btn_upgrade_farm.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_mine_upgrade_animation = Animation(self,
+        self.animation_mine = Animation(self,
                                    image.load("data\\bin\\img\\mine.png"),
-                                   UPGRADE_KEYFRAMES,(self.lvl_mine_upgrade_button.pos[0]+(self.lvl_mine_upgrade_button.dest[0]//2),self.lvl_mine_upgrade_button.pos[1]+(self.lvl_mine_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_mine.pos[0]+(self.btn_upgrade_mine.dest[0]//2),self.btn_upgrade_mine.pos[1]+(self.btn_upgrade_mine.dest[1]//2)),time_multiplier=50)
         
-        self.lvl_factory_upgrade_animation = Animation(self,
+        self.animation_factory = Animation(self,
                                    image.load("data\\bin\\img\\factory.png"),
-                                   UPGRADE_KEYFRAMES,(self.lvl_factory_upgrade_button.pos[0]+(self.lvl_factory_upgrade_button.dest[0]//2),self.lvl_factory_upgrade_button.pos[1]+(self.lvl_factory_upgrade_button.dest[1]//2)),time_multiplier=50)
+                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_factory.pos[0]+(self.btn_upgrade_factory.dest[0]//2),self.btn_upgrade_factory.pos[1]+(self.btn_upgrade_factory.dest[1]//2)),time_multiplier=50)
         
-        self.animation = Animation(self,
+        self.animation_cookie_click = Animation(self,
                                    image.load("data\\bin\\img\\cookie.png"),
                                    KEYFRAMES,
                                    (HALF_WIDTH,HALF_HEIGHT),time_multiplier=50)
@@ -633,7 +649,7 @@ class App(Application):
             
     def on_cookie_click(self,*_):
         self.audio_handler.play_sound('click')
-        self.animation.start_animation()
+        self.animation_cookie_click.start_animation()
         self.cc.click()
         self.ft.add_object()
         
@@ -646,21 +662,21 @@ class App(Application):
             self.cr.update()
             self.mw.update()
             
-            self.animation.update()
+            self.animation_cookie_click.update()
             
-            self.lvl_click_upgrade_animation.update()
+            self.animation_click.update()
             
-            self.lvl_cursor_upgrade_animation.update()
-            self.lvl_grandma_upgrade_animation.update()
-            self.lvl_farm_upgrade_animation.update()
-            self.lvl_mine_upgrade_animation.update()
-            self.lvl_factory_upgrade_animation.update()
+            self.animation_cursor.update()
+            self.animation_grandma.update()
+            self.animation_farm.update()
+            self.animation_mine.update()
+            self.animation_factory.update()
             
-            self.lvl_cursor_multiplicator_upgrade_animation.update()
-            self.lvl_grandma_multiplicator_upgrade_animation.update()
-            self.lvl_farm_multiplicator_upgrade_animation.update()
-            self.lvl_mine_multiplicator_upgrade_animation.update()
-            self.lvl_factory_multiplicator_upgrade_animation.update()
+            self.animation_mul_cursor.update()
+            self.animation_mul_grandma.update()
+            self.animation_mul_farm.update()
+            self.animation_mul_mine.update()
+            self.animation_mul_factory.update()
             
             UIM.render_queue(self)
             
