@@ -4,7 +4,8 @@ from pygame.draw import line
 from pygame.mouse import get_pos,set_visible,get_pressed
 from pygame.transform import scale,flip
 from random import randint
-
+from data.modules.log import LOG
+LOG.tobash = False
 from data.modules.constants import *
 from data.modules.ui.ui_font import FONT,FONTDRAW
 from data.modules.ui.ui_element import UIM

@@ -7,10 +7,14 @@ class Log:
     The Logging Module
     """
     def __init__(self,
-                 file:str='log.txt') -> None:
+                 tofile:bool=False,
+                 tobash:bool=True) -> None:
         """Create & Clean the Log File"""
-        with open('log.txt','w') as f:
-            f.write('')
+        self.tobash = tobash
+        self.tofile = tofile
+        if self.tofile:
+            with open('log.txt','w') as f:
+                f.write('')
     def get_default_module_info(self):
         return {
             'version': '02102024:1.6',
@@ -113,7 +117,7 @@ class Log:
         [2] Warning Log
         [3] Error Log
         """
-
+        if not self.tobash: return
         #$ Declares a variable
         
         color_map = [
@@ -164,8 +168,9 @@ class Log:
 
         print('[' + ('\033[34;1;1m','\033[32;1;1m','\033[33;1;1m','\033[31;1;1m')[id] + ('DEB','INF','WAR','ERR')[id] + '\033[0m] ' + output  + '\033[0m')
         msg = msg.replace('μ','n')
-        with open('log.txt','a') as f:
-            f.write(f'[{id}]:   {msg}\n')
+        if self.tofile:
+            with open('log.txt','a') as f:
+                f.write(f'[{id}]:   {msg}\n')
             
     def log(self,id:int=0,msg:str=''):
         """
