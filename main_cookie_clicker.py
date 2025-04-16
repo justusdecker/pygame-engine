@@ -90,6 +90,20 @@ UPGRADE_KEYFRAMES = [
         }
 ]
 
+LABEL_INVENTORY_UX = {
+    'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+    'font': FONT(size=15),
+    'bcg': ('#CC660000',),
+    'tcg': ('#FFE5CC',)
+}
+
+LABEL_COST_UX = {
+    'size': (BUTTON_DEST[0],HEIGHT*.025),
+    'font': FONT(size=13),
+    'bcg': ('#CC6600AA',),
+    'tcg': ('#FFE5CC',)
+}
+
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -278,11 +292,11 @@ class App(Application):
     def __init__(self):
         super().__init__()
         set_visible(False)
-        self.star_image = image.load('data\\bin\\img\\star.png')
+        self.star_image = image.load(f'{IMAGE_PATH}star.png')
         
-        self.mouse_image_normal = scale(image.load('data\\bin\\img\\mouse.png'),(32,32))
-        self.mouse_image_hover = scale(image.load('data\\bin\\img\\mouse_hovered.png'),(32,32))
-        self.mouse_image_pressed = scale(image.load('data\\bin\\img\\mouse_pressed.png'),(32,32))
+        self.mouse_image_normal = scale(image.load(f'{IMAGE_PATH}mouse.png'),(32,32))
+        self.mouse_image_hover = scale(image.load(f'{IMAGE_PATH}mouse_hovered.png'),(32,32))
+        self.mouse_image_pressed = scale(image.load(f'{IMAGE_PATH}mouse_pressed.png'),(32,32))
         
         self.audio_handler = AudioHandler(sfx_lib={'click': "data\\bin\\click.mp3"})
         
@@ -327,300 +341,77 @@ class App(Application):
         
         #? Level ammount Label
         
-        self.lbl_inv_cursor = UILabel(
-            Rect(BUTTON_DEST[0]//2,0,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['cursor']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_inv_cursor = UILabel( Rect(BUTTON_DEST[0]//2,0,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['cursor']),**LABEL_INVENTORY_UX})
         
-        self.lbl_inv_grandma = UILabel(
-            Rect(BUTTON_DEST[0]//2,HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['grandma']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_inv_grandma = UILabel( Rect(BUTTON_DEST[0]//2,HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['grandma']),**LABEL_INVENTORY_UX})
         
-        self.lbl_inv_farm = UILabel(
-            Rect(BUTTON_DEST[0]//2,HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['farm']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_inv_farm = UILabel( Rect(BUTTON_DEST[0]//2,HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['farm']),**LABEL_INVENTORY_UX})
         
-        self.lbl_inv_mine = UILabel(
-            Rect(BUTTON_DEST[0]//2,HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['mine']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_inv_mine = UILabel( Rect(BUTTON_DEST[0]//2,HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['mine']),**LABEL_INVENTORY_UX})
         
-        self.lbl_inv_factory = UILabel(
-            Rect(BUTTON_DEST[0]//2,HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['factory']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_inv_factory = UILabel( Rect(BUTTON_DEST[0]//2,HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['factory']),**LABEL_INVENTORY_UX})
         
-        self.lbl_mul_inv_cursor = UILabel(
-            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],0,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['cursor']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_inv_cursor = UILabel( Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],0,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['cursor']),**LABEL_INVENTORY_UX})
         
-        self.lbl_mul_inv_grandma = UILabel(
-            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['grandma']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_inv_grandma = UILabel( Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['grandma']),**LABEL_INVENTORY_UX})
         
-        self.lbl_mul_inv_farm = UILabel(
-            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['farm']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_inv_farm = UILabel( Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['farm']),**LABEL_INVENTORY_UX})
         
-        self.lbl_mul_inv_mine = UILabel(
-            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['mine']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_inv_mine = UILabel( Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['mine']),**LABEL_INVENTORY_UX})
         
-        self.lbl_mul_inv_factory = UILabel(
-            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(self.cc.upgrades['factory']),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_inv_factory = UILabel( Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(self.cc.upgrades['factory']),**LABEL_INVENTORY_UX})
         
-        self.lbl_mul_inv_click = UILabel(
-            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.5,BUTTON_DEST[0]//2,HEIGHT*.025),
-            ux = {
-                'text': str(0),
-                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
-                'font': FONT(size=15),
-                'bcg': ('#CC660000',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_inv_click = UILabel( Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.5,BUTTON_DEST[0]//2,HEIGHT*.025),ux = {'text': str(0),**LABEL_INVENTORY_UX})
         
         #? Level Up & Multiplicator Label
         
-        self.lbl_cost_cursor = UILabel(
-            Rect(0,BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_price('cursor'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_cost_cursor = UILabel( Rect(0,BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('cursor'))),**LABEL_COST_UX})
         
-        self.lbl_cost_grandma = UILabel(
-            Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_price('grandma'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_cost_grandma = UILabel( Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('grandma'))),**LABEL_COST_UX})
         
-        self.lbl_cost_farm = UILabel(
-            Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_price('farm'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_cost_farm = UILabel( Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('farm'))),**LABEL_COST_UX})
         
-        self.lbl_cost_mine = UILabel(
-            Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_price('mine'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_cost_mine = UILabel( Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('mine'))),**LABEL_COST_UX})
         
-        self.lbl_cost_factory = UILabel(
-            Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_price('factory'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_cost_factory = UILabel( Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_price('factory'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_cursor = UILabel(
-            Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_multiplicator_price('cursor'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_cost_cursor = UILabel( Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('cursor'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_grandma = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_multiplicator_price('grandma'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_cost_grandma = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('grandma'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_farm = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_multiplicator_price('farm'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_cost_farm = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('farm'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_mine = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_multiplicator_price('mine'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_cost_mine = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('mine'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_factory = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_multiplicator_price('factory'))),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_cost_factory = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_multiplicator_price('factory'))),**LABEL_COST_UX})
         
-        self.lbl_mul_cost_cursor = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*6)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
-            ux = {
-                'text': str(get_shortened_number(self.cc.get_click_price())),
-                'size': (BUTTON_DEST[0],HEIGHT*.025),
-                'font': FONT(size=13),
-                'bcg': ('#CC6600AA',),
-                'tcg': ('#FFE5CC',)
-            }
-        )
+        self.lbl_mul_cost_cursor = UILabel( Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*6)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),ux = {'text': str(get_shortened_number(self.cc.get_click_price())),**LABEL_COST_UX})
         
         #? Level Up & Multiplicator Animations
         
-        self.animation_click = Animation(self,
-                                   self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_click.pos[0]+(self.btn_upgrade_click.dest[0]//2),self.btn_upgrade_click.pos[1]+(self.btn_upgrade_click.dest[1]//2)),time_multiplier=50)
+        self.animation_click = Animation(self,self.star_image,UPGRADE_KEYFRAMES,(self.btn_upgrade_click.pos[0]+(self.btn_upgrade_click.dest[0]//2),self.btn_upgrade_click.pos[1]+(self.btn_upgrade_click.dest[1]//2)),time_multiplier=50)
         
-        self.animation_mul_cursor = Animation(self,
-                                   self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_cursor.pos[0]+(self.btn_upgrade_cursor.dest[0]//2),self.btn_upgrade_cursor.pos[1]+(self.btn_upgrade_cursor.dest[1]//2)),time_multiplier=50)
+        self.animation_mul_cursor = Animation(self,self.star_image,UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_cursor.pos[0]+(self.btn_upgrade_cursor.dest[0]//2),self.btn_upgrade_cursor.pos[1]+(self.btn_upgrade_cursor.dest[1]//2)),time_multiplier=50)
         
-        self.animation_mul_grandma = Animation(self,
-                                   self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_grandma.pos[0]+(self.btn_mul_upgrade_grandma.dest[0]//2),self.btn_mul_upgrade_grandma.pos[1]+(self.btn_mul_upgrade_grandma.dest[1]//2)),time_multiplier=50)
+        self.animation_mul_grandma = Animation(self,self.star_image,UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_grandma.pos[0]+(self.btn_mul_upgrade_grandma.dest[0]//2),self.btn_mul_upgrade_grandma.pos[1]+(self.btn_mul_upgrade_grandma.dest[1]//2)),time_multiplier=50)
         
-        self.animation_mul_farm = Animation(self,
-                                   self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_farm.pos[0]+(self.btn_mul_upgrade_farm.dest[0]//2),self.btn_mul_upgrade_farm.pos[1]+(self.btn_mul_upgrade_farm.dest[1]//2)),time_multiplier=50)
+        self.animation_mul_farm = Animation(self,self.star_image,UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_farm.pos[0]+(self.btn_mul_upgrade_farm.dest[0]//2),self.btn_mul_upgrade_farm.pos[1]+(self.btn_mul_upgrade_farm.dest[1]//2)),time_multiplier=50)
         
-        self.animation_mul_mine = Animation(self,
-                                   self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_mine.pos[0]+(self.btn_mul_upgrade_mine.dest[0]//2),self.btn_mul_upgrade_mine.pos[1]+(self.btn_mul_upgrade_mine.dest[1]//2)),time_multiplier=50)
+        self.animation_mul_mine = Animation(self,self.star_image,UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_mine.pos[0]+(self.btn_mul_upgrade_mine.dest[0]//2),self.btn_mul_upgrade_mine.pos[1]+(self.btn_mul_upgrade_mine.dest[1]//2)),time_multiplier=50)
         
-        self.animation_mul_factory = Animation(self,
-                                   self.star_image,
-                                   UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_factory.pos[0]+(self.btn_mul_upgrade_factory.dest[0]//2),self.btn_mul_upgrade_factory.pos[1]+(self.btn_mul_upgrade_factory.dest[1]//2)),time_multiplier=50)
+        self.animation_mul_factory = Animation(self,self.star_image,UPGRADE_KEYFRAMES,(self.btn_mul_upgrade_factory.pos[0]+(self.btn_mul_upgrade_factory.dest[0]//2),self.btn_mul_upgrade_factory.pos[1]+(self.btn_mul_upgrade_factory.dest[1]//2)),time_multiplier=50)
         
-        self.animation_cursor = Animation(self,
-                                   image.load("data\\bin\\img\\cursor.png"),
-                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_cursor.pos[0]+(self.btn_upgrade_cursor.dest[0]//2),self.btn_upgrade_cursor.pos[1]+(self.btn_upgrade_cursor.dest[1]//2)),time_multiplier=50)
+        self.animation_cursor = Animation(self,image.load(f"{IMAGE_PATH}cursor.png"),UPGRADE_KEYFRAMES,(self.btn_upgrade_cursor.pos[0]+(self.btn_upgrade_cursor.dest[0]//2),self.btn_upgrade_cursor.pos[1]+(self.btn_upgrade_cursor.dest[1]//2)),time_multiplier=50)
         
-        self.animation_grandma = Animation(self,
-                                   image.load("data\\bin\\img\\grandma.png"),
-                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_grandma.pos[0]+(self.btn_upgrade_grandma.dest[0]//2),self.btn_upgrade_grandma.pos[1]+(self.btn_upgrade_grandma.dest[1]//2)),time_multiplier=50)
+        self.animation_grandma = Animation(self,image.load(f"{IMAGE_PATH}grandma.png"),UPGRADE_KEYFRAMES,(self.btn_upgrade_grandma.pos[0]+(self.btn_upgrade_grandma.dest[0]//2),self.btn_upgrade_grandma.pos[1]+(self.btn_upgrade_grandma.dest[1]//2)),time_multiplier=50)
         
-        self.animation_farm = Animation(self,
-                                   image.load("data\\bin\\img\\farm.png"),
-                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_farm.pos[0]+(self.btn_upgrade_farm.dest[0]//2),self.btn_upgrade_farm.pos[1]+(self.btn_upgrade_farm.dest[1]//2)),time_multiplier=50)
+        self.animation_farm = Animation(self,image.load(f"{IMAGE_PATH}farm.png"),UPGRADE_KEYFRAMES,(self.btn_upgrade_farm.pos[0]+(self.btn_upgrade_farm.dest[0]//2),self.btn_upgrade_farm.pos[1]+(self.btn_upgrade_farm.dest[1]//2)),time_multiplier=50)
         
-        self.animation_mine = Animation(self,
-                                   image.load("data\\bin\\img\\mine.png"),
-                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_mine.pos[0]+(self.btn_upgrade_mine.dest[0]//2),self.btn_upgrade_mine.pos[1]+(self.btn_upgrade_mine.dest[1]//2)),time_multiplier=50)
+        self.animation_mine = Animation(self,image.load(f"{IMAGE_PATH}mine.png"),UPGRADE_KEYFRAMES,(self.btn_upgrade_mine.pos[0]+(self.btn_upgrade_mine.dest[0]//2),self.btn_upgrade_mine.pos[1]+(self.btn_upgrade_mine.dest[1]//2)),time_multiplier=50)
         
-        self.animation_factory = Animation(self,
-                                   image.load("data\\bin\\img\\factory.png"),
-                                   UPGRADE_KEYFRAMES,(self.btn_upgrade_factory.pos[0]+(self.btn_upgrade_factory.dest[0]//2),self.btn_upgrade_factory.pos[1]+(self.btn_upgrade_factory.dest[1]//2)),time_multiplier=50)
+        self.animation_factory = Animation(self,image.load(f"{IMAGE_PATH}factory.png"),UPGRADE_KEYFRAMES,(self.btn_upgrade_factory.pos[0]+(self.btn_upgrade_factory.dest[0]//2),self.btn_upgrade_factory.pos[1]+(self.btn_upgrade_factory.dest[1]//2)),time_multiplier=50)
         
-        self.animation_cookie_click = Animation(self,
-                                   image.load("data\\bin\\img\\cookie.png"),
-                                   KEYFRAMES,
-                                   (HALF_WIDTH,HALF_HEIGHT),time_multiplier=50)
+        self.animation_cookie_click = Animation(self,image.load(f"{IMAGE_PATH}cookie.png"),KEYFRAMES,(HALF_WIDTH,HALF_HEIGHT),time_multiplier=50)
         
         self.cookie_label = UILabel(
             Rect(QUARTER_WIDTH*1.5,0,QUARTER_WIDTH,HEIGHT*.1),
