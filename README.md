@@ -1,5 +1,5 @@
 Current Project:
-<img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/cookie_clicker_clone_project.png">
+<img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/cookie_clicker_clone_project-1.png">
 - Get a cookie clicker clone working & update
 
 Use:
