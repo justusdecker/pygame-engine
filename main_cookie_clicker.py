@@ -193,18 +193,23 @@ class CookieClicker:
                 case 'cursor':
                     self.app.lvl_cursor_multiplicator_upgrade_animation.start_animation()
                     self.app.lvl_cursor_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('cursor'))))
+                    self.app.lvl_cursor_multiplicator_cost_label.render(str(self.multiplicators['cursor']-1))
                 case 'grandma':
                     self.app.lvl_grandma_multiplicator_upgrade_animation.start_animation()
                     self.app.lvl_grandma_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('grandma'))))
+                    self.app.lvl_grandma_multiplicator_cost_label.render(str(self.multiplicators['grandma']-1))
                 case 'farm':
                     self.app.lvl_farm_multiplicator_upgrade_animation.start_animation()
                     self.app.lvl_farm_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('farm'))))
+                    self.app.lvl_farm_multiplicator_cost_label.render(str(self.multiplicators['farm']-1))
                 case 'mine':
                     self.app.lvl_mine_multiplicator_upgrade_animation.start_animation()
                     self.app.lvl_mine_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('mine'))))
+                    self.app.lvl_mine_multiplicator_cost_label.render(str(self.multiplicators['mine']-1))
                 case 'factory':
                     self.app.lvl_factory_multiplicator_upgrade_animation.start_animation()
                     self.app.lvl_factory_multiplicator_upgrade_label.render(str(get_shortened_number(self.get_multiplicator_price('factory'))))
+                    self.app.lvl_factory_multiplicator_cost_label.render(str(self.multiplicators['factory']-1))
     def upgrade(self,button:UIButton):
         key = button.element_name
         price = self.get_price(key)
@@ -216,18 +221,23 @@ class CookieClicker:
                 case 'cursor':
                     self.app.lvl_cursor_upgrade_animation.start_animation()
                     self.app.lvl_cursor_upgrade_label.render(str(get_shortened_number(self.get_price('cursor'))))
+                    self.app.lvl_cursor_cost_label.render(str(self.upgrades['cursor']))
                 case 'grandma':
                     self.app.lvl_grandma_upgrade_animation.start_animation()
                     self.app.lvl_grandma_upgrade_label.render(str(get_shortened_number(self.get_price('grandma'))))
+                    self.app.lvl_grandma_cost_label.render(str(self.upgrades['grandma']))
                 case 'farm':
                     self.app.lvl_farm_upgrade_animation.start_animation()
                     self.app.lvl_farm_upgrade_label.render(str(get_shortened_number(self.get_price('farm'))))
+                    self.app.lvl_farm_cost_label.render(str(self.upgrades['farm']))
                 case 'mine':
                     self.app.lvl_mine_upgrade_animation.start_animation()
                     self.app.lvl_mine_upgrade_label.render(str(get_shortened_number(self.get_price('mine'))))
+                    self.app.lvl_mine_cost_label.render(str(self.upgrades['mine']))
                 case 'factory':
                     self.app.lvl_factory_upgrade_animation.start_animation()
                     self.app.lvl_factory_upgrade_label.render(str(get_shortened_number(self.get_price('factory'))))
+                    self.app.lvl_factory_cost_label.render(str(self.upgrades['factory']))
     def get_click_strength(self) -> int:
         return (self.click_upgrades*2) if self.click_upgrades else 1
     def click(self):
@@ -266,7 +276,6 @@ class App(Application):
     def __init__(self):
         super().__init__()
         set_visible(False)
-        
         self.star_image = image.load('data\\bin\\img\\star.png')
         
         self.mouse_image_normal = scale(image.load('data\\bin\\img\\mouse.png'),(32,32))
@@ -318,113 +327,227 @@ class App(Application):
         #   - add a price label
         #   - add a inventory view label
         
+        #? Level ammount Label
+        
+        self.lvl_cursor_cost_label = UILabel(
+            Rect(BUTTON_DEST[0]//2,0,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['cursor']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_grandma_cost_label = UILabel(
+            Rect(BUTTON_DEST[0]//2,HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['grandma']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_farm_cost_label = UILabel(
+            Rect(BUTTON_DEST[0]//2,HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['farm']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_mine_cost_label = UILabel(
+            Rect(BUTTON_DEST[0]//2,HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['mine']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_factory_cost_label = UILabel(
+            Rect(BUTTON_DEST[0]//2,HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['factory']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_cursor_multiplicator_cost_label = UILabel(
+            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],0,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['cursor']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_grandma_multiplicator_cost_label = UILabel(
+            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.1,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['grandma']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_farm_multiplicator_cost_label = UILabel(
+            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.2,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['farm']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_mine_multiplicator_cost_label = UILabel(
+            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.3,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['mine']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
+        self.lvl_factory_multiplicator_cost_label = UILabel(
+            Rect((BUTTON_DEST[0]//2)+BUTTON_DEST[0],HEIGHT*.4,BUTTON_DEST[0]//2,HEIGHT*.025),
+            ux = {
+                'text': str(self.cc.upgrades['factory']),
+                'size': (BUTTON_DEST[0]//2,HEIGHT*.025),
+                'font': FONT(size=15),
+                'bcg': ('#CC660000',),
+                'tcg': ('#FFE5CC',)
+            }
+        )
+        
         #? Level Up & Multiplicator Label
         
         self.lvl_cursor_upgrade_label = UILabel(
-            Rect(0,BUTTON_DEST[1]-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(0,BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('cursor'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
+        
         self.lvl_grandma_upgrade_label = UILabel(
-            Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(0,(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('grandma'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         self.lvl_farm_upgrade_label = UILabel(
-            Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(0,(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('farm'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         self.lvl_mine_upgrade_label = UILabel(
-            Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(0,(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('mine'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         self.lvl_factory_upgrade_label = UILabel(
-            Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(0,(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_price('factory'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         
         self.lvl_cursor_multiplicator_upgrade_label = UILabel(
-            Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(BUTTON_DEST[0],BUTTON_DEST[1]-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('cursor'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
+        
         self.lvl_grandma_multiplicator_upgrade_label = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*2)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('grandma'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         self.lvl_farm_multiplicator_upgrade_label = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*3)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('farm'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         self.lvl_mine_multiplicator_upgrade_label = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*4)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('mine'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
         
         self.lvl_factory_multiplicator_upgrade_label = UILabel(
-            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.0125),QUARTER_WIDTH,HEIGHT*.025),
+            Rect(BUTTON_DEST[0],(BUTTON_DEST[1]*5)-(HEIGHT*.025),QUARTER_WIDTH,HEIGHT*.025),
             ux = {
                 'text': str(get_shortened_number(self.cc.get_multiplicator_price('factory'))),
                 'size': (BUTTON_DEST[0],HEIGHT*.025),
                 'font': FONT(size=13),
-                'bcg': ('#CC6600',),
+                'bcg': ('#CC6600AA',),
                 'tcg': ('#FFE5CC',)
             }
         )
@@ -522,7 +645,7 @@ class App(Application):
             self.window.surface.fill(Color('#FFB266'))
             self.cr.update()
             self.mw.update()
-            UIM.render_queue(self)
+            
             self.animation.update()
             
             self.lvl_click_upgrade_animation.update()
@@ -538,6 +661,8 @@ class App(Application):
             self.lvl_farm_multiplicator_upgrade_animation.update()
             self.lvl_mine_multiplicator_upgrade_animation.update()
             self.lvl_factory_multiplicator_upgrade_animation.update()
+            
+            UIM.render_queue(self)
             
             self.cc.update()
             self.update_cookie_label()
