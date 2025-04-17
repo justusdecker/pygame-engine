@@ -52,10 +52,10 @@ class App(Application):
             Rect(0,0,128,24),
             ux={'text':'root' , 'size':(128,24)},
             group=self.group_test,
-            on_press_callback=test_print)
+            cb_on_press= test_print)
         self.btn = UISwitch(
             Rect(0,24,128,24),
-            ux={'size':(128,24),'on_press_callback': test_print},
+            ux={'size':(128,24)},
             group=self.group_test)
         
         self.fileDD = UIDropDown(
@@ -94,7 +94,7 @@ class App(Application):
     def run(self):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
-            self.map.update()
+            #self.map.update()
             UIM.render_queue(self,['test'])
             self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.update()

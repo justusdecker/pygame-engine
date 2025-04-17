@@ -3,23 +3,18 @@ from data.modules.constants import MEDIUM_BACKGROUND_COLOR,TEXT_COLOR,HIGHLIGHT_
 from pygame.draw import rect as rect_draw
 from pygame import Surface, Rect, Color, SRCALPHA
 
-class UXSwitch:
+from data.modules.ui.ux_element import UXElement
+
+
+class UXSwitch(UXElement):
     def __init__(self,
                  **options) -> None:
         super().__init__(**options)
-        self.size = options.get('size',(24,24))
-        self.border_radius = options.get('border_radius',6)
+
         self.bg =  options.get('bg_color',Color(MEDIUM_BACKGROUND_COLOR))
         self.normal_color = options.get('normal_color',Color(TEXT_COLOR))
         self.hovered_color = options.get('hovered_color',Color(HIGHLIGHT_TEXT_COLOR))
         self.pressed_color = options.get('pressed_color',Color(PRESSED_TEXT_COLOR))
-        
-        #On: Pressed
-        #on: Hove
-        #on normal
-        #off pressed
-        #off hove
-        #off normal
         
         self.normal_off_image,self.hovered_off_image, self.pressed_off_image,self.normal_on_image,self.hovered_on_image, self.pressed_on_image = self.draw()
     def draw(self):
