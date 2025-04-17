@@ -4,101 +4,158 @@ from pygame.mouse import get_pos as mouse_pos, get_pressed as mouse_pressed
 class UIElement: pass
 
 class UICounter:
+    """
+    For debugging & Performance testing.
+    
+    Each UI Element adds itself automatically to the ``count`` & ``all_elements`` value
+    """
     def __init__(self):
         self.count = {}
-        self.all = 0
+        self.all_elements = 0
+    def log(self,t:str, key:str):
+        LOG.nlog(1,f'{t} UIE of Type: $ | e: $',[key,self.count[key]])
     def add_element(self,key):
-        self.all += 1
-        
-        if key in self.count:
-            self.count[key] += 1
-        else:
-            self.count[key] = 1
-            
-        LOG.nlog(1,'created UIE of Type: $ | e: $',[key,self.count[key]])
+        "Add a element to the UICounter."
+        self.all_elements += 1
+        self.count[key] = self.count[key] + 1 if key in self.count else 1
+        self.log('created',key)
     def rem_element(self,key):
+        "Remove a element from the UICounter if existing."
+        self.all_elements -= 1
         if key in self.count:
             self.count[key] -= 1
-        LOG.nlog(1,'removed UIE of Type: $ | e: $',[key,self.count[key]])
+        self.log('removed',key)
             
 UIC = UICounter()
 class UIID:
-    def __init__(self) -> None:
-        self.id = 0
-    def add(self):
-        self.id += 1
-        return self.id - 1
+    """
+    This class is managing the ``èlement_id`` upcounting for each added UIElement.
+    """
+    ID = 0
+    def add(self) -> int:
+        "Add a new ID to UIID & return the current one"
+        self.ID += 1
+        return self.ID - 1
     
 UIIDCOUNT = UIID()
-class UIManager: #
+class UIManager:
     def __init__(self) -> None:
         self.queue = {}
         UIC.add_element('uiManager')
+        
     def add_to_queue(self,object,layer):
-        if not layer in self.queue:
+        """
+        This adds a ``UIElement`` to the render queue & create a new layer if its not existing.
+        """
+        if layer not in self.queue:
             self.queue[layer] = []
-        
         self.queue[layer].append(object)
-        
         LOG.nlog(1,'$ added to queue on layer $',[object.element_id,layer])
+        
     def remove_from_queue(self,id):
+        """
+        Remove an existing ``UIElement`` from the queue & remove a layer if empty.
+        """
         for layer in self.queue:
             for idx,obj in enumerate(self.queue[layer]):
                 if obj.element_id == id:
                     self.queue[layer].pop(idx)
-                    LOG.nlog(1,'$ removed from queue  $',[obj.id,layer])
+                    LOG.nlog(1,'$ removed from queue  $',[obj.element_id,layer])
+                if not self.queue[layer]:
+                    self.queue.pop(layer)
                     
-
-        
-        
     def render_queue(self,
                     app,
                     groups:list | tuple = ('default',),
-                    ignoreList=[]):
-        #+ Only One button is clickable
+                    ignore_list=[]):
+        """
+        Go through all existing layers, if layer is not ignored.
+        
+        Render every ``UIElement`` in the current layer if object is visible.
+        
+        The default group ist 'default' & you can use multiple groups to organize your project.
+        
+        Check ``UIElement`` collisions in reversed order.
+        
+        If a ``UIElement`` has already been pressed, the next ``UIElement's`` will not update.
+        """
         _updates = []
         for layer in self.queue.keys():
-            if layer in ignoreList: continue
+            if layer in ignore_list: continue
             for object in self.queue[layer]:
-
-                if object.group.group_name in groups:
-                        
-                    _updates.append(object)
+                if object.group.group_name in groups: # Check the group.
                     if object.visible:
+                        _updates.append(object)
                         app.window.surface.blit(object.get_image(),object.get_abs_position())
         _updates.reverse()
         for object in _updates:
             object.update() 
             if object.this_frame_pressed:
                 break
-            #! Check Frame is checked
 
 UIM = UIManager()
 
 class UIGroup:
+    """
+    Used to draw groups of UI elements. 
+        
+    Multiple groups can be rendered.
+    """
     def __init__(self,
                  group_name):
         self.group_name = group_name
         UIC.add_element('uiGroup')
 UI_DEFAULT_GROUP = UIGroup('default')
 class UIElement:
+    """
+    The core UIElement class
+    ******
+    Arguments
+    ^^^^
+    
+    .. rect:: A ``pygame.Rect`` value. Will be stored as ``pos`` & ``dest``
+    .. group:: 
+        
+        Used to draw groups of UI elements. 
+        
+        Multiple groups can be rendered.
+
+        Defaults to: ``UI_DEFAULT_GROUP``
+    .. layer::
+
+        Layers are used to determine the z position on screen.
+        
+        The higher the layer, the higher the priority on the screen.
+
+        Defaults to: ``0``
+    .. visible::
+        Defaults to: ``True``
+    .. canvas::
+        CURRENTLY NOT BEING USED!
+    .. anchor::
+        Determines the anchor position e.g. ``'bottom-center'`` will accordingly offset the position by a certain value.
+        
+        Currently not complete! The most ``UIElement's`` will not support this. Will be changed later!
+        
+        Defaults to: ``'top-left'``
+    .. parent::
+        A parent is used in combination with get_abs_position to get the absolute offset or a higher priority ``UIElement``
+
+        Defaults to: ``None``
+    .. element_id::
+        Used to determine which ``UIElement`` is being used. 
+        
+        Useful for dropdown menus and much more.
+    .. element_name
+        Used to determine which ``UIElement`` is being used. 
+        
+        Useful for dropdown menus and much more.
+        
+        Defauls to ``''``
+    """
     def __init__(self,
                  rect: Rect,
                  **kwargs) -> None:
-        """
-        The Default UI Element:
-        Arguments:
-            rect    : pygame.Rect = (pos,dest)
-            kwargs:
-                layer   :   int         =   0
-                visible :   bool        =   True
-                canvas  :   None        =   None    [CURRENTLY NOT USED!]
-                anchor  :   str         =   'top_left'  [BETA: NOT USED IN EVERY FUNCTION]
-                name    :   str         =   ''
-                ? Makes finding much easier
-                parent  :   UIElement   = None
-                group   :UIGroup        = UI_DEFAULT_GROUP
-        """
         self.rect = rect.copy()
         
         UIC.add_element('uiElement')
@@ -171,18 +228,25 @@ class UIElement:
         if not click: # ? Reset Blocking!
             self.stop = False     
     def kill(self):
+        """
+        Remove itself
+        """
         UIM.remove_from_queue(self.element_id)
         del self
     def update(self):
+        """
+        Don't use this method!
+        This will be called by the ``UIManager``
+        """
         if self.visible:
             return self.check(self.get_abs_position(),self.dest)
     
-    def get_image(self):
+    def get_image(self) -> Surface:
         if not hasattr(self,'surface'):
             self.surface = Surface((1,1))
         return self.surface
     
-    def get_abs_position(self):
+    def get_abs_position(self) -> tuple[int,int]:
         x,y = self.get_parent_offsets()
         match self.anchor: #? Manipulates the offset by a certain value
             case 'center':

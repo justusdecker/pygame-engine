@@ -35,8 +35,6 @@ class App(Application):
                 },
             group=self.group_test
             )
-        
-        self.thumbnail.set_image(image.load("data\\bin\\img\\test.png"))
         self.nameLabel = UILabel(
             Rect(
                 48,
