@@ -23,7 +23,7 @@ class App(Application):
         surf = Surface((WIDTH-(WIDTH*.05),HEIGHT-(WIDTH*.05)))
         surf.fill((96,96,96))
         self.field = Entity(self,surf,Vector4(WIDTH*.025,WIDTH*.025,WIDTH-(WIDTH*.05),HEIGHT-(WIDTH*.05)))
-        self.multiplicator = 1
+        self.move = [1,1]
     def run(self):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
@@ -40,8 +40,7 @@ class App(Application):
                 self.bar_right.vector = self.bar_right.vector + Vector2(0,-5)
             elif KEYS[K_DOWN]:
                 self.bar_right.vector = self.bar_right.vector + Vector2(0,5)
-            movement = 100*self.multiplicator*GLOBAL_DELTA_TIME.get()
-            self.ball.vector += Vector2(movement,movement)
+            self.ball.vector += Vector2(300*self.move[0]*GLOBAL_DELTA_TIME.get(),300*self.move[1]*GLOBAL_DELTA_TIME.get())
             self.field.render()
             self.bar_left.collision_mbts()
             self.bar_right.collision_mbts()
@@ -51,7 +50,7 @@ class App(Application):
             if self.bar_left.check_rect_collision(self.ball) or \
                 self.bar_right.check_rect_collision(self.ball) or \
                     not self.field.check_rect_collision(self.ball):
-                        self.multiplicator *= -1
+                        self.ball.vector += Vector2(300*1*GLOBAL_DELTA_TIME.get(),300*1*GLOBAL_DELTA_TIME.get())
             print(self.bar_left.check_rect_collision(self.ball))
             self.update()
             
