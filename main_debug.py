@@ -49,13 +49,13 @@ class App(Application):
             )
         self.nameLabel.render("test")
         self.btn = UIButton(
-            Rect(0,0,128,24),
+            Rect(128,0,128,24),
             ux={'text':'root' , 'size':(128,24)},
             group=self.group_test,
             cb_on_press= test_print)
-        self.btn = UISwitch(
-            Rect(0,24,128,24),
-            ux={'size':(128,24)},
+        self.switch = UISwitch(
+            Rect(0,24,24,24),
+            ux={'size':(24,24)},
             group=self.group_test)
         
         self.fileDD = UIDropDown(
@@ -95,6 +95,7 @@ class App(Application):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             #self.map.update()
+            self.window.surface.fill((0,0,0))
             UIM.render_queue(self,['test'])
             self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.update()

@@ -9,38 +9,27 @@ from data.modules.ui.ux_element import UXElement
 class UXSwitch(UXElement):
     def __init__(self,
                  **options) -> None:
+        if not 'bcg' in options: options['bcg'] = (MEDIUM_BACKGROUND_COLOR,)
+        if not 'tcg' in options: options['tcg'] = (TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR)
         super().__init__(**options)
-
-        self.bg =  options.get('bg_color',Color(MEDIUM_BACKGROUND_COLOR))
-        self.normal_color = options.get('normal_color',Color(TEXT_COLOR))
-        self.hovered_color = options.get('hovered_color',Color(HIGHLIGHT_TEXT_COLOR))
-        self.pressed_color = options.get('pressed_color',Color(PRESSED_TEXT_COLOR))
-        
         self.normal_off_image,self.hovered_off_image, self.pressed_off_image,self.normal_on_image,self.hovered_on_image, self.pressed_on_image = self.draw()
     def draw(self):
         return self.gen([
-            (self.normal_color,False),
-            (self.hovered_color,False),
-            (self.pressed_color,False),
-            (self.normal_color,True),
-            (self.hovered_color,True),
-            (self.pressed_color,True),
+            (self.get_color(self.text_color_group,0),False),
+            (self.get_color(self.text_color_group,1),False),
+            (self.get_color(self.text_color_group,2),False),
+            (self.get_color(self.text_color_group,0),True),
+            (self.get_color(self.text_color_group,1),True),
+            (self.get_color(self.text_color_group,2),True),
         ])
     def gen(self,array:list=[]):
         _ret = []
-        
-        
-        
         for foreground_color,state in array:
             SURF = Surface(self.size,SRCALPHA)
             rect_draw(
                     SURF,
-                    self.bg,
-                    (
-                        0,
-                        0,
-                        *self.size
-                        ),
+                    self.get_color(self.background_color_group,0),
+                    (0,0,*self.size),
                     border_radius = self.border_radius
                 )
             if state:
@@ -66,7 +55,7 @@ class UISwitch(UIElement):
         super().__init__(rect,**kwargs)
         UIC.add_element('uiSwitch')
         self.toggle = kwargs.get('initialValue',False)
-        self.UX = UXSwitch()
+        self.UX = UXSwitch(**kwargs.get('ux', {}))
         self.set_image(self.UX.normal_off_image)
         self.oHC = kwargs.get('onHoveredCallback',self.noCallback)
         
