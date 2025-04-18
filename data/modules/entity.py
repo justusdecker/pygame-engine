@@ -8,6 +8,20 @@ class Entity(Sprite):
                  image_path_or_surface:str | Surface,
                  vector: Vector4):
         super().__init__(app,image_path_or_surface,vector)
+class Entity(Sprite):
+    def __init__(self,
+                 app,
+                 image_path_or_surface:str | Surface,
+                 vector: Vector4):
+        super().__init__(app,image_path_or_surface,vector)
+    def check_rect_collision(self,obj:Entity) -> bool:
+        x1,x2,y1,y2 = self.vector.x,obj.vector.x,self.vector.y,obj.vector.y
+        w1,w2,h1,h2 = self.vector.z,obj.vector.z,self.vector.w,obj.vector.w
+        #Calculation Matrix
+        return x1 + w1 >= x2 and \
+        x1 <= x2 + w2 and \
+        y1 + h1 >= y2 and \
+        y1 <= y2 + h2
     def collision_mbts(self):
         """
         move back to screen
