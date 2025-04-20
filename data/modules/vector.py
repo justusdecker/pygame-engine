@@ -1,56 +1,35 @@
-class Vector2: x, y = 0,0 # For Documentation only
-class Vector2:
-    def __init__(self,x=0,y=0):
-        self.x, self.y = x, y
-    def __add__(self,v:Vector2):
-        return Vector2(self.x + v.x,self.y + v.y)
-    def __sub__(self,v:Vector2) -> Vector2:
-        return Vector2(self.x - v.x,self.y - v.y)
-    def __mul__(self,v:Vector2) -> Vector2:
-        return Vector2(self.x * v.x,self.y * v.y)
-    def __floordiv__(self,v:Vector2) -> Vector2:
-        return Vector2((self.x // v.x) if v.x and self.x else 0,(self.y // v.y) if v.y and self.y else 0)
-    def __truediv__(self,v:Vector2) -> Vector2:
-        return Vector2((self.x / v.x) if v.x and self.x else 0,(self.y / v.y) if v.y and self.y else 0)
-    def coords(self) -> tuple[int,int]:
-        return self.x, self.y
-    def __str__(self):
-        return f'Vector2({self.x} {self.y})'
 
-class Vector3: x,y,z = 0,0,0 # For Documentation only
-class Vector3:
-    def __init__(self,x=0,y=0,z=0):
-        self.x, self.y, self.z = x, y, z
-    def __add__(self,v:Vector3):
-        return Vector3(self.x + v.x,self.y + v.y,(self.z + v.z) if hasattr(v,'z') else self.z)
-    def __sub__(self,v:Vector3) -> Vector3:
-        return Vector3(self.x - v.x,self.y - v.y,(self.z - v.z) if hasattr(v,'z') else self.z)
-    def __mul__(self,v:Vector3) -> Vector3:
-        return Vector3(self.x * v.x,self.y * v.y,(self.z * v.z) if hasattr(v,'z') else self.z)
-    def __floordiv__(self,v:Vector3) -> Vector3:
-        return Vector3((self.x // v.x) if v.x and self.x else 0,(self.y // v.y) if v.y and self.y else 0,((self.z // v.z) if v.z and self.z else 0) if hasattr(v,'z') else self.z)
-    def __truediv__(self,v:Vector3) -> Vector3:
-        return Vector3((self.x / v.x) if v.x and self.x else 0,(self.y / v.y) if v.y and self.y else 0,((self.z / v.z) if v.z and self.z else 0) if hasattr(v,'z') else self.z)
-    def coords(self) -> tuple[int,int,int]:
-        return self.x, self.y, self.z
+VALUES = 'xyzw'
+class VectorX: pass
+class Vector:
+    """
+    This is the default Vector Class to inherit from
+    ``l`` is the Vector size value ``Vector{l}``
+    If ``args`` is not equal to the ``l`` value it raises a ``ValueError``
+    """
+    def __init__(self,*args,l):
+        for val,arg in zip(args,VALUES): setattr(self,arg,val)
+        self.l = l
+        if l != len(args): raise ValueError(f'Shape is not matching {self.l} != {l}')
+    def __add__(self,v:VectorX):
+        return Vector(*[getattr(self,val) + getattr(v,val) for val in VALUES if hasattr(self,val) and hasattr(v,val)],l=self.l)
+    def __sub__(self,v:VectorX):
+        return Vector(*[getattr(self,val) - getattr(v,val) for val in VALUES if hasattr(self,val) and hasattr(v,val)],l=self.l)
+    def __mul__(self,v:VectorX):
+        return Vector(*[getattr(self,val) ** getattr(v,val) for val in VALUES if hasattr(self,val) and hasattr(v,val)],l=self.l)
+    def __pow__(self,v:VectorX):
+        return Vector(*[getattr(self,val) * getattr(v,val) for val in VALUES if hasattr(self,val) and hasattr(v,val)],l=self.l)
+    def __truediv__(self,v:VectorX):
+        return Vector(*[(getattr(self,val) / getattr(v,val)) if getattr(self,val) and getattr(v,val) else 0 for val in VALUES if hasattr(self,val) and hasattr(v,val)],l=self.l)
+    def __floordiv__(self,v:VectorX):
+        return Vector(*[(getattr(self,val) // getattr(v,val)) if getattr(self,val) and getattr(v,val) else 0 for val in VALUES if hasattr(self,val) and hasattr(v,val)],l=self.l)
     def __str__(self):
-        return f'Vector3({self.x} {self.y} {self.z})'
-    
-class Vector4: x, y, z, w = 0,0,0,0 # For Documentation only
-class Vector4:
-    def __init__(self,x=0,y=0,z=0,w=0):
-        self.x, self.y, self.z, self.w = x, y, z, w
-    def __add__(self,v:Vector4):
-        return Vector4(self.x + v.x,self.y + v.y,(self.z + v.z) if hasattr(v,'z') else self.z,(self.w + v.w) if hasattr(v,'w') else self.w)
-    def __sub__(self,v:Vector4) -> Vector4:
-        return Vector4(self.x - v.x,self.y - v.y,(self.z - v.z) if hasattr(v,'z') else self.z,(self.w - v.w) if hasattr(v,'w') else self.w)
-    def __mul__(self,v:Vector4) -> Vector4:
-        return Vector4(self.x * v.x,self.y * v.y,(self.z * v.z) if hasattr(v,'z') else self.z,(self.w * v.w) if hasattr(v,'w') else self.w)
-    def __floordiv__(self,v:Vector4) -> Vector4:
-        return Vector4(self.x // v.x,self.y // v.y,(self.z // v.z) if hasattr(v,'z') else self.z,(self.w // v.w) if hasattr(v,'w') else self.w)
-    def __truediv__(self,v:Vector4) -> Vector4:
-        return Vector4((self.x / v.x) if v.x and self.x else 0,(self.y / v.y) if v.y and self.y else 0,((self.z / v.z) if v.z and self.z else 0) if hasattr(v,'z') else self.z,((self.w / v.w) if v.w and self.w else 0) if hasattr(v,'w') else self.w)
-    def coords(self) -> tuple[int,int,int,int]:
-        return self.x, self.y, self.z, self.w
-    def __str__(self):
-        return f'Vector4({self.x} {self.y} {self.z} {self.w})'
+        return f'Vector{self.l}({" ".join([val + " = " + str(getattr(self,val)) for val in vars(self) if val != "l"])})'
+    def get(self) -> list[int | float]:
+        return [getattr(self,val) for val in vars(self) if val != "l"]
+class Vector2(Vector): 
+    def __init__(self,*args): super().__init__(*args,l=2)
+class Vector3(Vector):
+    def __init__(self,*args): super().__init__(*args,l=3)
+class Vector4(Vector):
+    def __init__(self,*args): super().__init__(*args,l=4)
