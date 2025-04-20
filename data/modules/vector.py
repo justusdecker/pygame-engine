@@ -9,9 +9,9 @@ class Vector2:
     def __mul__(self,v:Vector2) -> Vector2:
         return Vector2(self.x * v.x,self.y * v.y)
     def __floordiv__(self,v:Vector2) -> Vector2:
-        return Vector2(self.x // v.x,self.y // v.y) if v.x and v.y and self.x and self.y  else Vector2(0,0)
+        return Vector2((self.x // v.x) if v.x and self.x else 0,(self.y // v.y) if v.y and self.y else 0)
     def __truediv__(self,v:Vector2) -> Vector2:
-        return Vector2(self.x / v.x,self.y / v.y) if v.x and v.y and self.x and self.y  else Vector2(0,0)
+        return Vector2((self.x / v.x) if v.x and self.x else 0,(self.y / v.y) if v.y and self.y else 0)
     def coords(self) -> tuple[int,int]:
         return self.x, self.y
     def __str__(self):
@@ -28,9 +28,9 @@ class Vector3:
     def __mul__(self,v:Vector3) -> Vector3:
         return Vector3(self.x * v.x,self.y * v.y,(self.z * v.z) if hasattr(v,'z') else self.z)
     def __floordiv__(self,v:Vector3) -> Vector3:
-        return Vector3(self.x // v.x,self.y // v.y,(self.z // v.z) if hasattr(v,'z') else self.z) if v.x and v.y and v.z and self.x and self.y and self.z else Vector3(0,0,0)
+        return Vector3((self.x // v.x) if v.x and self.x else 0,(self.y // v.y) if v.y and self.y else 0,((self.z // v.z) if v.z and self.z else 0) if hasattr(v,'z') else self.z)
     def __truediv__(self,v:Vector3) -> Vector3:
-        return Vector3(self.x / v.x,self.y / v.y,(self.z / v.z) if hasattr(v,'z') else self.z) if v.x and v.y and v.z and self.x and self.y and self.z else Vector3(0,0,0)
+        return Vector3((self.x / v.x) if v.x and self.x else 0,(self.y / v.y) if v.y and self.y else 0,((self.z / v.z) if v.z and self.z else 0) if hasattr(v,'z') else self.z)
     def coords(self) -> tuple[int,int,int]:
         return self.x, self.y, self.z
     def __str__(self):
@@ -47,9 +47,9 @@ class Vector4:
     def __mul__(self,v:Vector4) -> Vector4:
         return Vector4(self.x * v.x,self.y * v.y,(self.z * v.z) if hasattr(v,'z') else self.z,(self.w * v.w) if hasattr(v,'w') else self.w)
     def __floordiv__(self,v:Vector4) -> Vector4:
-        return Vector4(self.x // v.x,self.y // v.y,(self.z // v.z) if hasattr(v,'z') else self.z,(self.w // v.w) if hasattr(v,'w') else self.w) if v.x and v.y and v.z and v.w and self.x and self.y and self.z and self.w else Vector4(0,0,0,0)
+        return Vector4(self.x // v.x,self.y // v.y,(self.z // v.z) if hasattr(v,'z') else self.z,(self.w // v.w) if hasattr(v,'w') else self.w)
     def __truediv__(self,v:Vector4) -> Vector4:
-        return Vector4(self.x / v.x,self.y / v.y,(self.z / v.z) if hasattr(v,'z') else self.z,(self.w / v.w) if hasattr(v,'w') else self.w) if v.x and v.y and v.z and v.w and self.x and self.y and self.z and self.w else Vector4(0,0,0,0)
+        return Vector4((self.x / v.x) if v.x and self.x else 0,(self.y / v.y) if v.y and self.y else 0,((self.z / v.z) if v.z and self.z else 0) if hasattr(v,'z') else self.z,((self.w / v.w) if v.w and self.w else 0) if hasattr(v,'w') else self.w)
     def coords(self) -> tuple[int,int,int,int]:
         return self.x, self.y, self.z, self.w
     def __str__(self):
