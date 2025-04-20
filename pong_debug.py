@@ -9,6 +9,7 @@ LOG.tobash = False
 from pygame.key import get_pressed
 from pygame.mouse import get_pos
 from pygame import K_w,K_s,K_UP,K_DOWN
+import data.modules.ui.ui_calculation
 
 class App(Application):
     def __init__(self): 
@@ -51,7 +52,7 @@ class App(Application):
                 self.bar_right.check_rect_collision(self.ball) or \
                     not self.field.check_rect_collision(self.ball):
                         self.ball.vector += Vector2(300*1*GLOBAL_DELTA_TIME.get(),300*1*GLOBAL_DELTA_TIME.get())
-            print(self.bar_left.check_rect_collision(self.ball))
+            
             self.update()
             
             GLOBAL_DELTA_TIME.after()

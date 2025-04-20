@@ -8,6 +8,8 @@ class Vector2:
         return Vector2(self.x - v.x,self.y - v.y)
     def __mul__(self,v:Vector2) -> Vector2:
         return Vector2(self.x * v.x,self.y * v.y)
+    def __floordiv__(self,v:Vector2) -> Vector2:
+        return Vector2(self.x // v.x,self.y // v.y) if v.x and v.y and self.x and self.y  else Vector2(0,0)
     def __truediv__(self,v:Vector2) -> Vector2:
         return Vector2(self.x / v.x,self.y / v.y) if v.x and v.y and self.x and self.y  else Vector2(0,0)
     def coords(self) -> tuple[int,int]:
@@ -25,6 +27,8 @@ class Vector3:
         return Vector3(self.x - v.x,self.y - v.y,(self.z - v.z) if hasattr(v,'z') else self.z)
     def __mul__(self,v:Vector3) -> Vector3:
         return Vector3(self.x * v.x,self.y * v.y,(self.z * v.z) if hasattr(v,'z') else self.z)
+    def __floordiv__(self,v:Vector3) -> Vector3:
+        return Vector3(self.x // v.x,self.y // v.y,(self.z // v.z) if hasattr(v,'z') else self.z) if v.x and v.y and v.z and self.x and self.y and self.z else Vector3(0,0,0)
     def __truediv__(self,v:Vector3) -> Vector3:
         return Vector3(self.x / v.x,self.y / v.y,(self.z / v.z) if hasattr(v,'z') else self.z) if v.x and v.y and v.z and self.x and self.y and self.z else Vector3(0,0,0)
     def coords(self) -> tuple[int,int,int]:
@@ -42,6 +46,8 @@ class Vector4:
         return Vector4(self.x - v.x,self.y - v.y,(self.z - v.z) if hasattr(v,'z') else self.z,(self.w - v.w) if hasattr(v,'w') else self.w)
     def __mul__(self,v:Vector4) -> Vector4:
         return Vector4(self.x * v.x,self.y * v.y,(self.z * v.z) if hasattr(v,'z') else self.z,(self.w * v.w) if hasattr(v,'w') else self.w)
+    def __floordiv__(self,v:Vector4) -> Vector4:
+        return Vector4(self.x // v.x,self.y // v.y,(self.z // v.z) if hasattr(v,'z') else self.z,(self.w // v.w) if hasattr(v,'w') else self.w) if v.x and v.y and v.z and v.w and self.x and self.y and self.z and self.w else Vector4(0,0,0,0)
     def __truediv__(self,v:Vector4) -> Vector4:
         return Vector4(self.x / v.x,self.y / v.y,(self.z / v.z) if hasattr(v,'z') else self.z,(self.w / v.w) if hasattr(v,'w') else self.w) if v.x and v.y and v.z and v.w and self.x and self.y and self.z and self.w else Vector4(0,0,0,0)
     def coords(self) -> tuple[int,int,int,int]:
