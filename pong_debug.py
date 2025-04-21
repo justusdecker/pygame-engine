@@ -20,11 +20,29 @@ class App(Application):
         self.bar_right = Entity(self,surf,Vector4(WIDTH-20-(WIDTH*.025),20,WIDTH*.025,HALF_HEIGHT))
         surf = Surface((WIDTH*.025,WIDTH*.025))
         surf.fill((48,48,48))
-        self.ball = Entity(self,surf,Vector4(20,20,WIDTH*.025,WIDTH*.025))
-        surf = Surface((WIDTH-(WIDTH*.05),HEIGHT-(WIDTH*.05)))
-        surf.fill((96,96,96))
-        self.field = Entity(self,surf,Vector4(WIDTH*.025,WIDTH*.025,WIDTH-(WIDTH*.05),HEIGHT-(WIDTH*.05)))
-        self.move = Vector2(1,1)
+        self.ball = Entity(self,surf,Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025))
+        self.reset()
+    def reset(self):
+        self.move = Vector2(10,10)
+        self.ball.vector = Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025)
+    def x_change(self,st:bool):
+        if st:
+            self.move *= Vector2(-1,1)
+            self.ball.vector += self.move
+    def y_change(self,st:bool):
+        if st:
+            self.move *= Vector2(1,-1)   
+            self.ball.vector += self.move
+    def key_check(self):
+        KEYS = get_pressed()
+        if KEYS[K_w]:
+            self.bar_left.vector = self.bar_left.vector + Vector2(0,-5)
+        elif KEYS[K_s]:
+            self.bar_left.vector = self.bar_left.vector + Vector2(0,5)
+        if KEYS[K_UP]:
+            self.bar_right.vector = self.bar_right.vector + Vector2(0,-5)
+        elif KEYS[K_DOWN]:
+            self.bar_right.vector = self.bar_right.vector + Vector2(0,5)
     def run(self):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
@@ -32,28 +50,26 @@ class App(Application):
             self.window.surface.fill((0,0,0))
             UIM.render_queue(self)
             
-            KEYS = get_pressed()
-            if KEYS[K_w]:
-                self.bar_left.vector = self.bar_left.vector + Vector2(0,-5)
-            elif KEYS[K_s]:
-                self.bar_left.vector = self.bar_left.vector + Vector2(0,5)
-            if KEYS[K_UP]:
-                self.bar_right.vector = self.bar_right.vector + Vector2(0,-5)
-            elif KEYS[K_DOWN]:
-                self.bar_right.vector = self.bar_right.vector + Vector2(0,5)
-            self.ball.vector += Vector2(300*self.move[0]*GLOBAL_DELTA_TIME.get(),300*self.move[1]*GLOBAL_DELTA_TIME.get())
-            self.field.render()
+            self.key_check()
+
             self.bar_left.collision_mbts()
             self.bar_right.collision_mbts()
             self.bar_left.render()
             self.bar_right.render()
             self.ball.render()
-            if self.bar_left.check_rect_collision(self.ball) or \
-                self.bar_right.check_rect_collision(self.ball) or \
-                    not self.field.check_rect_collision(self.ball):
-                        self.move.x = 0
-                        self.ball.vector += Vector2(300*1*GLOBAL_DELTA_TIME.get(),300*1*GLOBAL_DELTA_TIME.get())
             
+            self.x_change(self.bar_left.check_line_collision(self.ball,1))
+            self.x_change(self.bar_right.check_line_collision(self.ball,0))
+            self.x_change(self.ball.vector.x < 0 or self.ball.vector.x + self.ball.vector.z > WIDTH)
+            self.y_change(self.ball.vector.y < 0 or self.ball.vector.y + self.ball.vector.w > HEIGHT)
+
+
+            self.ball.vector += self.move
+
+            if self.ball.vector.x < 20:
+                self.reset()
+            if self.ball.vector.x + self.ball.vector.z > WIDTH - 20:
+                self.reset()
             self.update()
             
             GLOBAL_DELTA_TIME.after()
