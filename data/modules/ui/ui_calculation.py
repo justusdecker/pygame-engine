@@ -1,4 +1,3 @@
-from data.modules.vector import Vector2,Vector4
 def get_top_center(size,dest):
     x,y = size[0]//2,0
     w,h = dest[0]//2,0

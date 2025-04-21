@@ -13,6 +13,7 @@ class Entity(Sprite):
                  app,
                  image_path_or_surface:str | Surface,
                  vector: Vector4):
+        
         super().__init__(app,image_path_or_surface,vector)
     def check_line_collision(self,obj:Entity,collider_side:int=0) -> bool:
         #Vector2

@@ -1,15 +1,14 @@
 from data.modules.log import LOG
 from data.modules.constants import *
-from data.modules.ui.ui_element import UIM
 from data.modules.app import Application
+from data.modules.ui.ui_element import UIM
+from data.modules.ui.ui_label import UILabel
 from data.modules.entity import Entity
 from data.modules.vector import Vector2,Vector4
 from pygame import Surface
 LOG.tobash = False
 from pygame.key import get_pressed
-from pygame.mouse import get_pos
 from pygame import K_w,K_s,K_UP,K_DOWN
-import data.modules.ui.ui_calculation
 
 class App(Application):
     def __init__(self): 
@@ -20,7 +19,7 @@ class App(Application):
         self.bar_right = Entity(self,surf,Vector4(WIDTH-20-(WIDTH*.025),20,WIDTH*.025,HALF_HEIGHT))
         surf = Surface((WIDTH*.025,WIDTH*.025))
         surf.fill((48,48,48))
-        self.ball = Entity(self,surf,Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025))
+        self.ball = Entity(self,+,Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025))
         self.reset()
     def reset(self):
         self.move = Vector2(10,10)
@@ -35,20 +34,15 @@ class App(Application):
             self.ball.vector += self.move
     def key_check(self):
         KEYS = get_pressed()
-        if KEYS[K_w]:
-            self.bar_left.vector = self.bar_left.vector + Vector2(0,-5)
-        elif KEYS[K_s]:
-            self.bar_left.vector = self.bar_left.vector + Vector2(0,5)
-        if KEYS[K_UP]:
-            self.bar_right.vector = self.bar_right.vector + Vector2(0,-5)
-        elif KEYS[K_DOWN]:
-            self.bar_right.vector = self.bar_right.vector + Vector2(0,5)
+        if KEYS[K_w]: self.bar_left.vector += Vector2(0,-5)
+        elif KEYS[K_s]: self.bar_left.vector += Vector2(0,5)
+        if KEYS[K_UP]: self.bar_right.vector += Vector2(0,-5)
+        elif KEYS[K_DOWN]: self.bar_right.vector += Vector2(0,5)
     def run(self):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             self.CLK.tick(60)
             self.window.surface.fill((0,0,0))
-            UIM.render_queue(self)
             
             self.key_check()
 
@@ -62,7 +56,6 @@ class App(Application):
             self.x_change(self.bar_right.check_line_collision(self.ball,0))
             self.x_change(self.ball.vector.x < 0 or self.ball.vector.x + self.ball.vector.z > WIDTH)
             self.y_change(self.ball.vector.y < 0 or self.ball.vector.y + self.ball.vector.w > HEIGHT)
-
 
             self.ball.vector += self.move
 
