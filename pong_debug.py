@@ -9,7 +9,6 @@ from data.modules.vector import Vector2,Vector4
 from data.modules.ui.ui_font import FONT
 from pygame import Rect
 from pygame import Surface,K_w,K_s,K_UP,K_DOWN
-from data.modules.easing_functions import Animations,animator
 from pygame.draw import line as line_draw
 from pygame.transform import flip
 from math import sin
@@ -36,16 +35,18 @@ class App(Application):
         self.score_label = UILabel(Rect(HALF_WIDTH-(QUARTER_WIDTH//2),0,QUARTER_WIDTH,HEIGHT*.1),ux={'size':(QUARTER_WIDTH,HEIGHT*.1),'font':FONT(size=40),'bcg': ['#482424'],'tcg': ['#969696'],'text': '0:0'})
         self.flash_frames = 0
         self.background_color_mul = 0
+        
     def reset(self):
+        self.speed = 1
         self.move = Vector2(10,10)
         self.ball.vector = Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025)
     def set_move(self,v:Vector2):
         self.move *= v
         return self.move
     def x_change(self,st:bool):
-        if st: self.ball.vector += self.set_move(Vector2(-1,1))
+        if st: self.ball.vector += self.set_move(Vector2(-1*self.speed,1*self.speed))
     def y_change(self,st:bool):
-        if st: self.ball.vector += self.set_move(Vector2(1,-1))
+        if st: self.ball.vector += self.set_move(Vector2(1*self.speed,-1*self.speed))
     def key_check(self):#! refactor this
         KEYS = get_pressed()
         if KEYS[K_w]: self.bar_left.vector += Vector2(0,-5)
@@ -71,6 +72,7 @@ class App(Application):
             self.x_change(self.bar_right.check_line_collision(self.ball,0))
             self.x_change(self.ball.vector.x < 0 or self.ball.vector.x + self.ball.vector.z > WIDTH)
             self.y_change(self.ball.vector.y < 0 or self.ball.vector.y + self.ball.vector.w > HEIGHT)
+            
             self.ball.vector += self.move
             if self.ball.vector.x < 20: 
                 self.scores[1] += 1
@@ -82,7 +84,7 @@ class App(Application):
                 self.score_label.render(f'{self.scores[0]}:{self.scores[1]}')
                 self.reset()
                 self.flash_frames = 3
-            
+            self.speed += GLOBAL_DELTA_TIME.get() * 0.0005
             SPR.update()
             UIM.render_queue(self)
             self.update()
