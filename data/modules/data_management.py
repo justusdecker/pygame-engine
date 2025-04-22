@@ -29,6 +29,7 @@ def validate_checksum(value:bitarray,size:int=32):
     print(len(a),len(b))
     print(a,b,val)
     return a == b
+
 from io import FileIO
 class DataManagementBitarray:
     def __init__(self):
