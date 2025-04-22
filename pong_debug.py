@@ -19,7 +19,7 @@ class App(Application):
         self.bar_right = Entity(self,surf,Vector4(WIDTH-20-(WIDTH*.025),20,WIDTH*.025,HALF_HEIGHT))
         surf = Surface((WIDTH*.025,WIDTH*.025))
         surf.fill((48,48,48))
-        self.ball = Entity(self,+,Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025))
+        self.ball = Entity(self,surf,Vector4(HALF_WIDTH-(WIDTH*.025),HALF_HEIGHT-(WIDTH*.025),WIDTH*.025,WIDTH*.025))
         self.reset()
     def reset(self):
         self.move = Vector2(10,10)
