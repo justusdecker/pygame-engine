@@ -1,13 +1,17 @@
 from typing import Any, BinaryIO, Dict, Union, overload, Iterable
 type initializer = Union[str, Iterable[int], None]
+from math import ceil
 from sys import getsizeof
 class BitArray:
     def __init__(self,
                  initializer: initializer):
         self.parse(initializer)
+        
     def parse(self,initializer):
         l = len(initializer)
         self.bit_array = 1 << l - 1
+
+        #elf.first_bit_is_zero = initializer[0] == 0
         self.bit_array |= int(initializer,2)
     def append(self,initializer:initializer):
         _01 = self.to01()
@@ -21,18 +25,23 @@ class BitArray:
         return getsizeof(self.bit_array)
     def tofile(self,file_path:str):
         with open(file_path,'wb') as f_out:
+            bl = self.bit_array.bit_length()
             f_out.write(
-                self.bit_array.to_bytes(4,'big')
+                self.bit_array.to_bytes(ceil(bl/4),'little')
             )
     def fromfile(self,file_path:str):
         with open(file_path,'rb') as f_in:
+            byte_array = ''
+            for byte in f_in.read():
+                byte_array += bin(int(byte))[2:]
+            self.parse(byte_array)
+            print(byte_array)
             
-            self.parse(bin(int(f_in.read(),2))[2:])
 BA = BitArray("10101010")
-print(BA.to01())
+print(BA.to01(),BA.bit_array)
 BA.append("101")
-print(BA.to01())
-
-print(BA.get_size())
+print(BA.to01(),BA.bit_array)
 BA.tofile('test.bin')
-#BA.fromfile('test.bin')
+#print(BA.bit_array, BA.to01())
+BA.fromfile('test.bin')
+#print(BA.bit_array, BA.to01())
