@@ -8,7 +8,6 @@ class UXImage:
         self.size = options.get('size',(384,216))
         self.border_radius = options.get('border_radius',15)
         CUTOUT = Surface(self.size,SRCALPHA)
-
         CUTOUT.fill((0,255,0))
         rect_draw(CUTOUT,
                      (0,0,0,0),
