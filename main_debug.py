@@ -2,7 +2,7 @@ from data.modules.constants import *
 from data.modules.window import Window
 from pygame.event import get as get_events
 from pygame import QUIT,quit as pg_quit,Rect,image
-
+from data.modules.data_management import DM
 from data.modules.ui.ui_element import UIGroup,UIM
 from data.modules.ui.ui_image import UIImage
 from data.modules.ui.ui_label import UILabel

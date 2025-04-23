@@ -2,51 +2,33 @@ from os import path,mkdir,remove
 from json import load,dumps
 from data.modules.log import LOG
 from bitarray import bitarray
+from cryptography.fernet import Fernet
+from data.modules.constants import CRYPT_KEY
+FERNET = Fernet(CRYPT_KEY)
 
-def xor(value,bit_index:int):
-    return value ^ (1 << bit_index)
-    
-def xor_complex(value:bitarray) -> bitarray:
-    num = int(value.to01(),2)
-    for i in range(num.bit_length()):
-        num = xor(num,i)
-    return bitarray(f'0{num:08b}')
-def get_checksum(value:bitarray,size:int=32):
-    """
-    Checks the length of the given value!
-    default: 32 bit size
-    if length > size: the function will raise an ValueError
-    """
-    ch_sum = value.__len__()
-    print(ch_sum)
-    if ch_sum > size: raise ValueError(f'the value is greater than given size!')
-    return bitarray(f'{(size - ch_sum)*'0'}{ch_sum:08b}')
-def validate_checksum(value:bitarray,size:int=32):
-    val = value.to01()
-    print(val[:-size],val[-size:])
-    a = get_checksum(bitarray(val[:-size]),size).to01()
-    b = bitarray(val[-size:]).to01()
-    print(len(a),len(b))
-    print(a,b,val)
-    return a == b
 
-from io import FileIO
-class DataManagementBitarray:
-    def __init__(self):
-        pass
-    def load(self,file_path:str) -> bitarray:
+#USE ROT to shift the values a bit
+class DataManagementBitArray:
+    def encrypt_and_write(file_path:str,data:bitarray):
+        data = FERNET.encrypt(data.tobytes())
+        with open(file_path,'wb') as f_out:
+            f_out.write(data)
+    def read_and_decrypt(file_path:str) -> bitarray:
+        with open(file_path,'rb') as f_in:
+            data = FERNET.decrypt(f_in.read())
         ba = bitarray(0)
-        with FileIO(file_path,'rb') as f_in:
-            ba.fromfile(f_in)
+        ba.frombytes(data)
         return ba
-    def write(self,file_path:str, data:bitarray) -> None:
-        
-        with FileIO(file_path,'wb') as f_out:
-            data.tofile(f_out)
-    
-    def encrypt(self,shift):
-        pass
-            
+    def write(file_path:str,data:bitarray):
+        with open(file_path,'wb') as f_out:
+            f_out.write(data.tobytes())
+    def read(file_path:str) -> bitarray:
+        ba = bitarray(0)
+        with open(file_path,'rb') as f_in:
+            data = f_in.read()
+            ba.frombytes(data)
+        return ba
+DMBA = DataManagementBitArray
 class DataManagement:
     """
     Many Modules for loading and saving files
