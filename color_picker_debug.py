@@ -20,7 +20,17 @@ class ColorWheel:
         
 
         self.array = array(self.array)
-       
+class ColorLine:
+    def __init__(self):
+        self.color_line()
+    def color_line(self):
+        color_array = []
+        for x in range(360):
+            _line = []
+            for y in range(16):
+                _line.append([col * 255 for col in hsv_to_rgb(x/360,1.,1.)])
+            color_array.append(_line)
+        self.array = array(color_array)
 class ColorRect:
     def __init__(self):
         self.color_rect()
@@ -35,6 +45,11 @@ class ColorRect:
 CR = ColorRect()
 SURF = pg.surfarray.make_surface(CR.array)
 pg.image.save(SURF,'color_rect.png')
+
 CW = ColorWheel()
 SURF = pg.surfarray.make_surface(CW.array)
 pg.image.save(SURF,'color_wheel.png')
+
+CL = ColorLine()
+SURF = pg.surfarray.make_surface(CL.array)
+pg.image.save(SURF,'color_line.png')
