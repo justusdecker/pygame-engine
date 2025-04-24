@@ -21,7 +21,17 @@ class ColorGroup:
         
         self.array = [Color(color) if color else Color(0,0,0,0) for color in colors]
 class TextureGroup:
-    def __init__(self, colors_or_surfaces: list[str, Surface], size: list[int,int]):
+    """
+    .. array:: A list consisting of pygame Surface objects
+    Will throw an TypeError if type is none of the following:
+    .. str:: #RRGGBB | #RRGGBBAA
+    .. tuple:: (r,g,b) | (r,g,b,a)
+    .. Surface:: pygame.Surface object
+    """
+    def __init__(self, 
+                 colors_or_surfaces: list[str | Surface | tuple[int,int,int] | tuple[int,int,int,int]], 
+                 size: list[int,int]):
+        
         self.array = []
         for col_or_surf in colors_or_surfaces:
             if isinstance(col_or_surf,str) or isinstance(col_or_surf,tuple):
@@ -53,11 +63,7 @@ class UXElement:
     def __init__(self, **options):
         self.size = options.get('size',(1,1))
         self.border_radius = options.get('border_radius',15)
-        self.text_color_group = ColorGroup(options.get('tcg',[]))
-        self.background_color_group = ColorGroup(options.get('bcg',[]))
+        self.text_color_group = TextureGroup(options.get('tcg',[]))
+        self.background_color_group = TextureGroup(options.get('bcg',[]))
         self.text = options.get('text','')
         self.font = options.get('font',FONTDRAW)
-    def get_color(self,group:ColorGroup,index:int):
-        if index < len(group.array):
-            return group.array[index]
-        return group.array[len(group.array)-1]    #Missing color indicator
