@@ -1,14 +1,23 @@
 
 from data.modules.ui.ui_element import UIElement, UIC
 from data.modules.ui.ui_button import UIButton
+from data.modules.ui.ux_element import UXElement
+from colorsys import hsv_to_rgb
+from numpy import array
 
+class UXColorPicker(UXElement):
+    def __init__(self):
+        pass
 class UIColorPicker(UIElement):
     def __init__(self, rect, **kwargs):
         super().__init__(rect, **kwargs)
         UIC.add_element('uiColorPicker')
+        
+        
+        
         """
         Needed:
-            Background
+            Background UX
             Preview
             RGB Value Textinputs
             HSV Value Textinputs

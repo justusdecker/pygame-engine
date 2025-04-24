@@ -1,4 +1,4 @@
-from pygame import Color
+from pygame import Color,Surface
 from data.modules.ui.ui_font import FONTDRAW
 """
 If color group doesn't exist create default
@@ -20,7 +20,22 @@ class ColorGroup:
     def __init__(self, colors: list[str]):
         
         self.array = [Color(color) if color else Color(0,0,0,0) for color in colors]
-        
+class TextureGroup:
+    def __init__(self, colors_or_surfaces: list[str, Surface], size: list[int,int]):
+        self.array = []
+        for col_or_surf in colors_or_surfaces:
+            if isinstance(col_or_surf,str) or isinstance(col_or_surf,tuple):
+                surf = Surface(size)
+                surf.fill(Color(col_or_surf))
+                self.array.append(surf)
+            elif isinstance(col_or_surf,Surface):
+                self.array.append(col_or_surf)
+            else:
+                raise TypeError('Type must be Surface, tuple or string!')
+    def get(self,index:int):
+        if index < len(self.array):
+            return self.array[index]
+        return self.array[len(self.array)-1]
 class UXElement:
     """
     .. size:: ``tuple[int,int]``
