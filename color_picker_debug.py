@@ -1,6 +1,5 @@
 import pygame as pg
-from colorsys import rgb_to_hsv,hsv_to_rgb
-SURF = pg.Surface((256,256),pg.SRCALPHA)
+from colorsys import hsv_to_rgb
 from numpy import array
 class ColorRect:
     def __init__(self):
