@@ -1,10 +1,11 @@
-from data.modules.ui.ui_element import UIElement
+from data.modules.ui.ui_element import UIElement,UIC
 from pygame import Surface, Rect
 from data.modules.ui.ui_button import UIButton
 class UIDropDown(UIElement):
     def __init__(self, rect: Rect, **kwargs) -> None:
         super().__init__(rect, **kwargs)
         self.set_image(Surface((1,1)))
+        UIC.add_element('uiDropDown')
         self.toggle = False
         self.mother_instance_button = UIButton(rect,ux=kwargs.get('ux',{}),on_press_callback=self.switch,layer=self.layer,parent=self.parent,group=self.group)
         self.child_instances = []

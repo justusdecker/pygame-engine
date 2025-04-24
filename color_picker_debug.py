@@ -9,16 +9,12 @@ class ColorWheel:
         self.array = [[(0,0,0) for y in range(radius)] for x in range(radius)]
         diameter = radius
         offset_radius = (diameter / 2) - 0.5
-
         for i in range(diameter):
             for j in range(diameter):
                 x = i - offset_radius
                 y = j - offset_radius
                 if x * x + y * y <= offset_radius * offset_radius + 1:
                     self.array[i][j] = (255,255,255)
-
-        
-
         self.array = array(self.array)
 class ColorLine:
     def __init__(self):
@@ -42,6 +38,7 @@ class ColorRect:
                 _line.append([col * 255 for col in hsv_to_rgb(hue,x/256,((255-y)/256) if y > 0 else 0)])
             color_array.append(_line)
         self.array = array(color_array)
+        
 CR = ColorRect()
 SURF = pg.surfarray.make_surface(CR.array)
 pg.image.save(SURF,'color_rect.png')
