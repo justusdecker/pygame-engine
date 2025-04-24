@@ -1,6 +1,26 @@
 import pygame as pg
 from colorsys import hsv_to_rgb
 from numpy import array
+
+class ColorWheel:
+    def __init__(self):
+        self.color_wheel()
+    def color_wheel(self,radius = 256):
+        self.array = [[(0,0,0) for y in range(radius)] for x in range(radius)]
+        diameter = radius
+        offset_radius = (diameter / 2) - 0.5
+
+        for i in range(diameter):
+            for j in range(diameter):
+                x = i - offset_radius
+                y = j - offset_radius
+                if x * x + y * y <= offset_radius * offset_radius + 1:
+                    self.array[i][j] = (255,255,255)
+
+        
+
+        self.array = array(self.array)
+       
 class ColorRect:
     def __init__(self):
         self.color_rect()
@@ -15,3 +35,6 @@ class ColorRect:
 CR = ColorRect()
 SURF = pg.surfarray.make_surface(CR.array)
 pg.image.save(SURF,'color_rect.png')
+CW = ColorWheel()
+SURF = pg.surfarray.make_surface(CW.array)
+pg.image.save(SURF,'color_wheel.png')
