@@ -1,5 +1,8 @@
 from pygame import Color,Surface
 from data.modules.ui.ui_font import FONTDRAW
+from data.modules.vector import Vector2,Vector4
+from pygame import Surface, SRCALPHA
+from pygame.draw import rect as rect_draw
 """
 If color group doesn't exist create default
 
@@ -59,6 +62,18 @@ class UXElement:
     .. text:: ``str``
         the text that should be rendered on top of the UXElement. Default is empty
     .. font:: ``data.modules.ui.ui_font.FONT``
+    
+    GEN METHOD
+    ******
+    Takes a list that contains layers
+    
+    each layer is then iterated to get the ind, obj & vec values.
+    
+    ind is used to find the corresponding option: font,rect or surf
+    
+    obj is the argument for the font,rect or surf elements.
+    
+    vec is the vector to determine the blit pos or the pos & dest.
     """
     def __init__(self, **options):
         self.size = options.get('size',(1,1))
@@ -67,3 +82,23 @@ class UXElement:
         self.background_color_group = TextureGroup(options.get('bcg',[]))
         self.text = options.get('text','')
         self.font = options.get('font',FONTDRAW)
+        self.tex_arr = []
+    def gen(self,group:list):
+        self.tex_arr = []
+        for layer in group:
+            SURF = Surface(self.size,SRCALPHA)
+            for ind, obj, vec in layer:
+                #Syntax: [ind | obj | vec]
+                match ind:
+                    case 0:
+                        #obj must be pygame.Color | list[int*4] | list[int*3]
+                        rect_draw(SURF, obj, vec.to_list(), border_radius = self.border_radius)
+                    case 1:
+                        SURF.blit(obj,vec.to_list())
+                    case 2:
+                        img = self.font.draw(self.text, color= obj, size = self.font.get_height())
+                        SURF.blit(img,vec.to_list())
+                    case _:
+                        raise TypeError(f'This type doesn\'t exist! [{ind}]')
+                    
+            self.tex_arr.append(obj)
