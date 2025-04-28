@@ -2,7 +2,13 @@ from pygame.display import set_mode,update as display_update,set_caption,set_ico
 from pygame import Surface,image
 from data.modules.constants import RESOLUTION, TITLE, ICON_PATH
 class Window:
+    """
+    
+    .. surface:: the surface the user can see
+    .. render:: the given object will be blitted on pos + offset
+    """
     def __init__(self):
+        "Sets the caption, resolution & icon"
         self.surface = set_mode(RESOLUTION)
         set_caption(TITLE)
         if ICON_PATH:
