@@ -44,12 +44,16 @@ class App(Application):
             group=self.group_test,
             ux = {'tcg': ('#ffffff',),'bcg': ('#777777',),'text':'hello'}
             )
-        self.nameLabel.render("test")
-        """self.btn = UIButton(
-            Rect(128,0,128,24),
-            ux={'text':'root' , 'size':(128,24)},
+        
+        self.btn = UIButton(
+            Vector4(128,0,128,24),
+            ux={
+                'text':'root' , 
+                'size':(128,24),'tcg': ('#484848','#a6a6a6','#ffffff'),'bcg': ('#777777',),
+                },
             group=self.group_test,
             cb_on_press= test_print)
+        """
         self.switch = UISwitch(
             Rect(0,24,24,24),
             ux={'size':(24,24)},

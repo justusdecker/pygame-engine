@@ -16,7 +16,7 @@ class UXLabel(UXElement):
             [[0,self.background_color_group.get(0),Vector4(0,0,*self.size)],
              [1,self.text_color_group.get(0),'center']],
         ]
-        self.surface = self.gen(g)
+        self.surface = self.gen(g)[0]
 class UILabel(UIElement):
     def __init__(self, rect: Rect, **kwargs):
         UIC.add_element('uiLabel')
@@ -32,7 +32,7 @@ class UILabel(UIElement):
             [[0,self.UX.background_color_group.get(0),Vector4(0,0,*self.UX.size)],
              [2,self.UX.text_color_group.get(0),'center']],
         ]
-        self.set_image(self.UX.gen(g))
+        self.set_image(self.UX.gen(g)[0])
     def update(self):
         super().update()
 

@@ -90,7 +90,7 @@ class UXElement:
         self.text = options.get('text','')
         self.font = options.get('font',FONTDRAW)
         self.tex_arr = []
-    def gen(self,group:list):
+    def gen(self,group:list,m:int=1):
         self.tex_arr = []
         for idx,layer in enumerate(group):
             SURF = Surface(self.size,SRCALPHA)
@@ -110,4 +110,4 @@ class UXElement:
                     
             self.tex_arr.append(SURF)
             
-        return self.tex_arr[0]
+        return self.tex_arr[0:m]
