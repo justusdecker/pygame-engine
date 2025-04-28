@@ -1,5 +1,6 @@
 from data.modules.log import LOG
 from pygame import Surface, Rect
+from data.modules.vector import Vector4
 from pygame.mouse import get_pos as mouse_pos, get_pressed as mouse_pressed
 class UIElement: pass
 
@@ -154,13 +155,13 @@ class UIElement:
         Defauls to ``''``
     """
     def __init__(self,
-                 rect: Rect,
+                 vector: Vector4,
                  **kwargs) -> None:
-        self.rect = rect.copy()
+        self.rect = vector
         
         UIC.add_element('uiElement')
-        self.pos = rect.x,rect.y
-        self.dest = rect.w,rect.h
+        self.pos = vector.x,vector.y
+        self.dest = vector.z,vector.w
         
         self.group = kwargs.get('group',UI_DEFAULT_GROUP)
         

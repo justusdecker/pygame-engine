@@ -37,14 +37,16 @@ class TextureGroup:
     .. Surface:: pygame.Surface object
     """
     def __init__(self, 
-                 colors_or_surfaces: list[str | Surface | tuple[int,int,int] | tuple[int,int,int,int]], 
+                 colors_or_surfaces: list[str | Surface | tuple[int,int,int] | tuple[int,int,int,int]],
+                 border_radius:int,
                  size: list[int,int]):
         
         self.array = []
         for col_or_surf in colors_or_surfaces:
             if isinstance(col_or_surf,str) or isinstance(col_or_surf,tuple):
                 surf = Surface(size)
-                surf.fill(Color(col_or_surf))
+                rect_draw(surf,Color(col_or_surf),(0,0,*size),border_radius= border_radius)
+
                 self.array.append(surf)
             elif isinstance(col_or_surf,Surface):
                 self.array.append(col_or_surf)
@@ -84,7 +86,7 @@ class UXElement:
         self.size = options.get('size',(1,1))
         self.border_radius = options.get('border_radius',15)
         self.text_color_group = ColorGroup(options.get('tcg',[]))
-        self.background_color_group = TextureGroup(options.get('bcg',[]),self.size)
+        self.background_color_group = TextureGroup(options.get('bcg',[]),self.border_radius,self.size)
         self.text = options.get('text','')
         self.font = options.get('font',FONTDRAW)
         self.tex_arr = []
@@ -95,17 +97,13 @@ class UXElement:
             for ind, obj, vec in layer:
                 #Syntax: [ind | obj | vec]
                 if not ind:
-                    if isinstance(obj,Surface):
-                        SURF.blit(self.background_color_group.get(idx),vec.to_list())
-                    else:
-                        rect_draw(SURF, obj, vec.to_list(), border_radius = self.border_radius)
+                    SURF.blit(obj,vec.to_list())
+
                 else:
 
                     img = self.font.draw(self.text, color= obj, size = self.font.font.get_height())
                     if vec == 'center':
                         SURF.blit(img,get_center(self.size,img.get_size()))
-
-                
                     else:
                         SURF.blit(img,vec.to_list())
 

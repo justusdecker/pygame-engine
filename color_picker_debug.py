@@ -1,7 +1,6 @@
 import pygame as pg
 from colorsys import hsv_to_rgb
 from numpy import array
-
 class ColorWheel:
     def __init__(self):
         self.color_wheel()

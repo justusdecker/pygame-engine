@@ -21,21 +21,18 @@ class UILabel(UIElement):
     def __init__(self, rect: Rect, **kwargs):
         UIC.add_element('uiLabel')
         super().__init__(rect, **kwargs)
-        self.UX = UXLabel(
-            **kwargs.get(
-                'ux',
-                {
-                    'size' : self.dest
-                    }
-                )
-            )
+        ux = kwargs.get('ux',{'size' : self.dest})
+        if 'size' not in ux:
+            ux['size'] = self.dest
+        self.UX = UXLabel(**ux)
         self.set_image(self.UX.surface)
     def render(self,text:str):
         self.UX.text = text
         g = [
-            [[0,Color('#252525'),Vector4(0,0,*self.UX.size)],
-             [2,Color('#969696'),'center']],
+            [[0,self.UX.background_color_group.get(0),Vector4(0,0,*self.UX.size)],
+             [2,self.UX.text_color_group.get(0),'center']],
         ]
         self.set_image(self.UX.gen(g))
     def update(self):
         super().update()
+

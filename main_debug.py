@@ -15,6 +15,7 @@ from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
 from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
+from data.modules.vector import Vector4
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -36,16 +37,12 @@ class App(Application):
             group=self.group_test
             )"""
         self.nameLabel = UILabel(
-            Rect(
-                48,
-                372,
-                576,
-                24
-                ),
+            Vector4(48, 372, 576, 24),
             change=True,
             clean=True,
             text='',
-            group=self.group_test
+            group=self.group_test,
+            ux = {'tcg': ('#ffffff',),'bcg': ('#777777',)}
             )
         self.nameLabel.render("test")
         """self.btn = UIButton(
