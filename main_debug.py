@@ -37,12 +37,12 @@ class App(Application):
             group=self.group_test
             )"""
         self.nameLabel = UILabel(
-            Vector4(48, 372, 576, 24),
+            Vector4(HALF_WIDTH-100, HALF_HEIGHT-24, 200, 24),
             change=True,
             clean=True,
             text='',
             group=self.group_test,
-            ux = {'tcg': ('#ffffff',),'bcg': ('#777777',)}
+            ux = {'tcg': ('#ffffff',),'bcg': ('#777777',),'text':'hello'}
             )
         self.nameLabel.render("test")
         """self.btn = UIButton(
@@ -97,7 +97,7 @@ class App(Application):
             #self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.update()
             GLOBAL_DELTA_TIME.after()
-            self.nameLabel.render(f"{GLOBAL_DELTA_TIME.get()}")
+            #self.nameLabel.render(f"{GLOBAL_DELTA_TIME.get()}")
 
 if __name__ == "__main__":
     APP = App()
