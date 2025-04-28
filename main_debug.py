@@ -53,12 +53,12 @@ class App(Application):
                 },
             group=self.group_test,
             cb_on_press= test_print)
-        """
+        
         self.switch = UISwitch(
-            Rect(0,24,24,24),
+            Vector4(0,24,24,24),
             ux={'size':(24,24)},
             group=self.group_test)
-        
+        """
         self.fileDD = UIDropDown(
             Rect(
                 256,

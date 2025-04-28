@@ -1,9 +1,9 @@
 from data.modules.ui.ui_element import UIElement, UIC
-from data.modules.ui.ux_element import UXElement
+from data.modules.ui.ux_element import UXElement, TextureGroup
 from data.modules.constants import MEDIUM_BACKGROUND_COLOR,TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR
 from pygame.draw import rect as rect_draw
 from pygame import Surface, Rect, SRCALPHA
-
+from data.modules.vector import Vector2
 
 
 class UXSwitch(UXElement):
@@ -11,20 +11,39 @@ class UXSwitch(UXElement):
     def __init__(self,
                  **options) -> None:
         if not 'bcg' in options: options['bcg'] = (MEDIUM_BACKGROUND_COLOR,)
-        if not 'tcg' in options: options['tcg'] = (TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR)
+        if not 'fcg' in options: options['fcg'] = (TEXT_COLOR,HIGHLIGHT_TEXT_COLOR,PRESSED_TEXT_COLOR)
+        
         super().__init__(**options)
+        self.foreground_color_group = TextureGroup(options['fcg'],border_radius=self.border_radius,size=(self.size[0]-4,self.size[1]-4))
         self.normal_off_image,self.hovered_off_image, self.pressed_off_image,self.normal_on_image,self.hovered_on_image, self.pressed_on_image = self.draw()
     def draw(self):
         "Use this in case you want to redraw the switch."
-        return self.gen([
-            (self.get_color(self.text_color_group,0),False),
-            (self.get_color(self.text_color_group,1),False),
-            (self.get_color(self.text_color_group,2),False),
-            (self.get_color(self.text_color_group,0),True),
-            (self.get_color(self.text_color_group,1),True),
-            (self.get_color(self.text_color_group,2),True),
-        ])
-    def gen(self,array:list=[]):
+        V_A, V_B = Vector2(0,0), Vector2(2,2)
+        g= [
+            [
+                [0,self.background_color_group.get(0),V_A],
+                ],
+            [
+                [0,self.background_color_group.get(0),V_A],
+                ],
+            [
+                [0,self.background_color_group.get(0),V_A],
+                ],[
+                [0,self.background_color_group.get(0),V_A],
+                [0,self.foreground_color_group.get(1),V_B]
+                ],
+            [
+                [0,self.background_color_group.get(0),V_A],
+                [0,self.foreground_color_group.get(2),V_B]
+                ],
+            [
+                [0,self.background_color_group.get(0),V_A],
+                [0,self.foreground_color_group.get(3),V_B]
+                ]
+        ]
+        
+        return self.gen(g,6)
+    def gen1(self,array:list=[]):
         """
         Get the switch images. Off / On states.
         """
