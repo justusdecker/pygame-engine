@@ -90,8 +90,10 @@ class App(Application):
         )
         self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
         self.time_select = UITimeSelect(Rect(512,512,48,24),group= self.group_test)
-        self.text_input = UITextInput(Rect(256,512,48,24),app=self,group= self.group_test)
+        """
         
+        self.text_input = UITextInput(Vector4(256,512,48,24),app=self,group= self.group_test)
+        """
         self.map = Map(self)"""
     def run(self):
         while self.is_running:

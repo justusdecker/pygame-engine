@@ -15,15 +15,20 @@ class UITextInput(UIElement):
         self.active = False
         self.mode = kwargs.get('mode',False)
         self.count = 0
+        self.delete = False
+        
         if 'app' in kwargs:
             self.app = kwargs['app']
         else:
             raise Exception('No App. No Game!')
-        self.enter_button = UIButton(rect,ux={'size':self.dest},on_press_callback=self.set_active,parent=self.parent,layer=self.layer+1,group=self.group)
+        
+        self.enter_button = UIButton(rect,ux={'size':self.dest,'tcg': [],'bcg': []},cb_on_press=self.set_active,parent=self.parent,layer=self.layer+1,group=self.group)
+        
         self.text_label = UILabel(rect,ux={'size':self.dest},parent=self.parent,layer=self.layer+1,group=self.group)
-        self.text_label.UX.text = self.default_text
-        self.text_label.set_image(self.text_label.UX.gen())
-        self.delete = False
+        
+        self.text_label.render(self.default_text)
+        
+        
     def set_i(self,text):
         self.text_label.UX.text = text
         self.text = text
@@ -36,7 +41,7 @@ class UITextInput(UIElement):
         """
         if not self.enter_button.is_hovered and m_get_pressed()[0]:
             self.active = False
-        CTRL = self.app.keyboardInputs['strg']#! Deprecated
+        #CTRL = self.app.pressed_keys#! Deprecated
         pressed_list = kb_get_pressed()
         if pressed_list[K_RETURN]:
             
@@ -48,28 +53,27 @@ class UITextInput(UIElement):
             self.delete = False
 
             
-        for key in self.app.keyboardInputs['currentKeys']:#! Deprecated
+        for key in self.app.pressed_keys:#! Deprecated
             if not pressed_list[K_RETURN]:
-                self.appChars(key)
+                self.append_characters(key)
         if self.text == '' and self.text_label.UX.text != self.default_text:
-            self.text_label.UX.text = self.default_text
-            self.text_label.set_image(self.text_label.UX.gen())
+            self.text_label.render(self.default_text)
         if self.active:
-            self.text_label.UX.text = f'{self.getTextEx()}'
-            self.text_label.set_image(self.text_label.UX.gen())
+            self.text_label.render(self.get_text_ex())
             
                     
         
-    def appChars(self,char):
+    def append_characters(self,char):
         self.text = str(self.text)
         if len(str(self.text)) < self.max_letters:
-            self.text += char
-    def getText(self):
+            if char <= 0x7E and char >= 0x20:
+                self.text += chr(char)
+    def get_text(self):
             """
                 Get Text Raw
             """
             return '' if self.text is None else self.text
-    def getTextEx(self):
+    def get_text_ex(self):
         """
         Get Text with Blinker
         """
