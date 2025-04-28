@@ -18,6 +18,11 @@ class UXLabel(UXElement):
         ]
         self.surface = self.gen(g)[0]
 class UILabel(UIElement):
+    """
+    No callbacks
+    
+    The text can be updated by calling the render method
+    """
     def __init__(self, rect: Rect, **kwargs):
         UIC.add_element('uiLabel')
         super().__init__(rect, **kwargs)
