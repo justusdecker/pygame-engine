@@ -3,22 +3,14 @@ from pygame.draw import rect as rect_draw
 from pygame.transform import scale
 from pygame.image import load as image_load
 from data.modules.ui.ui_element import UIElement, UIC
-class UXImage:
+from data.modules.ui.ux_element import UXElement
+class UXImage(UXElement):
     def __init__(self,**options) -> None:
-        self.size = options.get('size',(384,216))
-        self.border_radius = options.get('border_radius',15)
+        super().__init__(**options)
         CUTOUT = Surface(self.size,SRCALPHA)
         CUTOUT.fill((0,255,0))
-        rect_draw(CUTOUT,
-                     (0,0,0,0),
-                     (0,
-                      0,
-                      *self.size
-                      ),
-                        border_radius=self.border_radius
-                        )
+        rect_draw(CUTOUT, (0,0,0,0), (0, 0, *self.size), border_radius=self.border_radius)
         self.CUTOUT = CUTOUT
-        
 class UIImage(UIElement):
     def __init__(self, rect: Rect, **kwargs):
         super().__init__(rect, **kwargs)

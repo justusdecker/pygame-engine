@@ -24,18 +24,19 @@ class App(Application):
     def __init__(self):
         super().__init__()
         self.group_test = UIGroup('test')
-        """self.thumbnail = UIImage(
-            Rect(
+        self.thumbnail = UIImage(
+            Vector4(
                 48,
                 48,
-                576,
-                324
+                200,
+                200
                 ),
             ux={
-                'size': (576,324)
+                'size': (200,200)
                 },
             group=self.group_test
-            )"""
+            )
+        self.thumbnail.set_sprite('color_rect.png')
         self.nameLabel = UILabel(
             Vector4(HALF_WIDTH-100, HALF_HEIGHT-24, 200, 24),
             change=True,
@@ -96,7 +97,7 @@ class App(Application):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             #self.map.update()
-            self.window.surface.fill((0,0,0))
+            self.window.surface.fill((14,14,14))
             UIM.render_queue(self,['test'])
             #self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.update()
