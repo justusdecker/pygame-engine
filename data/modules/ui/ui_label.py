@@ -14,7 +14,7 @@ class UXLabel(UXElement):
         self.anchor = options.get('anchor','center')
         g = [
             [[0,self.background_color_group.get(0),Vector4(0,0,*self.size)],
-             [2,self.text_color_group.get(0),'center']],
+             [1,self.text_color_group.get(0),'center']],
         ]
         self.surface = self.gen(g)
 class UILabel(UIElement):

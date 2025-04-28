@@ -94,12 +94,13 @@ class UXElement:
             SURF = Surface(self.size,SRCALPHA)
             for ind, obj, vec in layer:
                 #Syntax: [ind | obj | vec]
-                if isinstance(obj,Surface):
-                    SURF.blit(self.background_color_group.get(idx),vec.to_list())
+                if not ind:
+                    if isinstance(obj,Surface):
+                        SURF.blit(self.background_color_group.get(idx),vec.to_list())
+                    else:
+                        rect_draw(SURF, obj, vec.to_list(), border_radius = self.border_radius)
                 else:
-                    rect_draw(SURF, obj, vec.to_list(), border_radius = self.border_radius)
-                    
-                    
+
                     img = self.font.draw(self.text, color= obj, size = self.font.font.get_height())
                     if vec == 'center':
                         SURF.blit(img,get_center(self.size,img.get_size()))
@@ -109,6 +110,6 @@ class UXElement:
                         SURF.blit(img,vec.to_list())
 
                     
-            self.tex_arr.append(obj)
+            self.tex_arr.append(SURF)
             
         return self.tex_arr[0]
