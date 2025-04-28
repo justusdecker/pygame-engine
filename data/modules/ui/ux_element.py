@@ -3,6 +3,7 @@ from data.modules.ui.ui_font import FONTDRAW
 from data.modules.vector import Vector2,Vector4
 from pygame import Surface, SRCALPHA
 from pygame.draw import rect as rect_draw
+from data.modules.ui.ui_calculation import get_center
 """
 If color group doesn't exist create default
 
@@ -22,7 +23,11 @@ UXButtonElement
 class ColorGroup:
     def __init__(self, colors: list[str]):
         
-        self.array = [Color(color) if color else Color(0,0,0,0) for color in colors]
+        self.array = [color if color else Color(0,0,0,0) for color in colors]
+    def get(self,index:int):
+        if index < len(self.array):
+            return self.array[index]
+        return self.array[len(self.array)-1]
 class TextureGroup:
     """
     .. array:: A list consisting of pygame Surface objects
@@ -78,27 +83,32 @@ class UXElement:
     def __init__(self, **options):
         self.size = options.get('size',(1,1))
         self.border_radius = options.get('border_radius',15)
-        self.text_color_group = TextureGroup(options.get('tcg',[]))
-        self.background_color_group = TextureGroup(options.get('bcg',[]))
+        self.text_color_group = ColorGroup(options.get('tcg',[]))
+        self.background_color_group = TextureGroup(options.get('bcg',[]),self.size)
         self.text = options.get('text','')
         self.font = options.get('font',FONTDRAW)
         self.tex_arr = []
     def gen(self,group:list):
         self.tex_arr = []
-        for layer in group:
+        for idx,layer in enumerate(group):
             SURF = Surface(self.size,SRCALPHA)
             for ind, obj, vec in layer:
                 #Syntax: [ind | obj | vec]
-                match ind:
-                    case 0:
-                        #obj must be pygame.Color | list[int*4] | list[int*3]
-                        rect_draw(SURF, obj, vec.to_list(), border_radius = self.border_radius)
-                    case 1:
-                        SURF.blit(obj,vec.to_list())
-                    case 2:
-                        img = self.font.draw(self.text, color= obj, size = self.font.get_height())
+                if isinstance(obj,Surface):
+                    SURF.blit(self.background_color_group.get(idx),vec.to_list())
+                else:
+                    rect_draw(SURF, obj, vec.to_list(), border_radius = self.border_radius)
+                    
+                    
+                    img = self.font.draw(self.text, color= obj, size = self.font.font.get_height())
+                    if vec == 'center':
+                        SURF.blit(img,get_center(self.size,img.get_size()))
+
+                
+                    else:
                         SURF.blit(img,vec.to_list())
-                    case _:
-                        raise TypeError(f'This type doesn\'t exist! [{ind}]')
+
                     
             self.tex_arr.append(obj)
+            
+        return self.tex_arr[0]
