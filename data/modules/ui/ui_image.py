@@ -12,6 +12,9 @@ class UXImage(UXElement):
         rect_draw(CUTOUT, (0,0,0,0), (0, 0, *self.size), border_radius=self.border_radius)
         self.CUTOUT = CUTOUT
 class UIImage(UIElement):
+    """
+    The image can be changed by calling the set_sprite method
+    """
     def __init__(self, rect: Rect, **kwargs):
         super().__init__(rect, **kwargs)
         UIC.add_element('uiImage')
