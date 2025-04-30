@@ -7,7 +7,7 @@ class UIDropDown(UIElement):
         self.set_image(Surface((1,1)))
         UIC.add_element('uiDropDown')
         self.toggle = False
-        self.mother_instance_button = UIButton(rect,ux=kwargs.get('ux',{}),on_press_callback=self.switch,layer=self.layer,parent=self.parent,group=self.group)
+        self.mother_instance_button = UIButton(rect,ux=kwargs.get('ux',{}),cb_on_press=self.switch,layer=self.layer,parent=self.parent,group=self.group)
         self.child_instances = []
         ux = kwargs.get('ux',{})
         rect.x = 0
@@ -17,7 +17,7 @@ class UIDropDown(UIElement):
             
             ux['text'] = text
             rect.y += 24
-            UIB = UIButton(rect,ux=ux,on_press_callback=self.btnPress,parent=self,layer=self.layer,group=self.group)
+            UIB = UIButton(rect,ux=ux,cb_on_press=self.btnPress,parent=self,layer=self.layer,group=self.group)
             self.child_instances.append(UIB)
             self._callbacks.append((callback,UIB.element_id))
         for e in self.child_instances:
