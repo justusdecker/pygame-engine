@@ -59,9 +59,9 @@ class App(Application):
             Vector4(0,24,24,24),
             ux={'size':(24,24)},
             group=self.group_test)
-        """
+        
         self.fileDD = UIDropDown(
-            Rect(
+            Vector4(
                 256,
                 0,
                 48,
@@ -71,7 +71,7 @@ class App(Application):
                 'size': (48,24),
                 'text': 'File'
                 },
-            childsInstances= [
+            childs_instances= [
                 ('New',test_print),
                 ('Load',test_print),
                 ('Save',test_print),
@@ -80,6 +80,7 @@ class App(Application):
             layer=100,
             group= self.group_test
             )
+        """
         self.progress_bar = UIProgressBar(
             Rect(
                 512,

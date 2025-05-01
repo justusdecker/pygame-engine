@@ -7,13 +7,18 @@ class UIDropDown(UIElement):
         self.set_image(Surface((1,1)))
         UIC.add_element('uiDropDown')
         self.toggle = False
-        self.mother_instance_button = UIButton(rect,ux=kwargs.get('ux',{}),cb_on_press=self.switch,layer=self.layer,parent=self.parent,group=self.group)
-        self.child_instances = []
         ux = kwargs.get('ux',{})
+        if not 'tcg' in ux:
+            ux['tcg'] = ux.get('tcg',('#484848','#a6a6a6','#ffffff'))
+        if not 'bcg' in ux:
+            ux['bcg'] = ux.get('bcg',('#777777',))
+        self.mother_instance_button = UIButton(rect,ux=ux,cb_on_press=self.switch,layer=self.layer,parent=self.parent,group=self.group)
+        self.child_instances = []
+        
         rect.x = 0
         rect.y = 0
         self._callbacks = []
-        for text,callback in kwargs.get('childsInstances',[]):
+        for text,callback in kwargs.get('childs_instances',[]):
             
             ux['text'] = text
             rect.y += 24

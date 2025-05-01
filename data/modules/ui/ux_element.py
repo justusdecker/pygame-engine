@@ -25,6 +25,7 @@ class ColorGroup:
         
         self.array = [color if color else Color(0,0,0,0) for color in colors]
     def get(self,index:int):
+        if not self.array: return Surface((1,1))
         if index < len(self.array):
             return self.array[index]
         return self.array[len(self.array)-1]
@@ -53,6 +54,7 @@ class TextureGroup:
             else:
                 raise TypeError('Type must be Surface, tuple or string!')
     def get(self,index:int):
+        if not self.array: return Surface((1,1))
         if index < len(self.array):
             return self.array[index]
         return self.array[len(self.array)-1]
