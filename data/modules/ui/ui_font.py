@@ -24,7 +24,7 @@ class FONT:
              aa: bool = True,
              color: tuple | list | Color = Color('#454545'),
              size: int = 13):
-        
+        "draws the text & return the cutoff version to set the text centered"
         self.font.set_point_size(size)
         if not text: return Surface((1,1),SRCALPHA)
         return self.cut_off(self.font.render(text,aa,color))
