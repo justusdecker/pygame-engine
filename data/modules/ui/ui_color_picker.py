@@ -2,7 +2,7 @@
 from data.modules.ui.ui_element import UIElement, UIC
 from data.modules.ui.ui_switch import UISwitch
 from data.modules.ui.ux_element import UXElement
-from data.modules.graphics_rendering import color_rect
+from data.modules.graphics_rendering import color_rect,color_line
 from data.modules.ui.ui_window import UIWindow
 from data.modules.vector import Vector4
 from pygame.surfarray import make_surface
@@ -29,11 +29,10 @@ class UIColorPicker(UIElement):
                                   ux={'size': (163,163)},parent=self.window,group=self.group,layer=self.layer+1)
         self.color_rect.set_image(scale(make_surface(color_rect(0.3)),(163,163)))
         
-        self.switch = UISwitch(
-            Vector4(0,24,24,24),
-            ux={'size':(24,24)},
-            group=self.group,
-            parent = self.window)
+        self.color_line = UIImage(Vector4(4,195,163,24),
+                                  ux={'size': (163,24)},parent=self.window,group=self.group,layer=self.layer+1)
+        self.color_line.set_image(scale(make_surface(color_line()),(163,24)))
+
         
         """
         Needed:
@@ -47,5 +46,4 @@ class UIColorPicker(UIElement):
             Color Picker?
         """
     def update(self):
-        LOG.nlog(0,'Image position: $ $',[self.layer,self.color_rect.layer])
         return super().update()
