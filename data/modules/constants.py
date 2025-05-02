@@ -28,3 +28,5 @@ PRESSED_TEXT_COLOR = '#ffffff'
 IMAGE_PATH = 'data\\bin\\img\\'
 
 CRYPT_KEY = b'kQcfSzm3nHmG3U8Pyljp6BroIt5RUqIVuSyaNswTeXY='
+
+UI_DEBUG_SWITCH = False

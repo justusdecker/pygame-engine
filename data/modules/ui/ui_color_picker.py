@@ -25,9 +25,9 @@ class UIColorPicker(UIElement):
         
         self.window = UIWindow(vector,ux= {'size':(vector.z,vector.w),'bcg': (DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR)},group=self.group)
         
-        self.color_rect = UIImage(Vector4(49,95,163,163),
+        self.color_rect = UIImage(Vector4(4,28,163,163),
                                   ux={'size': (163,163)},parent=self.window,group=self.group,layer=self.layer+1)
-        self.set_image(scale(make_surface(color_rect(0.3)),(163,163)))
+        self.color_rect.set_image(scale(make_surface(color_rect(0.3)),(163,163)))
         
         self.switch = UISwitch(
             Vector4(0,24,24,24),
@@ -47,6 +47,5 @@ class UIColorPicker(UIElement):
             Color Picker?
         """
     def update(self):
-        self.pos = self.window.pos
-        LOG.nlog(0,'Image position: $ $',self.pos)
+        LOG.nlog(0,'Image position: $ $',[self.layer,self.color_rect.layer])
         return super().update()

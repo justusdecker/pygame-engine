@@ -1,7 +1,11 @@
 from data.modules.log import LOG
-from pygame import Surface, Rect
+from pygame import Surface, Rect, KEYDOWN, K_RETURN
 from data.modules.vector import Vector4
 from pygame.mouse import get_pos as mouse_pos, get_pressed as mouse_pressed
+from pygame.display import update
+from data.modules.constants import UI_DEBUG_SWITCH
+from time import sleep
+from pygame.event import get
 class UIElement: pass
 
 class UICounter:
@@ -88,8 +92,19 @@ class UIManager:
             for object in self.queue[layer]:
                 if object.group.group_name in groups: # Check the group.
                     if object.visible:
+                        
                         _updates.append(object)
                         app.window.surface.blit(object.get_image(),object.get_abs_position())
+                        if UI_DEBUG_SWITCH:
+                            n = True
+                            LOG.nlog(0,'Object of type: $ on layer: $ pos: $ size: $ ',[object.__class__.__name__,object.layer,object.pos ,object.dest])
+                            while n:
+                                update()
+                                
+                                for e in get():
+                                    if e.type == KEYDOWN:
+                                        if e.key == K_RETURN:
+                                            n = False
         _updates.reverse()
         for object in _updates:
             object.update() 
