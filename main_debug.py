@@ -80,15 +80,12 @@ class App(Application):
             layer=100,
             group= self.group_test
             )
-        """
+        
         self.progress_bar = UIProgressBar(
-            Rect(
-                512,
-                0,
-                128,
-                24
-                ),group= self.group_test
+            Vector4(0,0,128,24),group= self.group_test,
+            ux= {'size':(128,24),'bcg': (DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR)}
         )
+        """
         self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
         self.time_select = UITimeSelect(Rect(512,512,48,24),group= self.group_test)
         """
@@ -105,6 +102,9 @@ class App(Application):
             #self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.update()
             GLOBAL_DELTA_TIME.after()
+            
+            self.progress_bar.render(self.progress_bar.UX.current_progress + (GLOBAL_DELTA_TIME.get() * .25))
+            print(self.progress_bar.UX.current_progress)
             #self.nameLabel.render(f"{GLOBAL_DELTA_TIME.get()}")
 
 if __name__ == "__main__":
