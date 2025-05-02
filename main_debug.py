@@ -95,7 +95,7 @@ class App(Application):
         
         #self.map = Map(self)
         
-        self.uiwin = UIWindow(Vector4(300,200,512,256),ux={'size':(512,256)},group= self.group_test)
+        self.uiwin = UIWindow(Vector4(300,200,512,256),ux={'size':(512,256),'text':'Window'},group= self.group_test)
     def run(self):
         a = 0
         while self.is_running:

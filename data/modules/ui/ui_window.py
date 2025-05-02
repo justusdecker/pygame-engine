@@ -19,7 +19,7 @@ class UXWindow(UXElement):
         
     def draw(self):
         g = [
-                [[0,self.background_color_group.get(0),Vector4(0,0,*self.size)],[0,self.background_color_group.get(1),Vector4(0,0,self.size[0],24)],[1,self.text_color_group.get(0),'top-center']]
+                [[0,self.background_color_group.get(0),Vector4(0,0,*self.size)],[0,self.background_color_group.get(1),Vector4(0,0,self.size[0],24)],[1,self.text_color_group.get(0),'window-text-center+h:24']]
         ]
         return self.gen(g)[0]
         #? _[]X in the next versions?

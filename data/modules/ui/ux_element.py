@@ -112,6 +112,15 @@ class UXElement:
                         SURF.blit(img,get_center(self.size,img.get_size()))
                     elif vec == 'top-center':
                         SURF.blit(img,get_top_center(self.size,img.get_size()))
+                    elif isinstance(vec,str):
+                        if vec.startswith('window-text-center'):
+                            args = {a[0]: int(a[2:]) for a in vec.split('+') if a[:2] == 'h:' or a[:2] == 'w:'}
+                            x,y = self.size
+                            x = args.get('w',self.size[0])
+                            y = args.get('h',self.size[1])
+
+                            
+                            SURF.blit(img,get_center((x,y),img.get_size()))
                     else:
                         SURF.blit(img,vec.to_list())
 
