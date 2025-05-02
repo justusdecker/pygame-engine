@@ -9,6 +9,7 @@ from pygame.surfarray import make_surface
 from pygame.transform import scale
 from data.modules.ui.ui_image import UIImage
 from data.modules.constants import DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR
+from data.modules.log import LOG
 class UXColorPicker(UXElement):
     def __init__(self):
         pass
@@ -33,6 +34,7 @@ class UIColorPicker(UIElement):
             ux={'size':(24,24)},
             group=self.group,
             parent = self.window)
+        
         """
         Needed:
             Background UX✅
@@ -46,4 +48,5 @@ class UIColorPicker(UIElement):
         """
     def update(self):
         self.pos = self.window.pos
+        LOG.nlog(0,'Image position: $ $',self.pos)
         return super().update()

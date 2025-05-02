@@ -12,6 +12,8 @@ class Log:
         """Create & Clean the Log File"""
         self.tobash = tobash
         self.tofile = tofile
+        self.last_log = ''
+        self.llc = 0
         if self.tofile:
             with open('log.txt','w') as f:
                 f.write('')
@@ -165,8 +167,13 @@ class Log:
                 word = '[NULL]'
             output += ' ' + word
         
-
-        print('[' + ('\033[34;1;1m','\033[32;1;1m','\033[33;1;1m','\033[31;1;1m')[id] + ('DEB','INF','WAR','ERR')[id] + '\033[0m] ' + output  + '\033[0m')
+        if self.last_log == output:
+            self.llc += 1
+            print(f'\033[2J[{self.llc}][' + ('\033[34;1;1m','\033[32;1;1m','\033[33;1;1m','\033[31;1;1m')[id] + ('DEB','INF','WAR','ERR')[id] + '\033[0m] ' + output  + '\033[0m')
+        else:
+            self.llc = 0
+            self.last_log = output
+            print('[' + ('\033[34;1;1m','\033[32;1;1m','\033[33;1;1m','\033[31;1;1m')[id] + ('DEB','INF','WAR','ERR')[id] + '\033[0m] ' + output  + '\033[0m')
         msg = msg.replace('μ','n')
         if self.tofile:
             with open('log.txt','a') as f:
