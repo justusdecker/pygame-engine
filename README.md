@@ -2,7 +2,7 @@
 
 The current Project [Version 0.3]:
 - color picker ui element something like this:
-
+![color_picker](https://github.com/user-attachments/assets/24399102-5612-4523-b20b-74f4fbedd275)
 - ui overhaul
 & much more!
 Use:
