@@ -5,6 +5,10 @@ from data.modules.ui.ux_element import UXElement
 from data.modules.vector import Vector4
 from data.modules.constants import DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR
 class UXLoadingBar(UXElement):
+    """
+    .. size:: the object size
+    .. bcg:: the background & foreground color
+    """
     def __init__(self,**options) -> None:
         self.current_progress = 0
         super().__init__(**options)
@@ -23,12 +27,16 @@ class UXLoadingBar(UXElement):
         return self.current_progress_image
 
 class UIProgressBar(UIElement):
+    """
+    No callbacks avaiable
+    """
     def __init__(self, rect: Vector4, **kwargs):
         super().__init__(rect, **kwargs)
         UIC.add_element('uiProgressBar')
         self.UX = UXLoadingBar(**kwargs.get('ux',{}))
         self.render(self.UX.current_progress,True)
     def render(self,progress,orfirst:bool=False):
+        "This method updates the progress of the object"
         self.set_image(self.UX.set_progress(progress,orfirst))
     def update(self):
         return super().update()
