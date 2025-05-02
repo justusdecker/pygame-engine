@@ -1,9 +1,10 @@
 <img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/engine_roadmap.png">
 
-The current Project:
-- A Pong Clone to get into Collisions
-- Multiple Collision types: [circle,rect,pixel_perfect]
+The current Project [Version 0.3]:
+- color picker ui element something like this:
 
+- ui overhaul
+& much more!
 Use:
 - Essential stuff in the UI Elements will be fixed or expanded
 The new datamanagement system will be:
@@ -18,7 +19,13 @@ Already implemented:
 - logging
 - Animationsystem
 - JSON Datamanagement
-- UI Elements like buttons, labels, text_inputs...
+- UI Elements:
+    - Buttons
+    - Textinputs
+    - labels
+    - dropdown menus
+    - progress bars
+    - Switches
 - Some UI Elements may not work currently.
 
 The Cookie Clicker Clone Project:

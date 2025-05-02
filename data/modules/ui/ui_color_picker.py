@@ -2,8 +2,7 @@
 from data.modules.ui.ui_element import UIElement, UIC
 from data.modules.ui.ui_button import UIButton
 from data.modules.ui.ux_element import UXElement
-from colorsys import hsv_to_rgb
-from numpy import array
+from data.modules.graphics_rendering import ColorLine,ColorRect
 
 class UXColorPicker(UXElement):
     def __init__(self):
