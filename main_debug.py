@@ -17,6 +17,7 @@ from data.modules.ui.ui_window import UIWindow,UIWM
 from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
 from data.modules.vector import Vector4
+from data.modules.ui.ui_color_picker import UIColorPicker
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -25,19 +26,7 @@ class App(Application):
     def __init__(self):
         super().__init__()
         self.group_test = UIGroup('test')
-        self.thumbnail = UIImage(
-            Vector4(
-                48,
-                48,
-                200,
-                200
-                ),
-            ux={
-                'size': (200,200)
-                },
-            group=self.group_test
-            )
-        self.thumbnail.set_sprite('color_rect.png')
+        
         self.nameLabel = UILabel(
             Vector4(HALF_WIDTH-100, HALF_HEIGHT-24, 200, 24),
             change=True,
@@ -55,12 +44,26 @@ class App(Application):
                 },
             group=self.group_test,
             cb_on_press= test_print)
-        
+        self.uiwin = UIWindow(Vector4(300,200,512,256),ux={'size':(512,256),'text':'Window'},group= self.group_test)
         self.switch = UISwitch(
             Vector4(0,24,24,24),
             ux={'size':(24,24)},
-            group=self.group_test)
-        
+            group=self.group_test,
+            parent = self.uiwin)
+        self.thumbnail = UIImage(
+            Vector4(
+                48,
+                48,
+                200,
+                200
+                ),
+            ux={
+                'size': (200,200)
+                },
+            group=self.group_test,
+            parent= self.uiwin
+            )
+        self.thumbnail.set_sprite('color_rect.png')
         self.fileDD = UIDropDown(
             Vector4(
                 256,
@@ -83,8 +86,9 @@ class App(Application):
             )
         
         self.progress_bar = UIProgressBar(
-            Vector4(0,0,128,24),group= self.group_test,
-            ux= {'size':(128,24),'bcg': (DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR)}
+            Vector4(24,24,128,24),group= self.group_test,
+            ux= {'size':(128,24),'bcg': (DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR)},
+            parent = self.uiwin
         )
 
         #self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
@@ -95,7 +99,9 @@ class App(Application):
         
         #self.map = Map(self)
         
-        self.uiwin = UIWindow(Vector4(300,200,512,256),ux={'size':(512,256),'text':'Window'},group= self.group_test)
+        
+
+        self.color_picker = UIColorPicker(Vector4(64,64,1,1),group=self.group_test)
     def run(self):
         a = 0
         while self.is_running:
@@ -110,7 +116,7 @@ class App(Application):
             if a > 1:
                 a = 0
             self.progress_bar.render(a)
-            #self.nameLabel.render(f"{GLOBAL_DELTA_TIME.get()}")
+            self.nameLabel.render(f"{self.color_picker.color_rect.pos}")
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
     APP = App()

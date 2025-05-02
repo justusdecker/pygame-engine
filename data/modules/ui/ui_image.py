@@ -30,3 +30,5 @@ class UIImage(UIElement):
             self.surface = scale(image_load(surface),self.dest)
             self.surface.blit(self.UX.CUTOUT,(0,0))
             self.surface.set_colorkey((0,255,0))
+    def update(self):
+        return super().update()

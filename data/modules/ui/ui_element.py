@@ -81,7 +81,9 @@ class UIManager:
         If a ``UIElement`` has already been pressed, the next ``UIElement's`` will not update.
         """
         _updates = []
-        for layer in self.queue.keys():
+        layers = [layer for layer in self.queue.keys()]
+        layers.sort()
+        for layer in layers:
             if layer in ignore_list: continue
             for object in self.queue[layer]:
                 if object.group.group_name in groups: # Check the group.
@@ -168,7 +170,7 @@ class UIElement:
         self.element_id = UIIDCOUNT.add()
         self.element_name = kwargs['element_name'] if 'element_name' in kwargs else ''
         
-        self.set_layer(kwargs['layer'] if 'layer' in kwargs else 0)
+        self.set_layer(kwargs['layer'] if 'layer' in kwargs else 100)
         
         self.set_visibility(kwargs['visible'] if 'visible' in kwargs else True)
         

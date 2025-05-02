@@ -37,6 +37,14 @@ class ColorRect:
                 _line.append([col * 255 for col in hsv_to_rgb(hue,x/256,((255-y)/256) if y > 0 else 0)])
             color_array.append(_line)
         self.array = array(color_array)
+def color_rect(hue=0.2):
+    color_array = []
+    for x in range(256):
+        _line = []
+        for y in range(256):
+            _line.append([col * 255 for col in hsv_to_rgb(hue,x/256,((255-y)/256) if y > 0 else 0)])
+        color_array.append(_line)
+    return array(color_array)
         
 CR = ColorRect()
 SURF = pg.surfarray.make_surface(CR.array)
