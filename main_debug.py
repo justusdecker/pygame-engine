@@ -13,6 +13,7 @@ from data.modules.ui.ui_progress_bar import UIProgressBar
 from data.modules.ui.ui_calendar import UICalendar
 from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
+from data.modules.ui.ui_window import UIWindow,UIWM
 from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
 from data.modules.vector import Vector4
@@ -85,28 +86,32 @@ class App(Application):
             Vector4(0,0,128,24),group= self.group_test,
             ux= {'size':(128,24),'bcg': (DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR)}
         )
-        """
-        self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
-        self.time_select = UITimeSelect(Rect(512,512,48,24),group= self.group_test)
-        """
+
+        #self.calendar = UICalendar(Rect(512,0,20,20),group= self.group_test)
+        #self.time_select = UITimeSelect(Rect(512,512,48,24),group= self.group_test)
+
         
         self.text_input = UITextInput(Vector4(256,512,48,24),app=self,group= self.group_test)
-        """
-        self.map = Map(self)"""
+        
+        #self.map = Map(self)
+        
+        self.uiwin = UIWindow(Vector4(300,200,512,256),ux={'size':(512,256)},group= self.group_test)
     def run(self):
+        a = 0
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
-            #self.map.update()
+            
             self.window.surface.fill((14,14,14))
+            #self.map.update()
             UIM.render_queue(self,['test'])
             #self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
             self.update()
-            GLOBAL_DELTA_TIME.after()
-            
-            self.progress_bar.render(self.progress_bar.UX.current_progress + (GLOBAL_DELTA_TIME.get() * .25))
-            print(self.progress_bar.UX.current_progress)
+            a += (GLOBAL_DELTA_TIME.get() * .25)
+            if a > 1:
+                a = 0
+            self.progress_bar.render(a)
             #self.nameLabel.render(f"{GLOBAL_DELTA_TIME.get()}")
-
+            GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
     APP = App()
     APP.run()

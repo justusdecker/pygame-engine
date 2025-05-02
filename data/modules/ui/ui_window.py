@@ -1,62 +1,28 @@
 from data.modules.constants import TEXT_COLOR, MEDIUM_BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR
 from data.modules.ui.ui_element import UIElement, UIC
-from pygame import Surface, Rect, SRCALPHA
+from pygame import image
 from pygame.draw import rect as rect_draw
 from data.modules.ui.ui_font import FONTDRAW
 from data.modules.ui.ui_calculation import get_center
+from data.modules.ui.ux_element import UXElement
+from data.modules.vector import Vector4
 from pygame.mouse import get_pos
-class UXWindow:
+class UXWindow(UXElement):
     def __init__(self,**options) -> None:
-        self.size = options.get('size',(128,256))
-        self.border_radius = options.get('border_radius',15)
-        self.text_color = options.get('text_color',TEXT_COLOR)
-        self.bar_color = options.get('bar_color',MEDIUM_BACKGROUND_COLOR)
-        self.bg_color = options.get('bg_color',DEFAULT_BACKGROUND_COLOR)
+        if 'bcg' not in options:
+            options['bcg'] = (DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR)
+        if 'tcg' not in options:
+            options['tcg'] = (TEXT_COLOR,)
+        super().__init__(**options)
+        
         self.text = options.get('text','')
-        self.surface = self.gen()
-        #! Draw Top
-        #! Draw Bottom
+        
+    def draw(self):
+        g = [
+                [[0,self.background_color_group.get(0),Vector4(0,0,*self.size)],[0,self.background_color_group.get(1),Vector4(0,0,self.size[0],24)],[1,self.text_color_group.get(0),'top-center']]
+        ]
+        return self.gen(g)[0]
         #? _[]X in the next versions?
-        #* This Element is needed for Node Building
-    def gen(self):
-        SURF = Surface(self.size,SRCALPHA)
-        rect_draw(
-            SURF,
-            self.bg_color,
-            (
-                0,
-                0,
-                *self.size
-                ),
-            border_radius = self.border_radius
-        )
-        rect_draw(
-            SURF,
-            self.bar_color,
-            (
-                0,
-                0,
-                self.size[0],
-                24
-                ),
-            border_top_left_radius = self.border_radius,
-            border_top_right_radius = self.border_radius
-        )
-        
-        img = FONTDRAW.draw(
-            self.text,
-            color=self.text_color
-            )
-        
-        SURF.blit(
-            img,
-            get_center(
-                (self.size[0],24),
-                img.get_size()
-                )
-            )
-        
-        return SURF
 
 class UIWindowManager:
     def __init__(self) -> None:
@@ -67,20 +33,22 @@ class UIWindowManager:
 UIWM = UIWindowManager()
 
 class UIWindow(UIElement):
-    def __init__(self, rect: Rect, **kwargs):
+    def __init__(self, vector: Vector4, **kwargs):
         UIC.add_element('uiWindow')
-        super().__init__(rect, **kwargs)
+        super().__init__(vector, **kwargs)
         self.UX = UXWindow(**kwargs.get('ux',{}))
-        self.set_image(self.UX.gen())
+        
+        self.set_image(self.UX.draw())
         self.last_mouse_pos = (0,0)
         self.drag = False
     def update(self):
+        
         mX,mY = get_pos()
         x,y = self.get_abs_position()
         w,h = self.dest[0],24
         
         if self.drag:
-            self.pos = (mX) - (self.UX.surface.get_width() // 2), mY - 12
+            self.pos = (mX) - (self.surface.get_width() // 2), mY - 12
             self.last_mouse_pos = mX,mY
         
         #! Sollte die Maus über der Bar liegen und gedrückt sein. Dann ist das Fenster beweglich.
@@ -99,12 +67,4 @@ class UIWindow(UIElement):
                 self.drag = False
                 UIWM.window_busy = False
                 UIWM.window_move_id = -1
-            
-            
-            
-        
-            
-        
-        
-        
         super().update()

@@ -39,13 +39,13 @@ class UIButton(UIElement):
     .. cb_on_release:: set the callback for on_release
     """
     def __init__(self,
-                 rect:Rect,
+                 vector:Vector4,
                  **kwargs) -> None:
         
         UIC.add_element('uiButton')
         self.UX = UXButton(**kwargs.get('ux', {}))
         
-        super().__init__(rect,**kwargs)
+        super().__init__(vector,**kwargs)
         self.set_image(self.UX.normal_image)
         self.cb_on_hover = kwargs.get('cb_on_hover',self.noCallback)
         self.cb_on_press = kwargs.get('cb_on_press',self.noCallback)

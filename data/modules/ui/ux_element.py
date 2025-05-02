@@ -3,7 +3,7 @@ from data.modules.ui.ui_font import FONTDRAW
 from data.modules.vector import Vector2,Vector4
 from pygame import Surface, SRCALPHA
 from pygame.draw import rect as rect_draw
-from data.modules.ui.ui_calculation import get_center
+from data.modules.ui.ui_calculation import get_center,get_top_center
 """
 If color group doesn't exist create default
 
@@ -45,7 +45,7 @@ class TextureGroup:
         self.array = []
         for col_or_surf in colors_or_surfaces:
             if isinstance(col_or_surf,str) or isinstance(col_or_surf,tuple):
-                surf = Surface(size)
+                surf = Surface(size,SRCALPHA)
                 rect_draw(surf,Color(col_or_surf),(0,0,*size),border_radius= border_radius)
 
                 self.array.append(surf)
@@ -99,13 +99,19 @@ class UXElement:
             for ind, obj, vec in layer:
                 #Syntax: [ind | obj | vec]
                 if not ind:
-                    SURF.blit(obj,vec.to_list())
+                    if len(vec.to_list()) == 4:
+                        x,y,w,h = vec.to_list()
+                        SURF.blit(obj,(x,y),(0,0,w,h))
+                    elif len(vec.to_list()) == 2:
+                        SURF.blit(obj,vec.to_list())
 
                 else:
 
                     img = self.font.draw(self.text, color= obj, size = self.font.font.get_height())
                     if vec == 'center':
                         SURF.blit(img,get_center(self.size,img.get_size()))
+                    elif vec == 'top-center':
+                        SURF.blit(img,get_top_center(self.size,img.get_size()))
                     else:
                         SURF.blit(img,vec.to_list())
 
