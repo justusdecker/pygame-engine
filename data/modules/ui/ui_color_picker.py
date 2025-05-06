@@ -33,16 +33,11 @@ class UIColorPicker(UIElement):
                                   ux={'size': (163,24)},parent=self.window,group=self.group,layer=self.layer+1)
         self.color_line.set_image(scale(make_surface(color_line()),(163,24)))
 
-        
+        self.current_color = None
         """
         Needed:
             Background UX✅
             Preview
-            RGB Value Textinputs
-            HSV Value Textinputs
-            HEX Value Textinput
-            SET Button
-            RST Button
             Color Picker?
         """
     def update(self):
