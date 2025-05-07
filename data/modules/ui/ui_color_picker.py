@@ -48,6 +48,14 @@ class UIColorPicker(UIElement):
 
         self.hex_set_button = UIButton(Vector4(103,219,64,24),ux={'size':(64,24),'text':'set'},group = self.group, parent = self.window,cb_on_press = self.set_col_by_hex)
 
+        self.r_input = UITextInput(Vector4(4,247,40,24),app=self.app,default_text = 'r', max_letters = 3,mode = 'only_numbers',group = self.group, parent = self.window)
+        
+        self.g_input = UITextInput(Vector4(44,247,40,24),app=self.app,default_text = 'g', max_letters = 3,mode = 'only_numbers',group = self.group, parent = self.window)
+        
+        self.b_input = UITextInput(Vector4(84,247,40,24),app=self.app,default_text = 'b', max_letters = 3,mode = 'only_numbers',group = self.group, parent = self.window)
+        
+        self.hex_set_button = UIButton(Vector4(122,247,40,24),ux={'size':(40,24),'text':'set'},group = self.group, parent = self.window,cb_on_press = self.set_col_by_rgb)
+        
         self.current_color = Color(0,0,0,255)
         self.last_pos = (0,162)
         self.hue = 0.2
@@ -62,6 +70,17 @@ class UIColorPicker(UIElement):
             b = (b / 255) if b > 0 else 0
             self.hue = rgb_to_hsv(r,g,b)[0]
             self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
+    def set_col_by_rgb(self,*_):
+
+        r = int(self.r_input.text)
+        r = r if r < 256 else 255
+        g = int(self.g_input.text)
+        g = g if g < 256 else 255
+        b = int(self.b_input.text)
+        b = b if b < 256 else 255
+        self.current_color = r,g,b
+        self.hue = rgb_to_hsv(r,g,b)[0]
+        self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
     def update(self):
         if self.color_rect.is_pressed:
             x1 , y1 = get_pos()
