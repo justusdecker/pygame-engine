@@ -22,7 +22,6 @@ UXButtonElement
 """
 class ColorGroup:
     def __init__(self, colors: list[str]):
-        
         self.array = [color if color else Color(0,0,0,0) for color in colors]
     def get(self,index:int):
         if not self.array: return Surface((1,1))
