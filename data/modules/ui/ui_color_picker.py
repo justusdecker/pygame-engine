@@ -10,7 +10,7 @@ from data.modules.vector import Vector4
 from pygame.surfarray import make_surface
 from pygame.transform import scale
 from pygame.mouse import get_pos
-from pygame import Color
+from pygame import Color, Surface, SRCALPHA
 from data.modules.ui.ui_image import UIImage
 from data.modules.constants import DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR
 from data.modules.log import LOG
@@ -42,10 +42,12 @@ class UIColorPicker(UIElement):
                                   ux={'size': (163,24)},parent=self.window,group=self.group,layer=self.layer+1)
         self.color_line.set_image(scale(make_surface(color_line()),(163,24)))
 
+        self.color_preview = UIImage(Vector4(40,40,82,82),ux={'size': (82,82)},parent=self.color_rect,group=self.group,layer=self.layer+2)
+        
         self.hex_input = UITextInput(Vector4(4,219,163,24),app=self.app,default_text = 'hex', max_letters = 7,mode = 'hex_color_value',group = self.group, parent = self.window)
 
         self.current_color = Color(0,0,0,255)
-
+        self.last_pos = (0,162)
         self.hue = 0.2
     def update(self):
         if self.color_rect.is_pressed:
@@ -56,7 +58,7 @@ class UIColorPicker(UIElement):
             if x >= 0 and y >= 0 and x < self.color_rect.dest[0] and y < self.color_rect.dest[1]:
                 
                 self.current_color = self.color_rect.get_image().get_at((x,y))
-        
+                self.last_pos = x,y
         if self.color_line.is_pressed:
             x1 , y1 = get_pos()
             x2, y2 = self.color_line.get_abs_position()
@@ -66,6 +68,8 @@ class UIColorPicker(UIElement):
                 p = (x / self.color_line.dest[0]) if x > 0 else 0
                 self.hue = p
                 self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
+                self.current_color = self.color_rect.get_image().get_at(self.last_pos)
+            
         if self.hex_input.active:
             if len(self.hex_input.text) == 7:
                 rgb = self.hex_input.text
@@ -77,4 +81,12 @@ class UIColorPicker(UIElement):
                 b = (b / 255) if b > 0 else 0
                 self.hue = rgb_to_hsv(r,g,b)[0]
                 self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
+        if self.color_rect.is_pressed or self.color_line.is_pressed:
+            
+            surf = Surface(self.color_preview.dest,SRCALPHA)
+            surf.fill(self.current_color)
+            self.color_preview.set_image(surf)
+        else:
+            surf = Surface(self.color_preview.dest,SRCALPHA)
+            self.color_preview.set_image(surf)
         return super().update()
