@@ -1,6 +1,6 @@
 
 from data.modules.ui.ui_element import UIElement, UIC
-from data.modules.ui.ui_switch import UISwitch
+from data.modules.ui.ui_button import UIButton
 from data.modules.ui.ux_element import UXElement
 from data.modules.ui.ui_text_input import UITextInput
 from data.modules.graphics_rendering import color_rect,color_line
@@ -44,11 +44,24 @@ class UIColorPicker(UIElement):
 
         self.color_preview = UIImage(Vector4(40,40,82,82),ux={'size': (82,82)},parent=self.color_rect,group=self.group,layer=self.layer+2)
         
-        self.hex_input = UITextInput(Vector4(4,219,163,24),app=self.app,default_text = 'hex', max_letters = 7,mode = 'hex_color_value',group = self.group, parent = self.window)
+        self.hex_input = UITextInput(Vector4(4,219,99,24),app=self.app,default_text = 'hex', max_letters = 7,mode = 'hex_color_value',group = self.group, parent = self.window)
+
+        self.hex_set_button = UIButton(Vector4(103,219,64,24),ux={'size':(64,24),'text':'set'},group = self.group, parent = self.window,cb_on_press = self.set_col_by_hex)
 
         self.current_color = Color(0,0,0,255)
         self.last_pos = (0,162)
         self.hue = 0.2
+    def set_col_by_hex(self,*_):
+        if len(self.hex_input.text) == 7:
+            rgb = self.hex_input.text
+            
+            r,g,b = int(rgb[1:3],16),int(rgb[3:5],16),int(rgb[5:7],16)
+            self.current_color = r,g,b
+            r = (r / 255) if r > 0 else 0
+            g = (g / 255) if g > 0 else 0
+            b = (b / 255) if b > 0 else 0
+            self.hue = rgb_to_hsv(r,g,b)[0]
+            self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
     def update(self):
         if self.color_rect.is_pressed:
             x1 , y1 = get_pos()
@@ -70,17 +83,7 @@ class UIColorPicker(UIElement):
                 self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
                 self.current_color = self.color_rect.get_image().get_at(self.last_pos)
             
-        if self.hex_input.active:
-            if len(self.hex_input.text) == 7:
-                rgb = self.hex_input.text
-                
-                r,g,b = int(rgb[1:3],16),int(rgb[3:5],16),int(rgb[5:7],16)
-                self.current_color = r,g,b
-                r = (r / 255) if r > 0 else 0
-                g = (g / 255) if g > 0 else 0
-                b = (b / 255) if b > 0 else 0
-                self.hue = rgb_to_hsv(r,g,b)[0]
-                self.color_rect.set_image(scale(make_surface(color_rect(self.hue)),(163,163)))
+
         if self.color_rect.is_pressed or self.color_line.is_pressed:
             
             surf = Surface(self.color_preview.dest,SRCALPHA)
