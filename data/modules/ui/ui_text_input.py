@@ -82,7 +82,18 @@ class UITextInput(UIElement):
         self.count += GLOBAL_DELTA_TIME.get()
         if self.active:
             self.set_text()
-            if self.mode == 'only_numbers':
+            if self.mode == 'hex_color_value':
+                text = ''
+                for i,char in enumerate(self.text):
+                    if char.upper() in '0123456789ABCDEF#':
+                        text += char
+                if not text:
+                    self.text = ''
+                else:
+                    if text[0] != '#' or len(text) != 7:
+                        self.text = ''
+                self.text = text
+            elif self.mode == 'only_numbers':
                 text = ''
                 for i,char in enumerate(self.text):
                     if char.isdecimal() or (char == '-' and i == 0 ):

@@ -101,7 +101,7 @@ class App(Application):
         
         
 
-        self.color_picker = UIColorPicker(Vector4(64,64,1,1),group=self.group_test)
+        self.color_picker = UIColorPicker(Vector4(64,64,1,1),group=self.group_test,app=self)
     def run(self):
         a = 0
         while self.is_running:
