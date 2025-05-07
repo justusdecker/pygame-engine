@@ -61,7 +61,8 @@ class UITextInput(UIElement):
         if self.active:
             self.text_label.render(self.get_text_ex())
             
-                    
+    def overwrite_text(self,text):
+        self.text_label.render(text)      
         
     def append_characters(self,char):
         self.text = str(self.text)
