@@ -1,5 +1,4 @@
 import os
-from json import dumps
 
 class NestedFileStructure:
     def __init__(self):
