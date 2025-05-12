@@ -18,6 +18,7 @@ from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
 from data.modules.vector import Vector4
 from data.modules.ui.ui_color_picker import UIColorPicker
+from data.modules.ui.ui_array import UIArray
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -102,6 +103,9 @@ class App(Application):
         
 
         self.color_picker = UIColorPicker(Vector4(64,64,1,1),group=self.group_test,app=self)
+
+        self.array = UIArray(Vector4(0,0,512,512),element_size=(8,8),group = self.group_test)
+    
     def run(self):
         a = 0
         while self.is_running:
