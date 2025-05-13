@@ -35,6 +35,10 @@ class Vector:
         return Vector(*[getattr(self,val) << getattr(v,val) for val in vars(self) if val != "l"],l=self.l)
     def __rshift__(self,v:VectorX):
         return Vector(*[getattr(self,val) >> getattr(v,val) for val in vars(self) if val != "l"],l=self.l)
+    def __getattr__(self,name):
+        v = Vector(*[getattr(self,c) for c in name if hasattr(self,c)],l=len(name))
+        self.__setattr__(name,v)
+        return v
     def count(self,i:int) -> int:
         return [getattr(self,val) for val in vars(self) if val != "l"].count(i)
     def to_list(self) -> list[int | float]:
@@ -43,6 +47,7 @@ class Vector:
         return ' '.join([str(getattr(self,val)) for val in vars(self) if val != "l"])
     def to_dict(self) -> dict[str, int | float]:
         return {val : getattr(self,val) for val in vars(self) if val != "l"}
+    
 class Vector2(Vector): 
     def __init__(self,*args): super().__init__(*args,l=2)
 class Vector3(Vector):
