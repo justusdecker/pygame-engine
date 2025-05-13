@@ -6,7 +6,7 @@ from pygame import Surface,SRCALPHA
 from pygame.transform import scale
 from pygame.mouse import get_pos
 from data.modules.vector import Vector4
-
+from data.modules.algorithms import flood_fill
 class UIArray(UIElement):
     def __init__(self, vector:Vector4, **kwargs):
         super().__init__(vector,**kwargs)
@@ -48,6 +48,8 @@ class UIArray(UIElement):
                         self.low_res_surface.set_at(px_set,self.color)
                     case 'brush':
                         circle(self.low_res_surface,self.color,px_set,self.tool_size)
+                    case 'fill':
+                        flood_fill(self.low_res_surface,*px_set,self.color)
                 self.image.set_image(scale(self.low_res_surface,self.dest))
 
         return super().update()

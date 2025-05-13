@@ -1,7 +1,7 @@
 from data.modules.constants import *
 from data.modules.window import Window
 from pygame.event import get as get_events
-from pygame import QUIT,quit as pg_quit,Rect,image,K_b,K_p
+from pygame import QUIT,quit as pg_quit,Rect,image,K_b,K_p,K_f
 from data.modules.data_management import DM
 from data.modules.ui.ui_element import UIGroup,UIM
 from data.modules.ui.ui_image import UIImage
@@ -128,6 +128,8 @@ class App(Application):
                 self.array.current_tool = 'brush'
             if keys.get_pressed()[K_p]:
                 self.array.current_tool = 'pixel'
+            if keys.get_pressed()[K_f]:
+                self.array.current_tool = 'fill'
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
     APP = App()
