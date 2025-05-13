@@ -25,10 +25,8 @@ class Vector:
         return Vector(*[(getattr(self,val) / getattr(v,val)) if getattr(self,val) and getattr(v,val) else 0 for val in VALUES if self.both_existent(v,val)],l=self.l)
     def __floordiv__(self,v:VectorX):
         return Vector(*[((getattr(self,val) // getattr(v,val)) if getattr(self,val) and getattr(v,val) else 0) if self.both_existent(v,val) else getattr(self,val) for val in VALUES],l=self.l)
-    
     def __str__(self):
         return f'Vector{self.l}({" ".join([val + " = " + str(getattr(self,val)) for val in vars(self) if val != "l"])})'
-    
     def __eq__(self,v:VectorX):
         return all([getattr(self,val) == getattr(v,val) for val in vars(self) if val != "l"])
     def __lshift__(self,v:VectorX):
@@ -36,9 +34,7 @@ class Vector:
     def __rshift__(self,v:VectorX):
         return Vector(*[getattr(self,val) >> getattr(v,val) for val in vars(self) if val != "l"],l=self.l)
     def __getattr__(self,name):
-        v = Vector(*[getattr(self,c) for c in name if hasattr(self,c)],l=len(name))
-        self.__setattr__(name,v)
-        return v
+        return Vector(*[getattr(self,c) for c in name if hasattr(self,c)],l=len(name))
     def count(self,i:int) -> int:
         return [getattr(self,val) for val in vars(self) if val != "l"].count(i)
     def to_list(self) -> list[int | float]:
