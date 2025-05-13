@@ -116,7 +116,7 @@ class App(Application):
             #self.map.update()
             UIM.render_queue(self,['test'])
             #self.progress_bar.UX.current_progress += GLOBAL_DELTA_TIME.get() * .25
-            self.update()
+            
             a += (GLOBAL_DELTA_TIME.get() * .25)
             if a > 1:
                 a = 0
@@ -130,6 +130,7 @@ class App(Application):
                 self.array.current_tool = 'pixel'
             if keys.get_pressed()[K_f]:
                 self.array.current_tool = 'fill'
+            self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
     APP = App()
