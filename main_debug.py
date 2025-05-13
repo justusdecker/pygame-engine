@@ -1,7 +1,7 @@
 from data.modules.constants import *
 from data.modules.window import Window
 from pygame.event import get as get_events
-from pygame import QUIT,quit as pg_quit,Rect,image
+from pygame import QUIT,quit as pg_quit,Rect,image,K_b,K_p
 from data.modules.data_management import DM
 from data.modules.ui.ui_element import UIGroup,UIM
 from data.modules.ui.ui_image import UIImage
@@ -19,6 +19,7 @@ from data.modules.app import Application
 from data.modules.vector import Vector4
 from data.modules.ui.ui_color_picker import UIColorPicker
 from data.modules.ui.ui_array import UIArray
+import pygame.key as keys
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -104,7 +105,7 @@ class App(Application):
 
         self.color_picker = UIColorPicker(Vector4(64,64,1,1),group=self.group_test,app=self)
 
-        self.array = UIArray(Vector4(0,0,512,512),element_size=(8,8),group = self.group_test)
+        self.array = UIArray(Vector4(0,0,512,512),element_size=(8,8),group = self.group_test,layer=60)
     
     def run(self):
         a = 0
@@ -123,6 +124,10 @@ class App(Application):
                 self.array.set_color(self.color_picker.current_color)
             self.progress_bar.render(a)
             self.nameLabel.render(f"{self.color_picker.color_rect.pos}")
+            if keys.get_pressed()[K_b]:
+                self.array.current_tool = 'brush'
+            if keys.get_pressed()[K_p]:
+                self.array.current_tool = 'pixel'
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
     APP = App()
