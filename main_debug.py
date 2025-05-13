@@ -119,6 +119,8 @@ class App(Application):
             a += (GLOBAL_DELTA_TIME.get() * .25)
             if a > 1:
                 a = 0
+            if self.array.color != self.color_picker.current_color:
+                self.array.set_color(self.color_picker.current_color)
             self.progress_bar.render(a)
             self.nameLabel.render(f"{self.color_picker.color_rect.pos}")
             GLOBAL_DELTA_TIME.after()

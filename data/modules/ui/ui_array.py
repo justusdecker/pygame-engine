@@ -17,10 +17,13 @@ class UIArray(UIElement):
         self.low_res_surface = Surface((self.dest[0] // w,self.dest[1] // h))
         #self.low_res_surface.fill((128,128,128))
         self.image.set_image(scale(self.low_res_surface,self.dest))
-        
+        self.set_color((255,255,255))
                 
     def color_change(self,btn:UIButton):
         btn.surface.fill((255,255,255))
+    def set_color(self,col):
+        self.color = col
+    
     def get_xy(self) -> tuple[int,int]:
         
         for x in range(self.low_res_surface.get_width()):
@@ -34,11 +37,11 @@ class UIArray(UIElement):
                 if _mx >= _x and _my >= _y and _mx <= _w and _my <= _h:
                     return x,y
     def update(self):
-        if self.this_frame_pressed:
+        if self.is_pressed:
             st = perf_counter()
             px_set = self.get_xy()
             if px_set is not None:
-                self.low_res_surface.set_at(px_set,(255,255,255))
+                self.low_res_surface.set_at(px_set,self.color)
                 self.image.set_image(scale(self.low_res_surface,self.dest))
             print(perf_counter() - st)
         return super().update()
