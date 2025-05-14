@@ -1,3 +1,6 @@
+
+![pe_logo](https://github.com/user-attachments/assets/963147b8-a6f6-4f39-a2a8-720c7883b4d4)
+Pygame-engine project
 <img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/engine_roadmap.png">
 
 The current Project [Version 0.3]:
