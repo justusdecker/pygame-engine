@@ -14,7 +14,6 @@ from data.modules.ui.ui_calendar import UICalendar
 from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
 from data.modules.ui.ui_window import UIWindow,UIWM
-from data.modules.tests.tile_based_game import Map
 from data.modules.app import Application
 from data.modules.vector import Vector4
 from data.modules.ui.ui_color_picker import UIColorPicker
