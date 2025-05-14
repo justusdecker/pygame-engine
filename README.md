@@ -22,7 +22,7 @@ The new datamanagement system will be:
 - can be interacting with the registry(If needed)
     
 
-Already implemented:
+## Already implemented:
 - simple box collisions between two entitys
 - vectors
 - logging
@@ -37,11 +37,14 @@ Already implemented:
     - progress bars
     - Switches
 - Some UI Elements may not work currently.
+## Subprojects:
+### The Cookie Clicker Clone Project:
+<p align="center" width="100%">
+    <img width="50%" src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/cookie_clicker_clone_project-1.png">
+</p>
 
-The Cookie Clicker Clone Project:
-<img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/cookie_clicker_clone_project-1.png">
 
-Coming soon: 
+### Coming soon: 
 
 - A DOOM Clone to get into pseudo 3D(variant)
 - A Mario Kart Clone to to get into pseudo 3D(variant)
