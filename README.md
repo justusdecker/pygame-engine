@@ -1,4 +1,4 @@
-<p align="right" width="100%">
+<p align="center" width="100%">
     <img width="33%" src="https://github.com/user-attachments/assets/963147b8-a6f6-4f39-a2a8-720c7883b4d4"> 
 </p>
 Pygame-engine project
