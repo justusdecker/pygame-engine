@@ -2,6 +2,8 @@ from data.modules.constants import *
 from data.modules.window import Window
 from pygame.event import get as get_events
 from pygame import QUIT,quit as pg_quit,Clock, KEYDOWN,KEYUP
+from pygame.image import load
+from time import sleep
 
 class Application:
     """
@@ -14,6 +16,9 @@ class Application:
         self.is_running = True
         self.CLK = Clock()
         self.pressed_keys = []
+        self.window.render(load('data\\bin\\img\\pe_logo.ico'),(HALF_WIDTH,HALF_HEIGHT),(-128,-128))
+        self.update()
+        sleep(.35)
 
     def update(self):
         "Updates the window & calls the event handler"

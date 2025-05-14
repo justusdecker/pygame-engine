@@ -65,7 +65,6 @@ class App(Application):
             group=self.group_test,
             parent= self.uiwin
             )
-        self.thumbnail.set_sprite('color_rect.png')
         self.fileDD = UIDropDown(
             Vector4(
                 256,

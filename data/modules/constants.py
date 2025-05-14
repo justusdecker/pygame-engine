@@ -14,7 +14,7 @@ QUARTER_HEIGHT = HEIGHT >> 2
 
 FPS = 60
 TITLE = "Pygame Engine"
-ICON_PATH = None
+ICON_PATH = 'data\\bin\\img\\pe_logo.ico'
 
 GLOBAL_DELTA_TIME = DeltaTime()
 
