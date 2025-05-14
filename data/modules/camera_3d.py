@@ -27,10 +27,10 @@ class Camera:
         ux, uy, uz, w = self.up
         
         return array(
-            [rx,ux,fx,0],
+            [[rx,ux,fx,0],
             [ry,uy,fy,0],
             [rz,uz,fz,0],
-            [0,0,0,1]
+            [0,0,0,1]]
         )
     def camera_matrix(self):
         return self.translate_matrix @ self.rotate_matrix()
