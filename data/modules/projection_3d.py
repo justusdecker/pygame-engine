@@ -15,10 +15,10 @@ class Projection:
         m22 = (FAR + NEAR) / (FAR - NEAR)
         m32 = -2 * NEAR * FAR / (FAR - NEAR)
         self.projection_matrix = array(
-            [m00,0,0,0],
+            [[m00,0,0,0],
             [0,m11,0,0],
             [0,0,m22,1],
-            [0,0,m32,0]
+            [0,0,m32,0]]
         )
         self.to_screen_matrix = array(
             [
