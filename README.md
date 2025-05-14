@@ -1,12 +1,17 @@
 <p align="center" width="100%">
     <img width="15%" src="https://github.com/user-attachments/assets/963147b8-a6f6-4f39-a2a8-720c7883b4d4"> 
 </p>
+
 # Pygame-engine project:
-<img src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/engine_roadmap.png">
+
+
+<p align="center" width="100%">
+    <img width="50%" src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/engine_roadmap.png">
+</p>
 
 ## The current Project [Version 0.3]:
-- color picker ui element something like this:
-![color_picker](https://github.com/user-attachments/assets/24399102-5612-4523-b20b-74f4fbedd275)
+- engine logo blend in
+## This stuff will coming soon:
 - ui overhaul
 & much more!
 Use:
@@ -24,6 +29,7 @@ Already implemented:
 - Animationsystem
 - JSON Datamanagement
 - UI Elements:
+    - Colorpicker
     - Buttons
     - Textinputs
     - labels
