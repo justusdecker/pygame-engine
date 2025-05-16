@@ -2,10 +2,12 @@ from pygame import Color
 from data.modules.software_rendering_3d.object_3d import Object3D
 from data.modules.software_rendering_3d.camera_3d import *
 from data.modules.software_rendering_3d.projection_3d import *
+from pygame.mouse import set_visible
 class SoftwareRenderer:
     def __init__(self,app):
         self.app = app
         self.create_objects()
+        #set_visible(False)
     def create_objects(self):
         self.camera = Camera(self,[0.5,1,-4])
         self.projection = Projection(self)
