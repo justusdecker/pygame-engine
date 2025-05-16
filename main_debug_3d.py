@@ -1,6 +1,6 @@
 from data.modules.constants import *
 from data.modules.app import Application
-from data.modules.software_renderer_3d import SoftwareRenderer
+from data.modules.software_rendering_3d.software_renderer_3d import SoftwareRenderer
 import pygame.key as keys
 def test_print(*args):
     print(args, "Hello World!")

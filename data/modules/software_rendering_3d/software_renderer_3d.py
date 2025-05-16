@@ -1,7 +1,7 @@
 from pygame import Color
-from data.modules.object_3d import Object3D
-from data.modules.camera_3d import *
-from data.modules.projection_3d import *
+from data.modules.software_rendering_3d.object_3d import Object3D
+from data.modules.software_rendering_3d.camera_3d import *
+from data.modules.software_rendering_3d.projection_3d import *
 class SoftwareRenderer:
     def __init__(self,app):
         self.app = app
