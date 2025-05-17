@@ -17,7 +17,10 @@ class App(Application):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             self.window.surface.fill((36,36,36))
-            self.tileset.render(Vector2(100,100),2)
+            self.tileset.render(Vector2(100,100),3)
+            self.tileset.render(Vector2(116,116),4)
+            self.tileset.render(Vector2(132,132),5)
+            
             self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
