@@ -1,6 +1,7 @@
 from data.modules.constants import *
 from data.modules.app import Application
 from data.modules.platformer_rendering.tileset import TileSet
+from data.modules.platformer_rendering.tilemap import TileMap
 from data.modules.vector import Vector2
 from pygame.image import load
 import pygame.key as keys
@@ -11,15 +12,16 @@ def test_print(*args):
 class App(Application):
     def __init__(self):
         super().__init__()
-        self.tileset = TileSet(self,load('data\\bin\\img\\test_tileset.png'),Vector2(16,16))
+        #self.tileset = TileSet(self,load('data\\bin\\img\\test_tileset.png'),Vector2(16,16),Vector2(32,32))
+        self.tilemap = TileMap(self,load('data\\bin\\img\\test_tileset.png'),Vector2(16,16),Vector2(20,20),None)
     def run(self):
 
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             self.window.surface.fill((36,36,36))
-            self.tileset.render(Vector2(100,100),3)
-            self.tileset.render(Vector2(116,116),4)
-            self.tileset.render(Vector2(132,132),5)
+            self.tilemap.render()
+            #self.tileset.render(Vector2(132,132),4)
+            #self.tileset.render(Vector2(164,164),5)
             
             self.update()
             GLOBAL_DELTA_TIME.after()
