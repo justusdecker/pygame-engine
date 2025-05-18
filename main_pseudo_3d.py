@@ -6,6 +6,7 @@ from data.modules.vector import Vector2
 from data.modules.ws_pseudo_3d.ws_map import Map
 from data.modules.ws_pseudo_3d.ws_player import Player
 from data.modules.ws_pseudo_3d.ws_ray_casting import RayCasting
+from data.modules.ws_pseudo_3d.ws_object_renderer import ObjectRenderer
 from pygame.image import load
 import pygame.key as keys
 def test_print(*args):
@@ -23,6 +24,7 @@ class App(Application):
     def new_game(self):
         self.map = Map(self)
         self.player = Player(self)
+        self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
     def run(self):
 
