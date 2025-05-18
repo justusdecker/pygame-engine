@@ -1,6 +1,11 @@
 import pygame as pg
 import math
-from data.modules.constants import GLOBAL_DELTA_TIME,WIDTH,HEIGHT
+from data.modules.constants import GLOBAL_DELTA_TIME,WIDTH,HEIGHT,HALF_WIDTH,HALF_HEIGHT
+
+MOUSE_SENSITIVITY = 0.3
+MOUSE_MAX_REL = 40
+MOUSE_BORDER_LEFT = 100
+MOUSE_BORDER_RIGHT = WIDTH - MOUSE_BORDER_LEFT
 
 class Player:
     speed = 1.6
@@ -33,10 +38,10 @@ class Player:
             dx += -speed_sin
             dy += speed_cos
         self.check_wall_collision(dx,dy)
-        if keys[pg.K_LEFT]:
+        """if keys[pg.K_LEFT]:
             self.angle -= self.rot_speed * GLOBAL_DELTA_TIME.get()
         elif keys[pg.K_RIGHT]:
-            self.angle += self.rot_speed * GLOBAL_DELTA_TIME.get()
+            self.angle += self.rot_speed * GLOBAL_DELTA_TIME.get()"""
         self.angle %= math.tau
     def draw(self):
         
@@ -52,8 +57,16 @@ class Player:
             self.x += dx
         if self.check_wall(int(self.x),int(self.y + dy * scale)):
             self.y += dy
+    def mouse_control(self):
+        mx,my = pg.mouse.get_pos()
+        if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
+            pg.mouse.set_pos([HALF_WIDTH,HALF_HEIGHT])
+        self.rel = pg.mouse.get_rel()[0]
+        self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self.rel))
+        self.angle += self.rel * MOUSE_SENSITIVITY * GLOBAL_DELTA_TIME.get()
     def update(self):
         self.movement()
+        self.mouse_control()
     @property
     def pos(self):
         return self.x, self.y
