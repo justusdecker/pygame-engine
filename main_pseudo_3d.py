@@ -5,6 +5,7 @@ from data.modules.platformer_rendering.tilemap import TileMap
 from data.modules.vector import Vector2
 from data.modules.ws_pseudo_3d.ws_map import Map
 from data.modules.ws_pseudo_3d.ws_player import Player
+from data.modules.ws_pseudo_3d.ws_ray_casting import RayCasting
 from pygame.image import load
 import pygame.key as keys
 def test_print(*args):
@@ -22,6 +23,7 @@ class App(Application):
     def new_game(self):
         self.map = Map(self)
         self.player = Player(self)
+        self.raycasting = RayCasting(self)
     def run(self):
 
         while self.is_running:
@@ -30,7 +32,7 @@ class App(Application):
             self.map.draw()
             self.player.update()
             self.player.draw()
-            
+            self.raycasting.update()
             self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
