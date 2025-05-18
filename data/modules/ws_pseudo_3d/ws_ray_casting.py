@@ -65,6 +65,9 @@ class RayCasting:
             
             #pg.draw.line(self.app.window.surface,'yellow',(100*px,100*py),(100*px+100*depth*cos_a,100*py+100*depth*sin_a),2)
             
+            # remove fishbowl effect
+            depth *= math.cos(self.app.player.angle - ray_angle)
+            
             # projection
             proj_height = SCREEN_DIST / (depth + 0.0001)
             
