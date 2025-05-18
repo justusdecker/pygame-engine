@@ -20,5 +20,6 @@ class ObjectRenderer:
     def load_wall_textures(self):
         return {
             1: self.get_texture('data\\bin\\img\\stone.png'),
-            2: self.get_texture('data\\bin\\img\\wood.png')
+            2: self.get_texture('data\\bin\\img\\stone_with_window.png'),
+            3: self.get_texture('data\\bin\\img\\dark_stone.png')
         }
