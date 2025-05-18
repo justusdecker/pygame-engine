@@ -5,7 +5,7 @@ from data.modules.constants import GLOBAL_DELTA_TIME,WIDTH,HEIGHT
 class Player:
     speed = 1.6
     rot_speed = .6
-    scale = 60
+    scale = .2
     def __init__(self,app):
         self.app = app
         self.x , self.y = 1.5, 5
@@ -47,10 +47,10 @@ class Player:
     def check_wall(self,x,y):
         return (x,y) not in self.app.map.world_map
     def check_wall_collision(self,dx,dy):
-        scale = self.scale / (GLOBAL_DELTA_TIME.get() + 0.0001)
-        if self.check_wall(int(self.x + dx),int(self.y)):
+        scale = self.scale / (GLOBAL_DELTA_TIME.get() + 0.000001)
+        if self.check_wall(int(self.x + dx * scale),int(self.y)):
             self.x += dx
-        if self.check_wall(int(self.x),int(self.y + dy)):
+        if self.check_wall(int(self.x),int(self.y + dy * scale)):
             self.y += dy
     def update(self):
         self.movement()
