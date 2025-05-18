@@ -1,12 +1,14 @@
 import pygame as pg
 import math
-from data.modules.constants import WIDTH
+from data.modules.constants import WIDTH, HALF_WIDTH, HALF_HEIGHT
 FOV = math.pi / 3
 H_FOV = FOV / 2
 NUM_RAYS = WIDTH // 2
 H_NUM_RAYS = NUM_RAYS // 2
 DELTA_ANGLE = FOV / NUM_RAYS
 MAX_DEPTH = 20
+SCREEN_DIST = HALF_WIDTH / math.tan(H_FOV)
+SCALE = WIDTH // NUM_RAYS
 class RayCasting:
     def __init__(self,app):
         self.app = app
@@ -61,8 +63,15 @@ class RayCasting:
             
             # debug drawing
             
-            pg.draw.line(self.app.window.surface,'yellow',(100*px,100*py),(100*px+100*depth*cos_a,100*py+100*depth*sin_a),2)
+            #pg.draw.line(self.app.window.surface,'yellow',(100*px,100*py),(100*px+100*depth*cos_a,100*py+100*depth*sin_a),2)
             
+            # projection
+            proj_height = SCREEN_DIST / (depth + 0.0001)
+            
+            # draw walls
+            
+            pg.draw.rect(self.app.window.surface,'white',
+                         (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
             ray_angle += DELTA_ANGLE
     def update(self):
         self.ray_cast()

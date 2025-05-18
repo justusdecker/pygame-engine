@@ -29,8 +29,8 @@ class App(Application):
         while self.is_running:
             GLOBAL_DELTA_TIME.before()
             self.window.surface.fill((36,36,36))
-            self.map.draw()
-            self.player.update()
+            #self.map.draw()
+            #self.player.update()
             self.player.draw()
             self.raycasting.update()
             self.update()
