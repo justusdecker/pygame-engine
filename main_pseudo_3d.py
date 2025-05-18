@@ -34,6 +34,7 @@ class App(Application):
             #self.map.draw()
             self.player.update()
             self.raycasting.update()
+            self.object_renderer.draw()
             self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
