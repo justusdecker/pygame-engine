@@ -31,8 +31,7 @@ class Player:
         elif keys[pg.K_d]:
             dx += -speed_sin
             dy += speed_cos
-        self.x += dx
-        self.y += dy
+        self.check_wall_collision(dx,dy)
         if keys[pg.K_LEFT]:
             self.angle -= self.rot_speed * GLOBAL_DELTA_TIME.get()
         elif keys[pg.K_RIGHT]:
@@ -44,6 +43,13 @@ class Player:
         pg.draw.line(self.app.window.surface,'yellow',(self.x*100,self.y*100),(self.x*100+WIDTH* math.cos(self.angle),
                                                                                self.y*100+WIDTH* math.sin(self.angle)),2)
         pg.draw.circle(self.app.window.surface,'green',(self.x*100,self.y*100),15)
+    def check_wall(self,x,y):
+        return (x,y) not in self.app.map.world_map
+    def check_wall_collision(self,dx,dy):
+        if self.check_wall(int(self.x + dx),int(self.y)):
+            self.x += dx
+        if self.check_wall(int(self.x),int(self.y + dy)):
+            self.y += dy
     def update(self):
         self.movement()
     @property
