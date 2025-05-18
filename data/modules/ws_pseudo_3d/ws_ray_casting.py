@@ -70,7 +70,9 @@ class RayCasting:
             
             # draw walls
             
-            pg.draw.rect(self.app.window.surface,'white',
+            color = [255 / (1 + depth ** 5 * 0.00002)] * 3
+            
+            pg.draw.rect(self.app.window.surface,color,
                          (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
             ray_angle += DELTA_ANGLE
     def update(self):
