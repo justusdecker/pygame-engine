@@ -3,7 +3,7 @@ from math import atan2, pi, tau, hypot, cos
 from data.modules.ws_pseudo_3d.ws_ray_casting import DELTA_ANGLE, SCALE, H_NUM_RAYS,SCREEN_DIST
 from data.modules.constants import WIDTH, HALF_HEIGHT
 class SpriteObject:
-    def __init__(self, app, path,pos=(4.5,3.5)):
+    def __init__(self, app, path,pos=(4.5,3.5),scale=0.5,shift=0.45):
         self.app = app
         self.player = app.player
         self.x, self.y = pos
@@ -13,13 +13,16 @@ class SpriteObject:
         self.IMAGE_RATIO = self.IMAGE_WIDTH / self.image.get_height()
         self.dx, self.dy, self.theta, self.screen_x, self.dist, self.norm_dist = 0,0,0,0,1,1
         self.sprite_half_width = 0
+        self.SPRITE_SCALE = scale
+        self.SPRITE_HEIGHT_SHIFT = shift
     def get_sprite_projection(self):
-        proj = SCREEN_DIST / self.norm_dist
+        proj = SCREEN_DIST / self.norm_dist * self.SPRITE_SCALE
         proj_width, proj_height = proj * self.IMAGE_RATIO,proj
         image = pg.transform.scale(self.image,(proj_width,proj_height))
         
         self.sprite_half_width = proj_height // 2
-        pos = self.screen_x - self.sprite_half_width, HALF_HEIGHT - proj_height // 2
+        height_shift = proj_height * self.SPRITE_HEIGHT_SHIFT
+        pos = self.screen_x - self.sprite_half_width, HALF_HEIGHT - proj_height // 2 + height_shift
         self.app.raycasting.objects_to_render.append((self.norm_dist,image,pos))
     def get_sprite(self):
         dx = self.x - self.player.x
