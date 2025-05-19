@@ -1,4 +1,6 @@
 import pygame as pg
+from data.modules.constants import WIDTH, HALF_HEIGHT, HEIGHT
+
 TEXTURE_SIZE = 256
 H_TEXTURE_SIZE = TEXTURE_SIZE // 2
 
@@ -7,8 +9,19 @@ class ObjectRenderer:
         self.app = app
         self.screen = app.window
         self.wall_textures = self.load_wall_textures()
+        self.sky_image = self.get_texture('data\\bin\\img\\sky.png',(WIDTH,HALF_HEIGHT))
+        self.sky_offset = 0
     def draw(self):
+        self.draw_background()
         self.render_game_objects()
+    def draw_background(self):
+        self.sky_offset = (self.sky_offset + 4.5 * self.app.player.rel) % WIDTH
+        self.screen.surface.blit(self.sky_image,(-self.sky_offset,0))
+        self.screen.surface.blit(self.sky_image,(-self.sky_offset + WIDTH,0))
+        
+        # floor
+        
+        self.screen.surface.fill((24,24,24),(0,HALF_HEIGHT,WIDTH,HEIGHT))
     def render_game_objects(self):
         list_objects = self.app.raycasting.objects_to_render
         for depth, image, pos in list_objects:
