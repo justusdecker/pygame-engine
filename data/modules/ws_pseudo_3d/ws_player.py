@@ -15,6 +15,12 @@ class Player:
         self.app = app
         self.x , self.y = 1.5, 5
         self.angle = 0
+        self.shot = False
+        self.moving = False
+    def single_fire_event(self):
+        if pg.mouse.get_pressed()[0]:
+            if not self.shot:
+                self.shot = True
     def movement(self):
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
@@ -24,19 +30,23 @@ class Player:
         speed_cos = speed * cos_a
         
         keys = pg.key.get_pressed()
-        
+        self.moving = False
         if keys[pg.K_w]:
             dx += speed_cos
             dy += speed_sin
+            self.moving = True
         elif keys[pg.K_s]:
             dx += -speed_cos
             dy += -speed_sin
+            self.moving = True
         if keys[pg.K_a]:
             dx += speed_sin
             dy += -speed_cos
+            self.moving = True
         elif keys[pg.K_d]:
             dx += -speed_sin
             dy += speed_cos
+            self.moving = True
         self.check_wall_collision(dx,dy)
         """if keys[pg.K_LEFT]:
             self.angle -= self.rot_speed * GLOBAL_DELTA_TIME.get()

@@ -8,6 +8,8 @@ from data.modules.ws_pseudo_3d.ws_player import Player
 from data.modules.ws_pseudo_3d.ws_ray_casting import RayCasting
 from data.modules.ws_pseudo_3d.ws_object_renderer import ObjectRenderer
 from data.modules.ws_pseudo_3d.ws_sprite_object import SpriteObject, AnimatedSprite
+from data.modules.ws_pseudo_3d.ws_object_handler import ObjectHandler
+from data.modules.ws_pseudo_3d.ws_weapon import Weapon
 from pygame.mouse import set_visible
 from pygame.image import load
 import pygame.key as keys
@@ -28,8 +30,8 @@ class App(Application):
         self.player = Player(self)
         self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
-        self.static_sprite = SpriteObject(self,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png')
-        self.animated_sprite = AnimatedSprite(self,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png',(5.5,3.5))
+        self.obj_handler = ObjectHandler(self)
+        self.weapon = Weapon(self,'data\\bin\\img\\lantern_animated\\lantern_f1.png',10,sc=False)
     def run(self):
 
         while self.is_running:
@@ -38,9 +40,11 @@ class App(Application):
             #self.map.draw()
             self.player.update()
             self.raycasting.update()
-            self.static_sprite.update()
-            self.animated_sprite.update()
+            self.obj_handler.update()
+            self.weapon.update()
+            
             self.object_renderer.draw()
+            self.weapon.draw()
             self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":
