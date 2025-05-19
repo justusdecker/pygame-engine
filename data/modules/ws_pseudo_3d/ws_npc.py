@@ -38,13 +38,18 @@ class NPC(AnimatedSprite):
         self.accuracy = 0.15
         self.alive = True
         self.pain = False
+        
+        self.on_me = False,False
     def update(self):
         self.check_animation_time()
         self.get_sprite()
         self.run_logic()
     def check_hit_in_npc(self):
-        print(self.app.player.shot, HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width)
-        if self.app.player.shot:
+        on_me_l = self.on_me
+        self.on_me = self.app.player.shot, HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width
+        
+        if on_me_l[1] and not on_me_l[0] and all(self.on_me):
+        
             if HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width:
                 self.app.player.shot = False
                 self.pain = True
