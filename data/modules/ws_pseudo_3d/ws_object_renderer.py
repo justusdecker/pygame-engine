@@ -23,7 +23,7 @@ class ObjectRenderer:
         
         self.screen.surface.fill((24,24,24),(0,HALF_HEIGHT,WIDTH,HEIGHT))
     def render_game_objects(self):
-        list_objects = self.app.raycasting.objects_to_render
+        list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
         for depth, image, pos in list_objects:
             self.screen.render(image,pos)
     @staticmethod
