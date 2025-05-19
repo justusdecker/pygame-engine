@@ -10,8 +10,7 @@ class WeaponHandler:
         self.anim_attack = Weapon(app,'data\\bin\\img\\lantern_attack_animated\\lantern_f1.png',13,0.1,False)
     def update(self):
         self.app.player.single_fire_event()
-        m = get_pressed()[0] 
-        print(m, self.reloading)
+        m = get_pressed()[0]
         if m or self.reloading:
             if m:
                 self.reloading = m

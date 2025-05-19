@@ -1,7 +1,6 @@
 import pygame as pg
 import math
 from data.modules.constants import GLOBAL_DELTA_TIME,WIDTH,HEIGHT,HALF_WIDTH,HALF_HEIGHT
-
 MOUSE_SENSITIVITY = 0.3
 MOUSE_MAX_REL = 40
 MOUSE_BORDER_LEFT = 100
@@ -17,9 +16,13 @@ class Player:
         self.angle = 0
         self.shot = False
         self.moving = False
+
+    def step_sounds(self):
+        """ Will be added soon!"""
     def single_fire_event(self):
         if pg.mouse.get_pressed()[0]:
             if not self.shot and not self.app.weapon.reloading:
+                self.app.sound.play_sound('attack')
                 self.shot = True
                 self.app.weapon.reloading = True
     def movement(self):
@@ -78,6 +81,7 @@ class Player:
     def update(self):
         self.movement()
         self.mouse_control()
+        self.step_sounds()
     @property
     def pos(self):
         return self.x, self.y

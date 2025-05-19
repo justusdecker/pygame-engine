@@ -10,6 +10,7 @@ from data.modules.ws_pseudo_3d.ws_object_renderer import ObjectRenderer
 from data.modules.ws_pseudo_3d.ws_sprite_object import SpriteObject, AnimatedSprite
 from data.modules.ws_pseudo_3d.ws_object_handler import ObjectHandler
 from data.modules.ws_pseudo_3d.ws_weapon_handler import WeaponHandler
+from data.modules.audio_handler import AudioHandler
 from pygame.mouse import set_visible
 from pygame.image import load
 import pygame.key as keys
@@ -32,6 +33,10 @@ class App(Application):
         self.raycasting = RayCasting(self)
         self.obj_handler = ObjectHandler(self)
         self.weapon = WeaponHandler(self)
+        self.sound = AudioHandler({},{'attack': 'data\\bin\\sfx\\attack.mp3',
+                                      'step_0': 'data\\bin\\sfx\\step_0.mp3',
+                                      'step_1': 'data\\bin\\sfx\\step_1.mp3',
+                                      'step_2': 'data\\bin\\sfx\\step_2.mp3'})
     def run(self):
 
         while self.is_running:
