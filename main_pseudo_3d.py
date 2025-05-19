@@ -9,7 +9,7 @@ from data.modules.ws_pseudo_3d.ws_ray_casting import RayCasting
 from data.modules.ws_pseudo_3d.ws_object_renderer import ObjectRenderer
 from data.modules.ws_pseudo_3d.ws_sprite_object import SpriteObject, AnimatedSprite
 from data.modules.ws_pseudo_3d.ws_object_handler import ObjectHandler
-from data.modules.ws_pseudo_3d.ws_weapon import Weapon
+from data.modules.ws_pseudo_3d.ws_weapon_handler import WeaponHandler
 from pygame.mouse import set_visible
 from pygame.image import load
 import pygame.key as keys
@@ -31,7 +31,7 @@ class App(Application):
         self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
         self.obj_handler = ObjectHandler(self)
-        self.weapon = Weapon(self,'data\\bin\\img\\lantern_animated\\lantern_f1.png',13,0.2,sc=False)
+        self.weapon = WeaponHandler(self)
     def run(self):
 
         while self.is_running:
@@ -41,10 +41,10 @@ class App(Application):
             self.player.update()
             self.raycasting.update()
             self.obj_handler.update()
-            self.weapon.update()
+            
             
             self.object_renderer.draw()
-            self.weapon.draw()
+            self.weapon.update()
             self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":

@@ -36,6 +36,6 @@ class Weapon(AnimatedSprite):
         self.app.window.render(self.images[0],self.weapon_pos)
     def update(self,animation_callback):
         self.check_animation_time()
-        self.animate_walk()
+        animation_callback()
         #self.app.player.single_fire_event()
         #self.animate_shot()
