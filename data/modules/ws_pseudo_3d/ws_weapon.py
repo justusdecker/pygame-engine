@@ -9,7 +9,33 @@ class Weapon(AnimatedSprite):
             scale_func(img, (self.image.get_width() * scale,self.image.get_height() * scale))
         for img in self.images ])
         self.weapon_pos = (HALF_WIDTH - self.images[0].get_width() // 2, HEIGHT - self.images[0].get_height())
+        self.reloading = False
+        self.num_images = len(self.images)
+        self.frame_counter = 0
+        self.damage = 50
+    def animate_shot(self):
+        if self.reloading:
+            self.app.player.shot = False
+            if self.animation_trigger:
+                self.images.rotate(-1)
+                self.image = self.images[0]
+                self.frame_counter += 1
+                if self.frame_counter == self.num_images:
+                    self.reloading = False
+                    self.frame_counter = 0
+                    
+    def animate_walk(self):
+        if self.app.player.moving:
+            if self.animation_trigger:
+                self.images.rotate(-1)
+                self.image = self.images[0]
+                self.frame_counter += 1
+                if self.frame_counter == self.num_images:
+                    self.frame_counter = 0
     def draw(self):
         self.app.window.render(self.images[0],self.weapon_pos)
-    def update(self):
-        pass
+    def update(self,animation_callback):
+        self.check_animation_time()
+        self.animate_walk()
+        #self.app.player.single_fire_event()
+        #self.animate_shot()

@@ -31,7 +31,7 @@ class App(Application):
         self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
         self.obj_handler = ObjectHandler(self)
-        self.weapon = Weapon(self,'data\\bin\\img\\lantern_animated\\lantern_f1.png',10,sc=False)
+        self.weapon = Weapon(self,'data\\bin\\img\\lantern_animated\\lantern_f1.png',13,0.2,sc=False)
     def run(self):
 
         while self.is_running:

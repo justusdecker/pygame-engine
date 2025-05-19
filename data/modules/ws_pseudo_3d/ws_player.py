@@ -19,8 +19,9 @@ class Player:
         self.moving = False
     def single_fire_event(self):
         if pg.mouse.get_pressed()[0]:
-            if not self.shot:
+            if not self.shot and not self.app.weapon.reloading:
                 self.shot = True
+                self.app.weapon.reloading = True
     def movement(self):
         sin_a = math.sin(self.angle)
         cos_a = math.cos(self.angle)
