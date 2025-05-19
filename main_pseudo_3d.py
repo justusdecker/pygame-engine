@@ -47,7 +47,6 @@ class App(Application):
             self.raycasting.update()
             self.obj_handler.update()
             
-            
             self.object_renderer.draw()
             self.weapon.update()
             self.update()
