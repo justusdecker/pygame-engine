@@ -2,6 +2,9 @@ import pygame as pg
 from math import atan2, pi, tau, hypot, cos
 from data.modules.ws_pseudo_3d.ws_ray_casting import DELTA_ANGLE, SCALE, H_NUM_RAYS,SCREEN_DIST
 from data.modules.constants import WIDTH, HALF_HEIGHT
+import os
+from collections import deque
+from time import time
 class SpriteObject:
     def __init__(self, app, path,pos=(4.5,3.5),scale=0.5,shift=0.45):
         self.app = app
@@ -44,4 +47,35 @@ class SpriteObject:
         
     def update(self):
         self.get_sprite()
-        
+
+
+class AnimatedSprite(SpriteObject):
+    def __init__(self, app, path:str, pos=(4.5, 3.5), scale=0.5, shift=0.45, animation_time=.1):
+        super().__init__(app, path, pos, scale, shift)
+        self.animation_time = animation_time
+        self.path = path.rsplit('\\',1)[0]
+        self.images = self.get_images(self.path)
+        self.animation_time_prev = time()
+        self.animation_trigger = False
+    def update(self):
+        super().update()
+        self.check_animation_time()
+        self.animate(self.images)
+    def animate(self,images: deque):
+        if self.animation_trigger:
+            images.rotate(-1)
+            self.image = images[0]
+    def check_animation_time(self):
+        self.animation_trigger = False
+        time_now = time()
+        if time_now - self.animation_time_prev > self.animation_time:
+            self.animation_time_prev = time_now
+            self.animation_trigger = True
+    def get_images(self,path):
+        images = deque()
+        for file_name in os.listdir(path):
+            if os.path.isfile(os.path.join(path,file_name)):
+                img = pg.image.load(path + '\\' + file_name).convert_alpha()
+                images.append(img)
+                
+        return images
