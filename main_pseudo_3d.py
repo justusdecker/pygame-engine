@@ -1,7 +1,6 @@
 from data.modules.constants import *
 from data.modules.app import Application
-from data.modules.platformer_rendering.tileset import TileSet
-from data.modules.platformer_rendering.tilemap import TileMap
+
 from data.modules.vector import Vector2
 from data.modules.ws_pseudo_3d.ws_map import Map
 from data.modules.ws_pseudo_3d.ws_player import Player
