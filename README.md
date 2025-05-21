@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-    <img width="15%" src="https://github.com/user-attachments/assets/963147b8-a6f6-4f39-a2a8-720c7883b4d4"> 
+    <img width="15%" src="https://github.com/user-attachments/assets/fc5f364c-9c77-40bb-b016-82e7d0c51104"> 
 </p>
 
 # Pygame-engine project:
