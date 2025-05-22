@@ -77,3 +77,33 @@ float EF_EaseInOutSine(float x) {
     const float PI = 3.14159;
     return -(cos(x * PI) - 1) / 2;
 }
+
+float EF_EaseInBounce(float x) {
+    const float N = 7.5625;
+    const float D = 2.75;
+
+    const float A = 0.75;
+    const float B = 0.9375;
+    const float C = 0.984375;
+
+    const float X1 = x - (1.5 / D);
+    const float X2 = x - (2.25 / D);
+    const float X3 = x - (2.625 / D);
+
+    if ( x < 1 / D ) {
+        return N * pow(x, 2);
+    }
+    else if (x < 2 / D) {
+        return N * pow(X1, 2) + A;
+    }
+    else if (x < 2.5 / D) {
+        return N * pow(X2, 2) + B;
+    }
+    else {
+        return N * pow(X3, 2) + C;
+    }
+}
+float EF_EaseOutBounce(float x) {
+    const float PI = 3.14159;
+    return 1 - EF_EaseInBounce(1 - x);
+}
