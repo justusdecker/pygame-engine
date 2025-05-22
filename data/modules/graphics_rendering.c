@@ -1,16 +1,25 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
 
-char *ConvertHsvToRgb(float H, float S, float V) {
+typedef struct rgb_color {
+    unsigned char rgb[3];
+} color;
+
+typedef struct p_array {
+    unsigned char arr[256][256][3];
+} pixel_array;
+
+color ConvertHsvToRgb(float H, float S, float V) {
     float r, g, b;
     
 
     // First, we get the hue (H), saturation (S), brightness (V ), where H is in a scale
     // between 0 to 6 inclusively, and S and V in a scale between 0 to 1.
 
-    float h = H / 360;
-    float s = S / 100;
-    float v = V / 100;
+    float h = H; // must be in range 0-1
+    float s = S; // must be in range 0-1
+    float v = V; // must be in range 0-1
 
     //Incidentally, the brightness, V , also happens to represent the brightest channel in our resulting RGB colour.
 
@@ -20,7 +29,6 @@ char *ConvertHsvToRgb(float H, float S, float V) {
 	float x = v * (1 - s);
 	float y = v * (1 - f * s);
 	float z = v * (1 - (1 - f) * s);
-
     // V(v) alpha(x) beta(y) gamma(z)
     switch (i % 6) {
 		case 0: r = v, g = z, b = x; break;
@@ -30,24 +38,27 @@ char *ConvertHsvToRgb(float H, float S, float V) {
 		case 4: r = z, g = x, b = v; break;
 		case 5: r = v, g = x, b = y; break;
 	}
-    static char rgb[3];
 
-    rgb[0] = (char)r * 255;
-    rgb[1] = (char)g * 255;
-    rgb[2] = (char)b * 255;
-    return rgb;
+    color rgb;
+
+    rgb.rgb[0] = (unsigned char) (r * 255);
+    rgb.rgb[1] = (unsigned char) (g * 255);
+    rgb.rgb[2] = (unsigned char) (b * 255);
     
+    return rgb;
 }
 
-
-char *ColorRect(float hue) {
-
-    unsigned char arr[256][256][3];
-    for (unsigned x = 0; x < 256; x++) {
-        for (unsigned y = 0; y < 256; y++) {
-            //next step calculation of and creating a array
+pixel_array ColorRect(float hue) {
+    static pixel_array arr;
+    for (unsigned int x = 0; x <= 255; x++) {
+        for (unsigned int y = 0; y <= 255; y++) {
+            color rgb = ConvertHsvToRgb(hue,(float)(x)/256,(255-(float)(y))/256);
             
-            }
+            //arr.arr[x][y][0] = (unsigned char)rgb.rgb[0];
+            //arr.arr[x][y][1] = (unsigned char)rgb.rgb[1];
+            //arr.arr[x][y][2] = (unsigned char)rgb.rgb[2];
+            
+        }
     }
     return arr;
 }
