@@ -1,7 +1,77 @@
 #include <math.h>
 
-void *animator(int func) {
-    // will be added later
+
+float *animator(float (*ptr)()) {
+    // will be tested & changed later
+    float arr[100];
+    for (char i; i < 100; i++) {
+        arr[i] = (*ptr)(i * 0.01);
+    }
+    
+}
+
+float EF_EaseInOutQuad(float x) {
+
+    if (x == 0) {
+        return 0;
+    }
+    if (x > 0.5) {
+        return 8*x*x;
+    }
+    else {
+        return 1 - pow(-2 * x + 2, 2) / 2;
+    }
+}
+
+float EF_EaseInOutCubic(float x) {
+
+    if (x == 0) {
+        return 0;
+    }
+    if (x > 0.5) {
+        return 4*x*x*x;
+    }
+    else {
+        return 1 - pow(-2 * x + 2, 3) / 2;
+    }
+}
+
+float EF_EaseInOutQuart(float x) {
+
+    if (x == 0) {
+        return 0;
+    }
+    if (x > 0.5) {
+        return 8*x*x*x*x;
+    }
+    else {
+        return 1 - pow(-2 * x + 2, 4) / 2;
+    }
+}
+
+float EF_EaseInOutQuint(float x) {
+
+    if (x == 0) {
+        return 0;
+    }
+    if (x > 0.5) {
+        return 16*x*x*x*x*x;
+    }
+    else {
+        return 1 - pow(-2 * x + 2, 5) / 2;
+    }
+}
+
+float EF_EaseInOutCirc(float x) {
+    if (x == 0) {
+        return 0;
+    }
+    if (x > 0.5) {
+        return (1 - sqrt(abs(1 - pow(2 * x , 2)))) / 2;
+    }
+    else {
+        return (sqrt(abs(1 - pow(-2 * x + 2 , 2))) + 1) / 2;
+    }
 }
 
 float EF_Heartbeat(float x) {
