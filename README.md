@@ -1,7 +1,3 @@
-<p align="center" width="100%">
-    <img width="15%" src="https://github.com/user-attachments/assets/fc5f364c-9c77-40bb-b016-82e7d0c51104"> 
-</p>
-
 # Pygame-engine project:
 
 
