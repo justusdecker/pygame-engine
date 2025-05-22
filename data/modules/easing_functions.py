@@ -47,38 +47,38 @@ class Animations:
     def ease_in_out_quart(x: float) -> float:
         return [8*x*x*x*x,1 - ((-2 * x + 2)**4)/2][x > .5]
 
-    def ease_out_quart(x: float) -> float:
-        return 1 - ((1-x)**4)
+    #def ease_out_quart(x: float) -> float:
+    #    return 1 - ((1-x)**4)
 
-    def ease_in_quart(x: float) -> float:
-        return x**4
+    #def ease_in_quart(x: float) -> float:
+    #    return x**4
 
     def ease_in_out_cubic(x: float) -> float:
         return [4*x*x*x,1 - ((-2 * x + 2)**3)/2][x > .5]
 
-    def ease_out_cubic(x: float) -> float:
-        return 1 - ((1-x)**3)
+    #def ease_out_cubic(x: float) -> float:
+    #    return 1 - ((1-x)**3)
 
-    def ease_in_cubic(x: float) -> float:
-        return x**3
+    #def ease_in_cubic(x: float) -> float:
+    #    return x**3
     
     def ease_in_out_quad(x: float) -> float:
         return [2*x*x,1 - ((-2 * x + 2)**2)/2][x > .5]
     
-    def ease_out_quad(x: float) -> float:
-        return (x*-1)**2
+    #def ease_out_quad(x: float) -> float:
+    #    return (x*-1)**2
 
-    def ease_in_quad(x: float) -> float:
-        return x**2
+    #def ease_in_quad(x: float) -> float:
+    #    return x**2
     
-    def ease_out_sine(x:float) -> float:
-        return cos(x*pi/2)
+    #def ease_out_sine(x:float) -> float:
+    #    return cos(x*pi/2)
     
-    def ease_in_sine(x:float) -> float:
-        return 1 - cos(x*pi/2)
+    #def ease_in_sine(x:float) -> float:
+    #    return 1 - cos(x*pi/2)
 
-    def ease_in_out_sine(x: float) -> float:
-        return -(cos(pi * x) - 1) / 2
+    #def ease_in_out_sine(x: float) -> float:
+    #    return -(cos(pi * x) - 1) / 2
     
     def ease_in_out_bounce(x: float) -> float:
         """Coming soon"""
