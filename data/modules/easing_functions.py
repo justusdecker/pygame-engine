@@ -8,41 +8,41 @@ def animator(func) -> list[float]: return [func(i * .01) for i in range(101)]
 
 class Animations:
     
-    def linear(x: float) -> float:
-        return x
+    #def linear(x: float) -> float:
+    #    return x
     
     def heartbeat(x: float) -> float:
         E = 1.70158 * 1.525
         return [((((2 * x)**2)) * ((E + 1) * (2 * x )- E)) / 2,(((2 * x - 2)**2) * ((E + 1) * (x * 2 - 2) + E)) / 2][x > .5]
 
-    def ease_out_back(x: float) -> float:
-        C = 1.70158
-        E = C - 1
-        return 1 + C * ((x - 1) **3) + E * ((x - 1)**2)
+    #def ease_out_back(x: float) -> float:
+    #    C = 1.70158
+    #    E = C - 1
+    #    return 1 + C * ((x - 1) **3) + E * ((x - 1)**2)
 
-    def ease_in_back(x: float) -> float:
-        C = 1.70158
-        E = C - 1
-        return C * (x **3) - E * (x**2)
+    #def ease_in_back(x: float) -> float:
+    #    C = 1.70158
+    #    E = C - 1
+    #    return C * (x **3) - E * (x**2)
 
     def ease_in_out_circ(x: float) -> float:
         if x == 0: return 0
         return [((1 - sqrt(abs(1 - ((2 * x)**2)))) / 2),((sqrt(abs(1 - ((-2 * x + 2)**2))) + 1)/ 2)][x > .5]
 
-    def ease_out_circ(x: float) -> float:
-        return sqrt(1 - ((x - 1)**2))
+    #def ease_out_circ(x: float) -> float:
+    #    return sqrt(1 - ((x - 1)**2))
 
-    def ease_in_circ(x: float) -> float:
-        return 1 - sqrt(1 - (x**2))
+    #def ease_in_circ(x: float) -> float:
+    #    return 1 - sqrt(1 - (x**2))
 
     def ease_in_out_quint(x: float) -> float:
         return [16*x*x*x*x*x,1 - ((-2 * x + 2)**5)/2][x > .5]
 
-    def ease_out_quint(x: float) -> float:
-        return 1 - ((1-x)**5)
+    #def ease_out_quint(x: float) -> float:
+    #    return 1 - ((1-x)**5)
 
-    def ease_in_quint(x: float) -> float:
-        return x**5
+    #def ease_in_quint(x: float) -> float:
+    #    return x**5
 
     def ease_in_out_quart(x: float) -> float:
         return [8*x*x*x*x,1 - ((-2 * x + 2)**4)/2][x > .5]
