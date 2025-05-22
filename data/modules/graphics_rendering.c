@@ -41,13 +41,13 @@ char *ConvertHsvToRgb(float H, float S, float V) {
 
 
 char *ColorRect(float hue) {
-    unsigned char w = 0;
-    unsigned char z = 0;
-    for (unsigned x = 0; x < 255; x++) {
-        for (unsigned y = 0; y < 255; y++) {
-            w++;
+
+    unsigned char arr[256][256][3];
+    for (unsigned x = 0; x < 256; x++) {
+        for (unsigned y = 0; y < 256; y++) {
+            //next step calculation of and creating a array
+            
             }
-        z++;
     }
-    printf("%d %d",w,z);
+    return arr;
 }
