@@ -8,10 +8,6 @@ def animator(func) -> list[float]: return [func(i * .01) for i in range(101)]
 
 class Animations:
 
-    def heartbeat(x: float) -> float:
-        E = 1.70158 * 1.525
-        return [((((2 * x)**2)) * ((E + 1) * (2 * x )- E)) / 2,(((2 * x - 2)**2) * ((E + 1) * (x * 2 - 2) + E)) / 2][x > .5]
-
     def ease_in_out_circ(x: float) -> float:
         if x == 0: return 0
         return [((1 - sqrt(abs(1 - ((2 * x)**2)))) / 2),((sqrt(abs(1 - ((-2 * x + 2)**2))) + 1)/ 2)][x > .5]
@@ -27,42 +23,3 @@ class Animations:
 
     def ease_in_out_quad(x: float) -> float:
         return [2*x*x,1 - ((-2 * x + 2)**2)/2][x > .5]
-    
-    def ease_in_out_bounce(x: float) -> float:
-        """Coming soon"""
-        
-    def ease_in_expo(x: float) -> float:
-        """Coming soon"""
-    def ease_out_expo(x: float) -> float:
-        """Coming soon"""
-    def ease_in_out_expo(x: float) -> float:
-        """Coming soon"""
-    
-    def ease_in_elastic(x: float) -> float:
-        """Coming soon"""
-    def ease_out_elastic(x: float) -> float:
-        """Coming soon"""
-    def ease_in_out_elastic(x: float) -> float:
-        """Coming soon"""
-    
-    #def ease_out_bounce(x: float) -> float:
-    #    return 1 - Animations.ease_in_bounce(1 - x)
-    
-    #def ease_in_bounce(x: float) -> float:
-    #    N = 7.5625
-    #    D = 2.75
-    #    X1 = x - (1.5 / D)
-    #    X2 = x - (2.25 / D)
-    #    X3 = x - (2.625 / D)
-    #    if x < 1 / D: 
-    #        return N * (x ** 2)
-    #    
-    #    elif x < 2 / D: 
-    #        x = X1
-    #        return N * (x**2) + 0.75
-    #    elif x < 2.5 / D: 
-    #        x = X2
-    #        return N * (x**2) + 0.9375
-    #    else: 
-    #        x = X3
-    #        return N * (x**2) + 0.984375

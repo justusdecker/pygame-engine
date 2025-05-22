@@ -1,12 +1,21 @@
 #include <math.h>
 
-float EF_Linear(float x) {
-    return x;
+void *animator(int func) {
+    // will be added later
 }
 
 float EF_Heartbeat(float x) {
-    // currently not implemented
-    printf("%s is not implemented yet!",__func__);
+    const float E = 2.5949095; // mul res of 1.70158 * 1.525
+    
+    if (x > 0.5) {
+        return pow(2 * x, 2) * ((E + 1) * (2 * x) - E) / 2;
+    }
+    else {
+        return pow(2 * x - 2, 2) * ((E + 1) * (2 * x - 2) + E) / 2;
+    }
+}
+
+float EF_Linear(float x) {
     return x;
 }
 
@@ -103,7 +112,54 @@ float EF_EaseInBounce(float x) {
         return N * pow(X3, 2) + C;
     }
 }
+
 float EF_EaseOutBounce(float x) {
     const float PI = 3.14159;
     return 1 - EF_EaseInBounce(1 - x);
+}
+
+// currently not implemented
+
+float EF_EaseInOutBounce(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
+}
+
+
+
+float EF_EaseInExpo(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
+}
+
+float EF_EaseOutExpo(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
+}
+
+float EF_EaseInOutExpo(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
+}
+
+float EF_EaseInElastic(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
+}
+
+float EF_EaseOutElastic(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
+}
+
+float EF_EaseInOutElastic(float x) {
+    // currently not implemented
+    printf("%s is not implemented yet!",__func__);
+    return x;
 }
