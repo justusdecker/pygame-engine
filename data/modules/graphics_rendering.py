@@ -3,14 +3,23 @@ from colorsys import hsv_to_rgb
 from numpy import array
 from pygame import Surface
 
-def color_rect(hue=0.2):
-    color_array = []
-    for x in range(256):
-        _line = []
-        for y in range(256):
-            _line.append([col * 255 for col in hsv_to_rgb(hue,x/256,((255-y)/256))])
-        color_array.append(_line)
-    return array(color_array)
+from ctypes import (
+    CDLL,
+    POINTER,
+    c_float,
+    c_char
+)
+clib = CDLL('data\\modules\\graphics_rendering.so')
+COLORRECT = clib.ColorRect
+COLORRECT.restype = POINTER(c_char)
+
+def color_rect(hue=0.2) -> array:
+    """
+    creates a new color rect for a colorpicker
+    """
+    result = clib.ColorRect(c_float(hue))
+    return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
+    
 def color_line():
         color_array = []
         for x in range(360):
