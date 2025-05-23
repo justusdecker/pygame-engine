@@ -1,14 +1,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
-
+#include <stdlib.h>
 typedef struct rgb_color {
     unsigned char rgb[3];
 } color;
-
-typedef struct p_array {
-    unsigned char arr[256][256][3];
-} pixel_array;
 
 color ConvertHsvToRgb(float H, float S, float V) {
     float r, g, b;
@@ -48,17 +44,18 @@ color ConvertHsvToRgb(float H, float S, float V) {
     return rgb;
 }
 
-pixel_array ColorRect(float hue) {
-    static pixel_array arr;
+unsigned char *ColorRect(float hue) {
+
+    unsigned char *pixel_array = malloc(256*256*3);
     for (unsigned int x = 0; x <= 255; x++) {
         for (unsigned int y = 0; y <= 255; y++) {
             color rgb = ConvertHsvToRgb(hue,(float)(x)/256,(255-(float)(y))/256);
-            
-            //arr.arr[x][y][0] = (unsigned char)rgb.rgb[0];
-            //arr.arr[x][y][1] = (unsigned char)rgb.rgb[1];
-            //arr.arr[x][y][2] = (unsigned char)rgb.rgb[2];
-            
+            // pixel_array[x*y];
+            // each x , y set
+            pixel_array[x*y] = (unsigned char)rgb.rgb[0];
+            pixel_array[x*y+1] = (unsigned char)rgb.rgb[1];
+            pixel_array[x*y+2] = (unsigned char)rgb.rgb[2];
         }
     }
-    return arr;
+    return pixel_array;
 }
