@@ -21,7 +21,7 @@ COLORRECT.restype = RGB_POINTER
 COLORLINE = clib.ColorLine
 COLORLINE.restype = RGB_POINTER
 
-COLORTEST = clib_pa.ColorTest
+COLORTEST = clib_pa.GammaCorrection
 COLORTEST.restype = RGB_POINTER
 
 
@@ -34,13 +34,8 @@ def color_rect(hue=0.2) -> array:
     
 def color_line() -> array:
         result = clib.ColorLine()
-        DM.save('test.json',[int.from_bytes(result[i],"big") for i in range(256*16*3)])
         return array([int.from_bytes(result[i],"big") for i in range(256*16*3)]).reshape((256,16,3))
 
-def line_test() -> array:
-        res = clib.ColorRect(c_float(0.3))
-        l = [int.from_bytes(res[i],"big") for i in range(256*256*3)]
-        result = clib_pa.ColorTest(c_float(0.3), (c_char * len(l))(*l), c_int(len(l)))
-        b = [int.from_bytes(result[i],"big") for i in range(256*256*3)]
-        DM.save('test.json',b)
-        return array(b).reshape((256,256,3))
+def color_correction(pixel_array: list, scale: float) -> array:
+        result = clib_pa.GammaCorrection(c_float(4.0), (c_char * len(pixel_array))(*pixel_array), c_int(len(pixel_array)))
+        return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
