@@ -47,14 +47,21 @@ color ConvertHsvToRgb(float H, float S, float V) {
 unsigned char *ColorRect(float hue) {
 
     unsigned char *pixel_array = malloc(256*256*3);
+    unsigned char def = 255;
     for (unsigned int x = 0; x <= 255; x++) {
         for (unsigned int y = 0; y <= 255; y++) {
             color rgb = ConvertHsvToRgb(hue,(float)(x)/256,(255-(float)(y))/256);
             // pixel_array[x*y];
             // each x , y set
-            pixel_array[x*y] = (unsigned char)rgb.rgb[0];
-            pixel_array[x*y+1] = (unsigned char)rgb.rgb[1];
-            pixel_array[x*y+2] = (unsigned char)rgb.rgb[2];
+            // this is a x*y*3 array
+            //
+            for (unsigned char z = 0; z < 3; z++) {
+                //(unsigned char)rgb.rgb[0]
+                pixel_array[(x*256+y) * 3] = rgb.rgb[0];
+                pixel_array[(x*256+y) * 3+1] = rgb.rgb[1];
+                pixel_array[(x*256+y) * 3+2] = rgb.rgb[2];
+            }
+            
         }
     }
     return pixel_array;
