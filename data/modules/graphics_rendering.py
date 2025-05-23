@@ -8,7 +8,7 @@ from ctypes import (
     CDLL,
     POINTER,
     c_float,
-    c_char,c_char_p
+    c_char,c_int
 )
 clib = CDLL('data\\modules\\graphics_rendering.so')
 clib_pa = CDLL('data\\modules\\pixelarray_manipulation.so')
@@ -24,6 +24,7 @@ COLORLINE.restype = RGB_POINTER
 COLORTEST = clib_pa.ColorTest
 COLORTEST.restype = RGB_POINTER
 
+
 def color_rect(hue=0.2) -> array:
     """
     creates a new color rect for a colorpicker
@@ -37,7 +38,9 @@ def color_line() -> array:
         return array([int.from_bytes(result[i],"big") for i in range(256*16*3)]).reshape((256,16,3))
 
 def line_test() -> array:
-        result = clib_pa.ColorTest()
-        c_char_p([int.from_bytes(result[i],"big") for i in range(256*16*3)])
-        DM.save('test.json',[int.from_bytes(result[i],"big") for i in range(256*16*3)])
-        return array([int.from_bytes(result[i],"big") for i in range(256*16*3)]).reshape((256,16,3))
+        res = clib.ColorRect(c_float(0.3))
+        l = [int.from_bytes(res[i],"big") for i in range(256*256*3)]
+        result = clib_pa.ColorTest(c_float(0.3), (c_char * len(l))(*l), c_int(len(l)))
+        
+        DM.save('test.json',[int.from_bytes(result[i],"big") for i in range(256*256*3)])
+        return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
