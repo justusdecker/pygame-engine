@@ -2,6 +2,7 @@
 from colorsys import hsv_to_rgb
 from numpy import array
 from pygame import Surface
+from data.modules.data_management import DM
 
 from ctypes import (
     CDLL,
@@ -10,8 +11,14 @@ from ctypes import (
     c_char
 )
 clib = CDLL('data\\modules\\graphics_rendering.so')
+
+RGB_POINTER = POINTER(c_char)
+
 COLORRECT = clib.ColorRect
-COLORRECT.restype = POINTER(c_char)
+COLORRECT.restype = RGB_POINTER
+
+COLORRECT = clib.ColorLine
+COLORRECT.restype = RGB_POINTER
 
 def color_rect(hue=0.2) -> array:
     """
@@ -20,7 +27,10 @@ def color_rect(hue=0.2) -> array:
     result = clib.ColorRect(c_float(hue))
     return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
     
-def color_line():
+def color_line() -> array:
+        result = clib.ColorLine()
+        DM.save('test.json',[int.from_bytes(result[i],"big") for i in range(256*16*3)])
+        return array([int.from_bytes(result[i],"big") for i in range(256*16*3)]).reshape((256,16,3))
         color_array = []
         for x in range(360):
             _line = []

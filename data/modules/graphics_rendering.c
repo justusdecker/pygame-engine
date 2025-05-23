@@ -35,6 +35,7 @@ color ConvertHsvToRgb(float H, float S, float V) {
 		case 5: r = v, g = x, b = y; break;
 	}
 
+
     color rgb;
 
     rgb.rgb[0] = (unsigned char) (r * 255);
@@ -47,20 +48,28 @@ color ConvertHsvToRgb(float H, float S, float V) {
 unsigned char *ColorRect(float hue) {
 
     unsigned char *pixel_array = malloc(256*256*3);
-    unsigned char def = 255;
     for (unsigned int x = 0; x <= 255; x++) {
+        
+
         for (unsigned int y = 0; y <= 255; y++) {
             color rgb = ConvertHsvToRgb(hue,(float)(x)/256,(255-(float)(y))/256);
-            // pixel_array[x*y];
-            // each x , y set
-            // this is a x*y*3 array
-            //
-            for (unsigned char z = 0; z < 3; z++) {
-                //(unsigned char)rgb.rgb[0]
-                pixel_array[(x*256+y) * 3] = rgb.rgb[0];
-                pixel_array[(x*256+y) * 3+1] = rgb.rgb[1];
-                pixel_array[(x*256+y) * 3+2] = rgb.rgb[2];
-            }
+            pixel_array[(x*256+y) * 3] = rgb.rgb[0];
+            pixel_array[(x*256+y) * 3+1] = rgb.rgb[1];
+            pixel_array[(x*256+y) * 3+2] = rgb.rgb[2];
+        }
+    }
+    return pixel_array;
+}
+
+unsigned char *ColorLine() {
+    unsigned char *pixel_array = malloc(256*16*3);
+    for (unsigned int x = 0; x <= 255; x++) {
+
+        for (unsigned int y = 0; y <= 15; y++) {
+            color rgb = ConvertHsvToRgb((float)(x)/256,1.0,1.0);
+            pixel_array[(x*16+y) * 3] = rgb.rgb[0];
+            pixel_array[(x*16+y) * 3+1] = rgb.rgb[1];
+            pixel_array[(x*16+y) * 3+2] = rgb.rgb[2];
             
         }
     }

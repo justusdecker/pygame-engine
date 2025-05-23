@@ -3,11 +3,11 @@ from colorsys import hsv_to_rgb
 import ctypes
 from time import perf_counter
 from numpy import array
-from data.modules.graphics_rendering import color_rect
+from data.modules.graphics_rendering import color_rect,color_line
 from json import dumps
 from pygame import surfarray,image
 
-image.save(surfarray.make_surface(color_rect(.6)),'test.png')
+image.save(surfarray.make_surface(color_line()),'test.png')
 
 
 #color_array = []
