@@ -41,6 +41,6 @@ def line_test() -> array:
         res = clib.ColorRect(c_float(0.3))
         l = [int.from_bytes(res[i],"big") for i in range(256*256*3)]
         result = clib_pa.ColorTest(c_float(0.3), (c_char * len(l))(*l), c_int(len(l)))
-        
-        DM.save('test.json',[int.from_bytes(result[i],"big") for i in range(256*256*3)])
-        return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
+        b = [int.from_bytes(result[i],"big") for i in range(256*256*3)]
+        DM.save('test.json',b)
+        return array(b).reshape((256,256,3))
