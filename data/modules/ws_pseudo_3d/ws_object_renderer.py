@@ -22,7 +22,10 @@ class ObjectRenderer:
         self.draw_background()
         self.render_game_objects()
     def draw_background(self):
-        self.sky_offset = (self.sky_offset + 4.5 * self.app.player.rel) % WIDTH
+        self.sky_offset = (self.sky_offset + 0.5 * self.app.player.rel) % WIDTH # Sky rotation the mod value is currently dependent on the screen size
+        
+        # sky
+        
         self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
         self.background_layer.blit(self.sky_image,(-self.sky_offset + WIDTH,0))
         
@@ -36,9 +39,6 @@ class ObjectRenderer:
                 img[x][y][0] *= p
                 img[x][y][1] *= p
                 img[x][y][2] *= p
-                #r = r if r < 256 else 255
-                #g = g if g < 256 else 255
-                #b = b if b < 256 else 255
         return img
     def render_game_objects(self):
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
@@ -48,20 +48,23 @@ class ObjectRenderer:
             image : pg.Surface
             percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
             depthbuffer.append((*pos,image.width,image.height,percentage))
-            self.this_frame_render_pixels += image.get_width()*image.get_height()
+            #self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_layer.blit(image,pos)
         
         self.screen.render(pg.transform.scale(self.background_layer,(O_WIDTH,O_HEIGHT)),(0,0))
-        self.render_depth_buffer(depthbuffer)
+        #self.render_depth_buffer(depthbuffer)
         #print(self.this_frame_render_pixels)
     def render_depth_buffer(self, db):
+        """
+        This function renders a depth buffer, use: to make tiles darker in the distance
+        """
         self.depth_buffer_surface.fill((0,0,0,0))
         for x, y, w, h, d in db:
             d = (d*255) if d > 0 else 0
             c = [d,d,d,16]
             self.depth_buffer_surface.fill(c,(x,y,w,h))
-        #blend_mult(self.screen.surface, self.depth_buffer_surface)
-        #self.screen.render(self.depth_buffer_surface,(0,0))
+        
+        #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
         texture = pg.image.load(path).convert()

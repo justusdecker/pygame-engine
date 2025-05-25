@@ -53,10 +53,8 @@ def surf_to_1d(surface: Surface) -> array:
 def blend_mult(a: Surface,b: Surface) -> Surface:
     x,y = a.width,a.height
     pa, pb = [],[]
-    t = perf_counter()
     pa = surf_to_1d(a) # 35ms
-    print(perf_counter()-t)
-    #pb = surf_to_1d(b)
-    #result = clib_pa.BlendingMultiply((c_char * len(pa))(*pa),(c_char * len(pb))(*pb),x*y)
-   # arr = array([int.from_bytes(result[i],"big") for i in range(x*y*3)]).reshape((x,y,3))
-    #return surfarray.make_surface(arr)
+    pb = surf_to_1d(b)
+    result = clib_pa.BlendingMultiply((c_char * len(pa))(*pa),(c_char * len(pb))(*pb),x*y)
+    arr = array([int.from_bytes(result[i],"big") for i in range(x*y*3)]).reshape((x,y,3))
+    return surfarray.make_surface(arr)
