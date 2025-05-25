@@ -1,7 +1,7 @@
 import pygame as pg
 from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT, HEIGHT
 from data.modules.constants import WIDTH as O_WIDTH, HEIGHT as O_HEIGHT
-from data.modules.graphics_rendering import surf_to_1d
+from data.modules.grop import blending_mul
 from numpy import array, char
 from time import sleep
 from numba import jit
@@ -17,7 +17,7 @@ class ObjectRenderer:
         self.sky_offset = 0
         self.this_frame_render_pixels = 0
         self.background_layer = pg.Surface((WIDTH,HEIGHT))
-        self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT))
+        self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT)).convert_alpha()
     def draw(self):
         self.draw_background()
         self.render_game_objects()
@@ -50,9 +50,9 @@ class ObjectRenderer:
             depthbuffer.append((*pos,image.width,image.height,percentage))
             #self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_layer.blit(image,pos)
+        self.render_depth_buffer(depthbuffer)
+        self.screen.render(pg.transform.scale(blending_mul(self.background_layer,self.depth_buffer_surface),(O_WIDTH,O_HEIGHT)),(0,0))
         
-        self.screen.render(pg.transform.scale(self.background_layer,(O_WIDTH,O_HEIGHT)),(0,0))
-        #self.render_depth_buffer(depthbuffer)
         #print(self.this_frame_render_pixels)
     def render_depth_buffer(self, db):
         """
@@ -61,7 +61,7 @@ class ObjectRenderer:
         self.depth_buffer_surface.fill((0,0,0,0))
         for x, y, w, h, d in db:
             d = (d*255) if d > 0 else 0
-            c = [d,d,d,16]
+            c = [d,d,d]
             self.depth_buffer_surface.fill(c,(x,y,w,h))
         
         #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
