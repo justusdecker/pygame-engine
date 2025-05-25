@@ -1,7 +1,7 @@
 import pygame as pg
 from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT, HEIGHT
 from data.modules.constants import WIDTH as O_WIDTH, HEIGHT as O_HEIGHT
-from data.modules.graphics_rendering import color_correction,surf_to_1d,blend_mult
+from data.modules.graphics_rendering import surf_to_1d
 from numpy import array, char
 from time import sleep
 from numba import jit
