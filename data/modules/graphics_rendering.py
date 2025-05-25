@@ -1,9 +1,11 @@
 
 from colorsys import hsv_to_rgb
+from threading import Thread
 from numpy import array
 from pygame import Surface,surfarray
 from data.modules.data_management import DM
 from numba import jit
+from time import perf_counter
 from ctypes import (
     CDLL,
     POINTER,
@@ -42,16 +44,19 @@ def color_line() -> array:
 def color_correction(pixel_array: list, scale: float) -> array:
         result = clib_pa.GammaCorrection(c_float(4.0), (c_char * len(pixel_array))(*pixel_array), c_int(len(pixel_array)))
         return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
-@jit
+
 def surf_to_1d(surface: Surface) -> array:
     x,y = surface.width,surface.height
-    
-    Surface().get
     return surfarray.array3d(surface).reshape((x*y*3)).tolist()
+
+
 def blend_mult(a: Surface,b: Surface) -> Surface:
     x,y = a.width,a.height
-    pa = surf_to_1d(a)
-    pb = surf_to_1d(b)
-    result = clib_pa.BlendingMultiply((c_char * len(pa))(*pa),(c_char * len(pb))(*pb),x*y)
-    arr = array([int.from_bytes(result[i],"big") for i in range(x*y*3)]).reshape((x,y,3))
-    return surfarray.make_surface(arr)
+    pa, pb = [],[]
+    t = perf_counter()
+    pa = surf_to_1d(a) # 35ms
+    print(perf_counter()-t)
+    #pb = surf_to_1d(b)
+    #result = clib_pa.BlendingMultiply((c_char * len(pa))(*pa),(c_char * len(pb))(*pb),x*y)
+   # arr = array([int.from_bytes(result[i],"big") for i in range(x*y*3)]).reshape((x,y,3))
+    #return surfarray.make_surface(arr)

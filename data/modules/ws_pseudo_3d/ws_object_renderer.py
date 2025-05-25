@@ -16,7 +16,6 @@ class ObjectRenderer:
         self.sky_offset = 0
         self.this_frame_render_pixels = 0
         self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT))
-        self.depth_buffer_surface.set_alpha(64)
     def draw(self):
         self.draw_background()
         self.render_game_objects()
@@ -54,9 +53,9 @@ class ObjectRenderer:
     def render_depth_buffer(self, db):
         self.depth_buffer_surface.fill((0,0,0,0))
         for x, y, w, h, d in db:
-            c = [(d*255) if d > 0 else 0]*3
-            c.append(15)
-            self.depth_buffer_surface.fill([(d*255) if d > 0 else 0]*3,(x,y,w,h))
+            d = (d*255) if d > 0 else 0
+            c = [d,d,d,16]
+            self.depth_buffer_surface.fill(c,(x,y,w,h))
         blend_mult(self.screen.surface, self.depth_buffer_surface)
         #self.screen.render(self.depth_buffer_surface,(0,0))
     @staticmethod
