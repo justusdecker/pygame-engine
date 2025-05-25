@@ -1,6 +1,5 @@
 from data.modules.constants import *
 from data.modules.kernel.app import Application
-
 from data.modules.vector import Vector4
 from data.modules.ws_pseudo_3d.ws_map import Map
 from data.modules.ws_pseudo_3d.ws_player import Player
