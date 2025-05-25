@@ -16,6 +16,7 @@ class ObjectRenderer:
         self.sky_offset = 0
         self.this_frame_render_pixels = 0
         self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT))
+        self.depth_buffer_surface.set_alpha(64)
     def draw(self):
         self.draw_background()
         self.render_game_objects()
@@ -44,17 +45,19 @@ class ObjectRenderer:
         depthbuffer = []
         for depth, image, pos in list_objects:
             image : pg.Surface
-            percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
+            percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
             depthbuffer.append((*pos,image.width,image.height,percentage))
             self.this_frame_render_pixels += image.get_width()*image.get_height()
-            #self.screen.render(image,pos)
+            self.screen.render(image,pos)
         self.render_depth_buffer(depthbuffer)
         #print(self.this_frame_render_pixels)
     def render_depth_buffer(self, db):
+        self.depth_buffer_surface.fill((0,0,0,0))
         for x, y, w, h, d in db:
             c = [(d*255) if d > 0 else 0]*3
             c.append(15)
-            self.screen.surface.fill([(d*255) if d > 0 else 0]*3,(x,y,w,h))
+            self.depth_buffer_surface.fill([(d*255) if d > 0 else 0]*3,(x,y,w,h))
+        self.screen.render(self.depth_buffer_surface,(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
         texture = pg.image.load(path).convert()

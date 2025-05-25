@@ -43,3 +43,9 @@ def color_correction(pixel_array: list, scale: float) -> array:
 def surf_to_1d(surface: Surface) -> array:
     x,y = surface.width,surface.height
     return surfarray.array3d(surface).reshape((x*y*3)).tolist()
+def blend_mult(a: Surface,b: Surface) -> Surface:
+    x,y = a.width,a.height
+    pa,pb = surf_to_1d(a),surf_to_1d(b)
+    
+    
+    return surfarray.make_surface(array(clib_pa.BlendingMuliply((c_char * len(pa))(*pa),(c_char * len(pb))(*pb),x*y)).reshape((x,y,3)))
