@@ -28,7 +28,7 @@ class App(Application):
         arr = [[2 for x in range(32)] for i in range(17)]
         arr.append([0 for x in range(32)])
         set_visible(False)
-        self.deb = UIDebug(Vector4(0,0,1,1),render_times=6)
+        self.deb = UIDebug(Vector4(0,0,1,1),render_times=3)
         self.new_game()
     def new_game(self):
         self.map = Map(self)
@@ -55,11 +55,13 @@ class App(Application):
             
             self.deb.add_timing(self.obj_handler.update)
 
-            self.deb.add_timing(self.object_renderer.draw)
+            self.object_renderer.draw()
 
-            self.deb.add_timing(self.weapon.update)
+            self.weapon.update()
 
-            self.deb.add_timing(UIM.render_queue,self)
+            UIM.render_queue(self)
+            
+            #self.deb.timings.append(self.object_renderer.this_frame_render_pixels)
 
             self.update()
             GLOBAL_DELTA_TIME.after()

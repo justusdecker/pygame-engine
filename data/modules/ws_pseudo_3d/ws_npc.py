@@ -50,7 +50,6 @@ class NPC(AnimatedSprite):
     def check_hit_in_npc(self):
         on_me_l = self.on_me
         self.on_me = self.app.player.shot, HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width
-        print(self.ray_cast_value)
         if on_me_l[1] and not on_me_l[0] and all(self.on_me) and self.ray_cast_value:
             #! SOUND: HIT MISSING
             if HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width:
@@ -58,7 +57,6 @@ class NPC(AnimatedSprite):
                 self.health -= self.app.weapon.anim_attack.damage
                 self.check_health()
                 self.pain = True
-                print('hit')
     def check_health(self):
         if self.health < 1:
             self.alive = False

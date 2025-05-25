@@ -2,6 +2,7 @@ import pygame as pg
 from data.modules.constants import WIDTH, HALF_HEIGHT, HEIGHT
 from data.modules.graphics_rendering import color_correction
 from numpy import array, char
+from time import sleep
 from numba import jit
 TEXTURE_SIZE = 256
 H_TEXTURE_SIZE = TEXTURE_SIZE // 2
@@ -41,20 +42,23 @@ class ObjectRenderer:
         self.this_frame_render_pixels = 0
         for depth, image, pos in list_objects:
             image : pg.Surface
-            percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
+            #percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
             #nd_img = [int(i) for i in pg.surfarray.array3d(image).reshape((image.get_width() * image.get_height() * 3,))]
             #print(image.get_width(),image.get_height(),depth,pos)
-            if percentage < 0:
-                percentage = 0
+            #if percentage < 0:
+            #    percentage = 0
             self.this_frame_render_pixels += image.get_width()*image.get_height()
+            #sleep(0.01)
+            #pg.display.update()
+            #pg.event.get()
             #nd_img = pg.surfarray.array3d(image)
-            image = pg.surfarray.make_surface(ObjectRenderer.fast_gamma_change(pg.surfarray.array3d(image),percentage,image.get_width(),image.get_height()))
+            #image = pg.surfarray.make_surface(ObjectRenderer.fast_gamma_change(pg.surfarray.array3d(image),percentage,image.get_width(),image.get_height()))
             
             self.screen.render(image,pos)
-        print(self.this_frame_render_pixels)
+        #print(self.this_frame_render_pixels)
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
-        texture = pg.image.load(path).convert_alpha()
+        texture = pg.image.load(path).convert()
         return pg.transform.scale(texture,res)
     def load_wall_textures(self):
         return {
