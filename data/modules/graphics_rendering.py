@@ -26,8 +26,11 @@ COLORLINE.restype = RGB_POINTER
 COLORTEST = clib_pa.GammaCorrection
 COLORTEST.restype = RGB_POINTER
 
-BLENDMUL = clib_pa.BlendingMultiply
-BLENDMUL.restype = RGB_POINTER
+#BLENDMUL = clib_pa.BlendingMultiply
+#BLENDMUL.restype = RGB_POINTER
+
+#INVERTRGB = clib_pa.InvertRGB
+#INVERTRGB.restype = RGB_POINTER
 
 
 def color_rect(hue=0.2) -> array:
@@ -38,12 +41,17 @@ def color_rect(hue=0.2) -> array:
     return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
     
 def color_line() -> array:
-        result = clib.ColorLine()
-        return array([int.from_bytes(result[i],"big") for i in range(256*16*3)]).reshape((256,16,3))
+    result = clib.ColorLine()
+    return array([int.from_bytes(result[i],"big") for i in range(256*16*3)]).reshape((256,16,3))
 
 def color_correction(pixel_array: list, scale: float) -> array:
-        result = clib_pa.GammaCorrection(c_float(4.0), (c_char * len(pixel_array))(*pixel_array), c_int(len(pixel_array)))
-        return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
+    result = clib_pa.GammaCorrection() #c_float(scale),  (c_char * len(pixel_array))(*pixel_array), c_int(len(pixel_array))
+    return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
+
+def invert_rgb(pixel_array: list,w,h) -> array:
+    result = clib_pa.InvertRGB((c_char * len(pixel_array))(*pixel_array), c_int(len(pixel_array)))
+    
+    return array([int.from_bytes(result[i],"big") for i in range(w*h*3)]).reshape((w,h,3))
 
 def surf_to_1d(surface: Surface) -> array:
     x,y = surface.width,surface.height
