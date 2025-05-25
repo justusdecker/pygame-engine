@@ -13,6 +13,7 @@ class ObjectRenderer:
         self.wall_textures = self.load_wall_textures()
         self.sky_image = self.get_texture('data\\bin\\img\\sky.png',(WIDTH,HALF_HEIGHT))
         self.sky_offset = 0
+        self.this_frame_render_pixels = 0
     def draw(self):
         self.draw_background()
         self.render_game_objects()
@@ -37,6 +38,7 @@ class ObjectRenderer:
         return img
     def render_game_objects(self):
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
+        self.this_frame_render_pixels = 0
         for depth, image, pos in list_objects:
             image : pg.Surface
             percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
@@ -44,10 +46,12 @@ class ObjectRenderer:
             #print(image.get_width(),image.get_height(),depth,pos)
             if percentage < 0:
                 percentage = 0
+            self.this_frame_render_pixels += image.get_width()*image.get_height()
             #nd_img = pg.surfarray.array3d(image)
             image = pg.surfarray.make_surface(ObjectRenderer.fast_gamma_change(pg.surfarray.array3d(image),percentage,image.get_width(),image.get_height()))
             
             self.screen.render(image,pos)
+        print(self.this_frame_render_pixels)
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
         texture = pg.image.load(path).convert_alpha()
