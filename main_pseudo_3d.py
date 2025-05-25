@@ -9,7 +9,7 @@ from data.modules.ws_pseudo_3d.ws_object_renderer import ObjectRenderer
 from data.modules.ws_pseudo_3d.ws_sprite_object import SpriteObject, AnimatedSprite
 from data.modules.ws_pseudo_3d.ws_object_handler import ObjectHandler
 from data.modules.ws_pseudo_3d.ws_weapon_handler import WeaponHandler
-from data.modules.algorithms import PathFinding
+from data.modules.algorithms.pathfinding import PathFinding
 from data.modules.audio_handler import AudioHandler
 from data.modules.ui.ui_element import UIM
 from data.modules.ui.ui_debug import UIDebug

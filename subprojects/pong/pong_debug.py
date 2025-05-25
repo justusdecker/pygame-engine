@@ -4,7 +4,7 @@ from data.modules.kernel.app import Application
 from data.modules.ui.ui_element import UIM
 from data.modules.ui.ui_label import UILabel
 from data.modules.logic_2d.entity import Entity
-from data.modules.sprite import SPR
+from data.modules.logic_2d.sprite import SPR
 from data.modules.vector import Vector2,Vector4
 from data.modules.ui.ui_font import FONT
 from pygame import Rect
