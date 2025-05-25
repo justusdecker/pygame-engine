@@ -5,6 +5,7 @@ from data.modules.ui.ui_label import UILabel
 from data.modules.ui.ui_font import FONT
 from data.modules.vector import Vector4
 from data.modules.constants import GLOBAL_DELTA_TIME
+from time import perf_counter
 def outliner(surf: Surface, rect: Rect,o_type:str):
     """
     Use this to make the outlines of UI / UX Elements visible!
@@ -41,12 +42,16 @@ class UIDebug(UIElement):
             for i in range(kwargs['render_times']):
                 uil = UILabel(Vector4(0,(i+1)*48,256,48),ux={'text': "","size": (256,48),'font': FONT(size=30),'tcg': ('#ffffff',),'bcg': ('#77777744',)},layer=self.layer,parent=self)
                 self.rt_lables.append(uil)
-    def add_timings(self,t:list):
-        self.timings = t
+    def add_timing(self,func,*args):
+        t = perf_counter()
+        func(*args)
+        self.timings.append((perf_counter() - t) * 1000)
     def update(self):
         _rt = GLOBAL_DELTA_TIME.get()
+        self.timings.reverse()
         for rt,t in zip(self.rt_lables, self.timings):
             rt.render(f'{t:.2f}ms')
         self.fps_lable.render(f'{int(1//_rt)}fps' if _rt else 'undefined')
         self.rt_lable.render(f'{_rt*1000:.1f}ms' if _rt else 'undefined')
+        self.timings = []
         return super().update()

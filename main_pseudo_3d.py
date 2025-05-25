@@ -48,26 +48,19 @@ class App(Application):
             GLOBAL_DELTA_TIME.before()
             #self.window.surface.fill((36,36,36))
             #self.map.draw()
-            tarray = []
-            t = perf_counter()
-            self.player.update()
-            tarray.append((perf_counter() - t) * 1000)
-            t = perf_counter()
-            self.raycasting.update()
-            tarray.append((perf_counter() - t) * 1000)
-            t = perf_counter()
-            self.obj_handler.update()
-            tarray.append((perf_counter() - t) * 1000)
-            t = perf_counter()
-            self.object_renderer.draw()
-            tarray.append((perf_counter() - t) * 1000)
-            t = perf_counter()
-            self.weapon.update()
-            tarray.append((perf_counter() - t) * 1000)
-            t = perf_counter()
-            UIM.render_queue(self)
-            tarray.append((perf_counter() - t) * 1000)
-            self.deb.add_timings(tarray)
+
+            self.deb.add_timing(self.player.update)
+
+            self.deb.add_timing(self.raycasting.update)
+            
+            self.deb.add_timing(self.obj_handler.update)
+
+            self.deb.add_timing(self.object_renderer.draw)
+
+            self.deb.add_timing(self.weapon.update)
+
+            self.deb.add_timing(UIM.render_queue,self)
+
             self.update()
             GLOBAL_DELTA_TIME.after()
 if __name__ == "__main__":

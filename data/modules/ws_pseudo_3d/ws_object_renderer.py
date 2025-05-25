@@ -1,6 +1,8 @@
 import pygame as pg
 from data.modules.constants import WIDTH, HALF_HEIGHT, HEIGHT
-
+from data.modules.graphics_rendering import color_correction
+from numpy import array, char
+from numba import jit
 TEXTURE_SIZE = 256
 H_TEXTURE_SIZE = TEXTURE_SIZE // 2
 
@@ -22,9 +24,29 @@ class ObjectRenderer:
         # floor
         
         self.screen.surface.fill((24,24,24),(0,HALF_HEIGHT,WIDTH,HEIGHT))
+    @jit
+    def fast_gamma_change(img,p,x,y) -> array:
+        for x in range(x):
+            for y in range(y):
+                img[x][y][0] *= p
+                img[x][y][1] *= p
+                img[x][y][2] *= p
+                #r = r if r < 256 else 255
+                #g = g if g < 256 else 255
+                #b = b if b < 256 else 255
+        return img
     def render_game_objects(self):
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
         for depth, image, pos in list_objects:
+            image : pg.Surface
+            percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
+            #nd_img = [int(i) for i in pg.surfarray.array3d(image).reshape((image.get_width() * image.get_height() * 3,))]
+            #print(image.get_width(),image.get_height(),depth,pos)
+            if percentage < 0:
+                percentage = 0
+            #nd_img = pg.surfarray.array3d(image)
+            image = pg.surfarray.make_surface(ObjectRenderer.fast_gamma_change(pg.surfarray.array3d(image),percentage,image.get_width(),image.get_height()))
+            
             self.screen.render(image,pos)
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):

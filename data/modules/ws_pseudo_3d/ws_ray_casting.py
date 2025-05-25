@@ -2,6 +2,7 @@ import pygame as pg
 import math
 from data.modules.constants import WIDTH, HALF_WIDTH, HALF_HEIGHT, HEIGHT
 from data.modules.ws_pseudo_3d.ws_object_renderer import TEXTURE_SIZE,H_TEXTURE_SIZE
+
 FOV = math.pi / 3
 H_FOV = FOV / 2
 NUM_RAYS = WIDTH // 2
@@ -113,6 +114,9 @@ class RayCasting:
             
             #ray casting result
             
+            #distance color change
+
+
             self.ray_casting_result.append((depth,proj_height,texture,offset))
             
             ray_angle += DELTA_ANGLE
