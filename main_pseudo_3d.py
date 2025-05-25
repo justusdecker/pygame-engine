@@ -49,11 +49,11 @@ class App(Application):
             #self.window.surface.fill((36,36,36))
             #self.map.draw()
 
-            self.deb.add_timing(self.player.update)
+            self.player.update()
 
-            self.deb.add_timing(self.raycasting.update)
+            self.raycasting.update()
             
-            self.deb.add_timing(self.obj_handler.update)
+            self.obj_handler.update()
 
             self.object_renderer.draw()
 

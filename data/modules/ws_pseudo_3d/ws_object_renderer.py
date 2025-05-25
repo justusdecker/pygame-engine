@@ -51,7 +51,7 @@ class ObjectRenderer:
             self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_layer.blit(image,pos)
         
-        self.screen.render(pg.transform.scale(self.background_layer,(O_WIDTH,O_HEIGHT)),pos)
+        self.screen.render(pg.transform.scale(self.background_layer,(O_WIDTH,O_HEIGHT)),(0,0))
         self.render_depth_buffer(depthbuffer)
         #print(self.this_frame_render_pixels)
     def render_depth_buffer(self, db):
