@@ -1,5 +1,5 @@
 from data.modules.constants import *
-from data.modules.window import Window
+from data.modules.kernel.window import Window
 from pygame.event import get as get_events
 from pygame import QUIT,quit as pg_quit,Rect,image,K_b,K_p,K_f
 from data.modules.data_management import DM
@@ -14,7 +14,7 @@ from data.modules.ui.ui_calendar import UICalendar
 from data.modules.ui.ui_time_select import UITimeSelect
 from data.modules.ui.ui_text_input import UITextInput
 from data.modules.ui.ui_window import UIWindow,UIWM
-from data.modules.app import Application
+from data.modules.kernel.app import Application
 from data.modules.vector import Vector4
 from data.modules.ui.ui_color_picker import UIColorPicker
 from data.modules.ui.ui_array import UIArray

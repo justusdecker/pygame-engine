@@ -1,4 +1,4 @@
-from data.modules.delta_time import DeltaTime
+from data.modules.kernel.delta_time import DeltaTime
 #! Will be changed later. Loading from settings file
 
 RESOLUTION = (1280,720)

@@ -1,4 +1,4 @@
-from data.modules.log import LOG
+from data.modules.kernel.log import LOG
 from pygame import Surface, Rect, KEYDOWN, K_RETURN
 from data.modules.vector import Vector4
 from pygame.mouse import get_pos as mouse_pos, get_pressed as mouse_pressed

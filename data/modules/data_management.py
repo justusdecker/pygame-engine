@@ -1,6 +1,6 @@
 from os import path,mkdir,remove
 from json import load,dumps
-from data.modules.log import LOG
+from data.modules.kernel.log import LOG
 
 class DataManagement:
     """

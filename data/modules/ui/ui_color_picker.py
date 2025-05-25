@@ -13,7 +13,7 @@ from pygame.mouse import get_pos
 from pygame import Color, Surface, SRCALPHA
 from data.modules.ui.ui_image import UIImage
 from data.modules.constants import DEFAULT_BACKGROUND_COLOR,MEDIUM_BACKGROUND_COLOR
-from data.modules.log import LOG
+from data.modules.kernel.log import LOG
 class UXColorPicker(UXElement):
     def __init__(self):
         pass

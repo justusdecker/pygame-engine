@@ -1,5 +1,5 @@
 from data.modules.constants import *
-from data.modules.window import Window
+from data.modules.kernel.window import Window
 from pygame.event import get as get_events
 from pygame import QUIT,quit as pg_quit,Clock, KEYDOWN,KEYUP, WINDOWLEAVE
 from pygame.mouse import get_visible,set_pos

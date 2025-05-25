@@ -1,5 +1,5 @@
 from pygame.mixer import music, Sound,init as mixer_init
-from data.modules.log import LOG
+from data.modules.kernel.log import LOG
 mixer_init()
 class AudioHandler:
     def __init__(self,

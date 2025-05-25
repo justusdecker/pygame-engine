@@ -5,14 +5,14 @@ from pygame.draw import line
 from pygame.mouse import get_pos,set_visible,get_pressed
 from pygame.transform import scale,flip
 from random import randint
-from data.modules.log import LOG
+from data.modules.kernel.log import LOG
 LOG.tobash = False
 from data.modules.constants import *
 from data.modules.ui.ui_font import FONT,FONTDRAW
 from data.modules.ui.ui_element import UIM
 from data.modules.ui.ui_label import UILabel
 from data.modules.ui.ui_button import UIButton
-from data.modules.app import Application
+from data.modules.kernel.app import Application
 from data.modules.animation import Animation
 from data.modules.audio_handler import AudioHandler
 set_icon(image.load(f'{IMAGE_PATH}cookie_clicker_logo.ico'))
