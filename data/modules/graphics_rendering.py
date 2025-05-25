@@ -1,7 +1,7 @@
 
 from colorsys import hsv_to_rgb
 from numpy import array
-from pygame import Surface
+from pygame import Surface,surfarray
 from data.modules.data_management import DM
 from numba import jit
 from ctypes import (
@@ -39,11 +39,7 @@ def color_line() -> array:
 def color_correction(pixel_array: list, scale: float) -> array:
         result = clib_pa.GammaCorrection(c_float(4.0), (c_char * len(pixel_array))(*pixel_array), c_int(len(pixel_array)))
         return array([int.from_bytes(result[i],"big") for i in range(256*256*3)]).reshape((256,256,3))
-@jit
-def convert_3d_array_to_1d(surface_array:list[list[list[int,int,int]]]) -> array:
-    _ret = []
-    for x in range(x):
-        for y in range(y):
-            for z in range(3):
-                _ret.append(surface_array[x][y][z])
-    return _ret
+
+def surf_to_1d(surface: Surface) -> array:
+    x,y = surface.width,surface.height
+    return surfarray.array3d(surface).reshape((x*y*3)).tolist()

@@ -1,6 +1,6 @@
 import pygame as pg
 from data.modules.constants import WIDTH, HALF_HEIGHT, HEIGHT
-from data.modules.graphics_rendering import color_correction
+from data.modules.graphics_rendering import color_correction,surf_to_1d
 from numpy import array, char
 from time import sleep
 from numba import jit
@@ -15,6 +15,7 @@ class ObjectRenderer:
         self.sky_image = self.get_texture('data\\bin\\img\\sky.png',(WIDTH,HALF_HEIGHT))
         self.sky_offset = 0
         self.this_frame_render_pixels = 0
+        self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT))
     def draw(self):
         self.draw_background()
         self.render_game_objects()
@@ -40,22 +41,20 @@ class ObjectRenderer:
     def render_game_objects(self):
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
         self.this_frame_render_pixels = 0
+        depthbuffer = []
         for depth, image, pos in list_objects:
             image : pg.Surface
-            #percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
-            #nd_img = [int(i) for i in pg.surfarray.array3d(image).reshape((image.get_width() * image.get_height() * 3,))]
-            #print(image.get_width(),image.get_height(),depth,pos)
-            #if percentage < 0:
-            #    percentage = 0
+            percentage = (1 - depth ** 5 * 0.00002) # calculation of the gamma value
+            depthbuffer.append((*pos,image.width,image.height,percentage))
             self.this_frame_render_pixels += image.get_width()*image.get_height()
-            #sleep(0.01)
-            #pg.display.update()
-            #pg.event.get()
-            #nd_img = pg.surfarray.array3d(image)
-            #image = pg.surfarray.make_surface(ObjectRenderer.fast_gamma_change(pg.surfarray.array3d(image),percentage,image.get_width(),image.get_height()))
-            
-            self.screen.render(image,pos)
+            #self.screen.render(image,pos)
+        self.render_depth_buffer(depthbuffer)
         #print(self.this_frame_render_pixels)
+    def render_depth_buffer(self, db):
+        for x, y, w, h, d in db:
+            c = [(d*255) if d > 0 else 0]*3
+            c.append(15)
+            self.screen.surface.fill([(d*255) if d > 0 else 0]*3,(x,y,w,h))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
         texture = pg.image.load(path).convert()
