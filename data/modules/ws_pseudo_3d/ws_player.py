@@ -1,6 +1,7 @@
 import pygame as pg
 import math
-from data.modules.constants import GLOBAL_DELTA_TIME,WIDTH,HEIGHT,HALF_WIDTH,HALF_HEIGHT
+from data.modules.constants import GLOBAL_DELTA_TIME,WIDTH
+from data.modules.ws_pseudo_3d.ws_constants import HEIGHT,HALF_WIDTH,HALF_HEIGHT
 MOUSE_SENSITIVITY = 0.3
 MOUSE_MAX_REL = 40
 MOUSE_BORDER_LEFT = 100

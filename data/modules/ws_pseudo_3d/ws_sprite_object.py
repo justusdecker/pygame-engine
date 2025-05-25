@@ -1,7 +1,7 @@
 import pygame as pg
 from math import atan2, pi, tau, hypot, cos
 from data.modules.ws_pseudo_3d.ws_ray_casting import DELTA_ANGLE, SCALE, H_NUM_RAYS,SCREEN_DIST
-from data.modules.constants import WIDTH, HALF_HEIGHT
+from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT
 import os
 from collections import deque
 from time import time

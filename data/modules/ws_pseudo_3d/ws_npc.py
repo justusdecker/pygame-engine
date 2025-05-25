@@ -1,6 +1,6 @@
 from data.modules.ws_pseudo_3d.ws_sprite_object import *
-from random import randint, random, choice
-from data.modules.constants import WIDTH, HALF_WIDTH, GLOBAL_DELTA_TIME
+from random import randint
+from data.modules.ws_pseudo_3d.ws_constants import HALF_WIDTH
 from data.modules.ws_pseudo_3d.ws_ray_casting import MAX_DEPTH
 import math
 
