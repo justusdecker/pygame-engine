@@ -1,6 +1,6 @@
 import pygame as pg
 from data.modules.constants import WIDTH, HALF_HEIGHT, HEIGHT
-from data.modules.graphics_rendering import color_correction,surf_to_1d
+from data.modules.graphics_rendering import color_correction,surf_to_1d,blend_mult
 from numpy import array, char
 from time import sleep
 from numba import jit
@@ -57,7 +57,8 @@ class ObjectRenderer:
             c = [(d*255) if d > 0 else 0]*3
             c.append(15)
             self.depth_buffer_surface.fill([(d*255) if d > 0 else 0]*3,(x,y,w,h))
-        self.screen.render(self.depth_buffer_surface,(0,0))
+        blend_mult(self.screen.surface, self.depth_buffer_surface)
+        #self.screen.render(self.depth_buffer_surface,(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
         texture = pg.image.load(path).convert()
