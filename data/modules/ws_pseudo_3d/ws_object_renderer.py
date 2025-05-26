@@ -2,7 +2,7 @@ import pygame as pg
 from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT, HEIGHT, HALF_WIDTH
 from data.modules.constants import WIDTH as O_WIDTH, HEIGHT as O_HEIGHT
 from data.modules.grop import blending_mul
-from numpy import array, char,deg2rad
+from numpy import array, char,deg2rad,rot90
 from math import cos,sin,pi
 from time import sleep
 from numba import jit
@@ -23,8 +23,8 @@ class ObjectRenderer:
         self.this_frame_render_pixels = 0
         self.background_layer = pg.Surface((WIDTH,HEIGHT))
         self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT)).convert_alpha()
-        self.floor_casting_array = array([0]*WIDTH*HALF_HEIGHT*3).reshape((HALF_HEIGHT,WIDTH,3))
-        self.floor_casting_surface = pg.Surface((WIDTH,HEIGHT)).convert_alpha()
+        self.floor_casting_array = array([0]*HALF_WIDTH*HEIGHT*3).reshape((HALF_WIDTH,HEIGHT,3))
+        self.floor_casting_surface = pg.Surface((WIDTH,HALF_HEIGHT)).convert_alpha()
         
         self.debugmode = 0
     def draw(self):
@@ -44,34 +44,47 @@ class ObjectRenderer:
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
         
         self.floor_casting()
-        self.draw_background()
+        self.draw_foreground()
         self.render_game_objects()
-    def floor_casting(self):
-        FOV = HEIGHT / 60
-        posx, posy, rot = 0,0,0
-        for i in range(HALF_HEIGHT):
-            roti = rot + deg2rad(i / FOV - 30)
+    #@jit
+    def fcjit(horizontal_resolution: int,
+              half_vertical_resolution: int,
+              pos_x: float,
+              pos_y: float,
+              angle: float,
+              arr: array):
+        fov = horizontal_resolution / 60
+        
+        for i in range(horizontal_resolution):
+            roti = angle + deg2rad(i / fov - 30)
             sina,cosa = sin(roti), cos(roti)
-            for j in range(HALF_WIDTH):
-                n = HALF_WIDTH / (HALF_WIDTH - j)
-                x, y = posx + cosa * n, posy + sina * n
+            for j in range(half_vertical_resolution):
+                n = half_vertical_resolution / (half_vertical_resolution - j)
+                
+                x, y = pos_x + cosa * n, pos_y + sina * n
                 if int(x) % 2 == int(y) % 2:
-                    self.floor_casting_array[i][j] = [0] * 3
+                    arr[i][half_vertical_resolution*2-j-1] = [0] * 3
                 else:
-                    self.floor_casting_array[i][j] = [255] * 3
+                    arr[i][half_vertical_resolution*2-j-1] = [255] * 3
+        return arr
+    def floor_casting(self):
+        #posx, posy, rot = 0,0,0
+        self.floor_casting_array = ObjectRenderer.fcjit(HEIGHT,HALF_WIDTH,*self.app.player.pos,self.app.player.angle,self.floor_casting_array)
         self.floor_casting_surface = pg.surfarray.make_surface(self.floor_casting_array)
-        #self.background_layer.blit(self.floor_casting_surface,(0,0))    
-    def draw_background(self):
+        self.background_layer.fill((24,24,24),(0,HALF_HEIGHT,WIDTH,HEIGHT))
+        pg.image.save(self.floor_casting_surface,'test.png')
+        self.background_layer.blit(self.floor_casting_surface,(0,0))    
+    def draw_foreground(self):
         self.sky_offset = (self.sky_offset + 0.5 * self.app.player.rel) % WIDTH # Sky rotation the mod value is currently dependent on the screen size
         
         # sky
         
-        self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
-        self.background_layer.blit(self.sky_image,(-self.sky_offset + WIDTH,0))
+        #self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
+        #self.background_layer.blit(self.sky_image,(-self.sky_offset + WIDTH,0))
         
         # floor
         
-        self.background_layer.fill((24,24,24),(0,HALF_HEIGHT,WIDTH,HEIGHT))
+        
     @jit
     def fast_gamma_change(img,p,x,y) -> array:
         for x in range(x):
