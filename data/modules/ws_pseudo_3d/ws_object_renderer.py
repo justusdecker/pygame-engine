@@ -1,14 +1,19 @@
 import pygame as pg
-from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT, HEIGHT
+from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT, HEIGHT, HALF_WIDTH
 from data.modules.constants import WIDTH as O_WIDTH, HEIGHT as O_HEIGHT
 from data.modules.grop import blending_mul
-from numpy import array, char
+from numpy import array, char,deg2rad
+from math import cos,sin,pi
 from time import sleep
 from numba import jit
+from data.modules.kernel.log import LOG
+
 TEXTURE_SIZE = 256
 H_TEXTURE_SIZE = TEXTURE_SIZE // 2
 
 class ObjectRenderer:
+    #TEXTURE_SIZE = 256
+    #H_TEXTURE_SIZE = TEXTURE_SIZE // 2
     def __init__(self,app):
         self.app = app
         self.screen = app.window
@@ -18,9 +23,44 @@ class ObjectRenderer:
         self.this_frame_render_pixels = 0
         self.background_layer = pg.Surface((WIDTH,HEIGHT))
         self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT)).convert_alpha()
+        self.floor_casting_array = array([0]*WIDTH*HALF_HEIGHT*3).reshape((HALF_HEIGHT,WIDTH,3))
+        self.floor_casting_surface = pg.Surface((WIDTH,HEIGHT)).convert_alpha()
+        
+        self.debugmode = 0
     def draw(self):
+        
+        k = pg.key.get_pressed()
+        if k[pg.K_0]:
+            self.debugmode = 0
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[pg.K_1]:
+            self.debugmode = 1
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[pg.K_2]:
+            self.debugmode = 2
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[pg.K_3]:
+            self.debugmode = 3
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        
+        self.floor_casting()
         self.draw_background()
         self.render_game_objects()
+    def floor_casting(self):
+        FOV = HEIGHT / 60
+        posx, posy, rot = 0,0,0
+        for i in range(HALF_HEIGHT):
+            roti = rot + deg2rad(i / FOV - 30)
+            sina,cosa = sin(roti), cos(roti)
+            for j in range(HALF_WIDTH):
+                n = HALF_WIDTH / (HALF_WIDTH - j)
+                x, y = posx + cosa * n, posy + sina * n
+                if int(x) % 2 == int(y) % 2:
+                    self.floor_casting_array[i][j] = [0] * 3
+                else:
+                    self.floor_casting_array[i][j] = [255] * 3
+        self.floor_casting_surface = pg.surfarray.make_surface(self.floor_casting_array)
+        #self.background_layer.blit(self.floor_casting_surface,(0,0))    
     def draw_background(self):
         self.sky_offset = (self.sky_offset + 0.5 * self.app.player.rel) % WIDTH # Sky rotation the mod value is currently dependent on the screen size
         
@@ -50,15 +90,23 @@ class ObjectRenderer:
             depthbuffer.append((*pos,image.width,image.height,percentage))
             #self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_layer.blit(image,pos)
+        
         self.render_depth_buffer(depthbuffer)
-        self.screen.render(pg.transform.scale(blending_mul(self.background_layer,self.depth_buffer_surface),(O_WIDTH,O_HEIGHT)),(0,0))
+        if self.debugmode == 1: # show Depth-Buffer
+            self.screen.render(pg.transform.scale(self.depth_buffer_surface,(O_WIDTH,O_HEIGHT)),(0,0))
+        elif self.debugmode == 2:
+            self.screen.render(pg.transform.scale(self.background_layer,(O_WIDTH,O_HEIGHT)),(0,0))
+        elif self.debugmode == 3:
+            self.screen.render(pg.transform.scale(self.floor_casting_surface,(O_WIDTH,O_HEIGHT)),(0,0))
+        else:
+            self.screen.render(pg.transform.scale(blending_mul(self.background_layer,self.depth_buffer_surface),(O_WIDTH,O_HEIGHT)),(0,0))
         
         #print(self.this_frame_render_pixels)
     def render_depth_buffer(self, db):
         """
         This function renders a depth buffer, use: to make tiles darker in the distance
         """
-        self.depth_buffer_surface.fill((0,0,0,0))
+        self.depth_buffer_surface.fill((255,255,255))
         for x, y, w, h, d in db:
             d = (d*255) if d > 0 else 0
             c = [d,d,d]
