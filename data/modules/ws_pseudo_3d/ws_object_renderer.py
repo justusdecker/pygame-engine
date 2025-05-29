@@ -43,7 +43,8 @@ class ObjectRenderer:
             self.debugmode = 3
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
         
-        self.floor_casting()
+        self.background_layer.fill((24,24,24),(0,HALF_HEIGHT,WIDTH,HEIGHT))
+        #self.floor_casting()
         self.draw_foreground()
         self.render_game_objects()
     #@jit
@@ -79,8 +80,8 @@ class ObjectRenderer:
         
         # sky
         
-        #self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
-        #self.background_layer.blit(self.sky_image,(-self.sky_offset + WIDTH,0))
+        self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
+        self.background_layer.blit(self.sky_image,(-self.sky_offset + WIDTH,0))
         
         # floor
         

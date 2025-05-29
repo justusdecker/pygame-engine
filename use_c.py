@@ -9,7 +9,19 @@ from data.modules.data_management import DM
 from data.modules.kernel.opt_surfarray import Surfarray
 a = Surfarray((15,15))
 b = Surfarray((64,64))
-b.fill([255,255,255],(32,32,32,32))
+
+
+x, y = -5, 5
+w, h = 10,10
+"""
+Pseudo code:
+if x < 0
+    x = x+w
+    w = w+abs(x)
+"""
+a.fill([255,255,255])
+b.blit(a,[-7,5])
+#b.fill([255,255,255],(32,32,32,32))
 #print(b.get_array())
 image.save(surfarray.make_surface(b.get_array()),'test.png',)
 

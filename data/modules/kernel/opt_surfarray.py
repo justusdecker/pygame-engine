@@ -8,11 +8,22 @@ class Surfarray:
                  alpha: bool = False):
         self.dimensions : tuple[int, int, int] = (*size,4 if alpha else 3)
         
-        self.array = ndarray([i for i in range(self.dimensions[0] * self.dimensions[1] * self.dimensions[2])]).reshape(([*self.dimensions]))
+        self.array = ndarray([0 for i in range(self.dimensions[0] * self.dimensions[1] * self.dimensions[2])]).reshape(([*self.dimensions]))
     def blit(self,surface: Surfarray,pos: tuple[int, int]):
         x,y = pos
-        w,h = surface.dimensions
-        self.array[x:w][y:h] = surface
+        w,h,_ = surface.dimensions
+
+        """
+        check for out of range
+        
+        """
+        
+        for offset_x in range(surface.dimensions[0]):
+            for offset_y in range(surface.dimensions[1]):
+                if x + offset_x >= 0 and y + offset_y >= 0:
+                    self.array[x+offset_x][y+offset_y] = surface.array[x][y]
+        
+
     def fill(self,color: tuple[int, int, int], area: tuple[int, int, int, int] | None = None):
         if area is not None:
             if len(color) != self.dimensions[2]: raise Exception(f"color doesn't match dimensions: {len(color)} {self.dimensions[2]}")
