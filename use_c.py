@@ -8,7 +8,7 @@ from data.modules.data_management import DM
 
 from data.modules.kernel.opt_surfarray import Surfarray
 a = Surfarray((15,15))
-b = Surfarray((64,64))
+b = Surfarray((16,16))
 
 
 x, y = -5, 5
@@ -20,10 +20,12 @@ if x < 0
     w = w+abs(x)
 """
 a.fill([255,255,255])
-b.blit(a,[-7,5])
+
+c = Surfarray([1,1],True).load_from_file('data\\bin\\img\\stone.png')
+print(c.blit(b,[5,5]))
 #b.fill([255,255,255],(32,32,32,32))
 #print(b.get_array())
-image.save(surfarray.make_surface(b.get_array()),'test.png',)
+image.save(surfarray.make_surface(c.get_array()),'test.png',)
 
 #img = surfarray.array3d(image.load("data\\bin\\img\\stone.png")).reshape((32*32*3)).tolist()
 
