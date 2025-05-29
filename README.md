@@ -7,13 +7,13 @@
 
 some features i tried to implement will not work properly in the engine currently...
 
-== Here are a few of them: ==
+**Here are a few of them:**
 
 - The performance of the depth buffer to Surface in WSP3D is so depressingly poor.
 - The FloorCasting method itself is not slow, but overwriting pixels on a Surface is.
 - Simply overwriting a surface consumes too much frame time.
 
-==Optimizations in the future:==
+**Optimizations in the future:**
 - ctypes.CDLL, C code & jit is currently in use
 - I will overwrite the entire logic so that the surface is only overwritten once at the end of a frame.
     - This will be tested in the upcoming commits
