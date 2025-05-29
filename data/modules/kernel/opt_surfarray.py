@@ -15,7 +15,7 @@ class Surfarray:
                  size: tuple[int,int],
                  alpha: bool = False):
         self.dimensions : tuple[int, int, int] = (*size,4 if alpha else 3)
-        
+        self.dimensions = tuple([int(i) for i in self.dimensions])
         self.array = ndarray([0 for i in range(self.dimensions[0] * self.dimensions[1] * self.dimensions[2])]).reshape(([*self.dimensions]))
     def load_from_file(self,file_path: str):
         self.array = array3d(imgload(file_path)) #we will currently use the pygame method to load images. Will be changed later
@@ -25,6 +25,12 @@ class Surfarray:
         self.array = array3d(surface) #we will currently use the pygame method to load images. Will be changed later
         self.dimensions = tuple(self.array.shape)
         return self
+    def subarray(self, area: tuple[int, int, int, int]):
+        arr = Surfarray((area[2],area[3]))
+        arr.blit(self,(area[0],area[1]))
+        return arr
+    def setarray(self,arr: ndarray):
+        pass
     def blit(self,surface: Surfarray,pos: tuple[int, int]) -> bool:
         """
         Will blit some another array onto this!

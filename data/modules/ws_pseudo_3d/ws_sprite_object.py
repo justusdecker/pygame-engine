@@ -4,6 +4,7 @@ from data.modules.ws_pseudo_3d.ws_ray_casting import DELTA_ANGLE, SCALE, H_NUM_R
 from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_HEIGHT
 import os
 from collections import deque
+from data.modules.kernel.opt_surfarray import Surfarray
 from time import time
 class SpriteObject:
     def __init__(self, app, path,pos=(4.5,3.5),scale=0.5,shift=0.45):
@@ -22,7 +23,7 @@ class SpriteObject:
     def get_sprite_projection(self):
         proj = SCREEN_DIST / self.norm_dist * self.SPRITE_SCALE
         proj_width, proj_height = proj * self.IMAGE_RATIO,proj
-        image = pg.transform.scale(self.image,(proj_width,proj_height))
+        image = Surfarray((1,1)).load_from_surface(pg.transform.scale(self.image,(proj_width,proj_height)))
         
         self.sprite_half_width = proj_height // 2
         height_shift = proj_height * self.SPRITE_HEIGHT_SHIFT

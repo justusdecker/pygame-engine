@@ -104,11 +104,11 @@ class ObjectRenderer:
         self.this_frame_render_pixels = 0
         depthbuffer = []
         for depth, image, pos in list_objects:
-            image : pg.Surface
+            image : Surfarray
             percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
-            depthbuffer.append((*pos,image.width,image.height,percentage))
+            depthbuffer.append((*pos,image.dimensions[0],image.dimensions[1],percentage))
             #self.this_frame_render_pixels += image.get_width()*image.get_height()
-            self.background_array.blit(Surfarray((1,1)).load_from_surface(image),pos)
+            self.background_array.blit(image,pos)
         
         self.render_depth_buffer(depthbuffer)
         if self.debugmode == 1: # show Depth-Buffer
@@ -135,8 +135,7 @@ class ObjectRenderer:
         #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
-        texture = pg.image.load(path).convert()
-        return pg.transform.scale(texture,res)
+        return Surfarray((1,1)).load_from_surface(pg.transform.scale(pg.image.load(path).convert(),res))
     def load_wall_textures(self):
         return {
             1: self.get_texture('data\\bin\\img\\stone.png'),
