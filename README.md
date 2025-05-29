@@ -7,7 +7,7 @@
 
 some features i tried to implement will not work properly in the engine currently...
 
-==Here are a few of them:==
+== Here are a few of them: ==
 
 - The performance of the depth buffer to Surface in WSP3D is so depressingly poor.
 - The FloorCasting method itself is not slow, but overwriting pixels on a Surface is.
