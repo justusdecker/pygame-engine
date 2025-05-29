@@ -1,9 +1,22 @@
 # Pygame-engine project:
 
 
-<p align="center" width="100%">
-    <img width="50%" src="https://justusdeckerde.wordpress.com/wp-content/uploads/2025/04/engine_roadmap.png">
-</p>
+## Current State of the project:
+
+### The previos Roadmap is cancelled because:
+
+some features i tried to implement will not work properly in the engine currently...
+
+==Here are a few of them:==
+
+- The performance of the depth buffer to Surface in WSP3D is so depressingly poor.
+- The FloorCasting method itself is not slow, but overwriting pixels on a Surface is.
+- Simply overwriting a surface consumes too much frame time.
+
+==Optimizations in the future:==
+- ctypes.CDLL, C code & jit is currently in use
+- I will overwrite the entire logic so that the surface is only overwritten once at the end of a frame.
+    - This will be tested in the upcoming commits
 
 ## The current Project [Version 0.3]:
 - engine logo blend in
