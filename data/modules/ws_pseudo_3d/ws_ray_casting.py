@@ -2,7 +2,6 @@ import pygame as pg
 import math
 from data.modules.ws_pseudo_3d.ws_constants import WIDTH, HALF_WIDTH, HALF_HEIGHT, HEIGHT
 from data.modules.ws_pseudo_3d.ws_object_renderer import TEXTURE_SIZE,H_TEXTURE_SIZE
-
 FOV = math.pi / 3
 H_FOV = FOV / 2
 NUM_RAYS = WIDTH // 2
@@ -21,6 +20,7 @@ class RayCasting:
         self.objects_to_render = []
         for ray, values in enumerate(self.ray_casting_result):
             depth, proj_height, texture, offset = values
+            
             if proj_height < HEIGHT:
                 wall_column = self.textures[texture].subsurface(
                     offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE
