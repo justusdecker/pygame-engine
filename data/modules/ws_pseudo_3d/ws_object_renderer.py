@@ -24,10 +24,8 @@ class ObjectRenderer:
         self.sky_image_surfarray = Surfarray((1,1),False).load_from_file('data\\bin\\img\\sky.png')
         self.sky_offset = 0
         self.this_frame_render_pixels = 0
-        self.background_layer = pg.Surface((WIDTH,HEIGHT))
         self.background_array = Surfarray((WIDTH,HEIGHT))
         self.depth_buffer_surfarray = Surfarray((WIDTH,HEIGHT))
-        self.depth_buffer_surface = pg.Surface((WIDTH,HEIGHT)).convert_alpha()
         self.floor_casting_array = array([0]*HALF_WIDTH*HEIGHT*3).reshape((HALF_WIDTH,HEIGHT,3))
         self.floor_casting_surface = pg.Surface((WIDTH,HALF_HEIGHT)).convert_alpha()
         
@@ -117,22 +115,16 @@ class ObjectRenderer:
             self.screen.render(pg.transform.scale(self.background_array.get_surface(),(O_WIDTH,O_HEIGHT)),(0,0))
         elif self.debugmode == 3:
             self.screen.render(pg.transform.scale(self.floor_casting_surface,(O_WIDTH,O_HEIGHT)),(0,0))
-        #else:
-           # self.screen.render(pg.transform.scale(blending_mul(self.background_layer,self.depth_buffer_surface),(O_WIDTH,O_HEIGHT)),(0,0))
-        
-        #print(self.this_frame_render_pixels)
+
     def render_depth_buffer(self, db):
         """
         This function renders a depth buffer, use: to make tiles darker in the distance
         """
-        self.depth_buffer_surface.fill((255,255,255))
+
         for x, y, w, h, d in db:
             d = (d*255) if d > 0 else 0
             c = [d,d,d]
             self.depth_buffer_surfarray.fill(c,(x,y,w,h))
-            #self.depth_buffer_surface.fill(c,(x,y,w,h))
-        
-        #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
         return Surfarray((1,1)).load_from_surface(pg.transform.scale(pg.image.load(path).convert(),res))

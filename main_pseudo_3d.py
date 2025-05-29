@@ -35,7 +35,7 @@ class App(Application):
         self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
         self.obj_handler = ObjectHandler(self)
-        #self.weapon = WeaponHandler(self)
+        self.weapon = WeaponHandler(self)
         self.sound = AudioHandler({},{'attack': 'data\\bin\\sfx\\attack.mp3',
                                       'step_0': 'data\\bin\\sfx\\step_0.mp3',
                                       'step_1': 'data\\bin\\sfx\\step_1.mp3',
@@ -56,7 +56,7 @@ class App(Application):
 
             self.object_renderer.draw()
 
-            #self.weapon.update()
+            self.weapon.update()
 
             UIM.render_queue(self)
             
