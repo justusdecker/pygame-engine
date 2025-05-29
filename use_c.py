@@ -8,9 +8,10 @@ from data.modules.data_management import DM
 
 from data.modules.kernel.opt_surfarray import Surfarray
 a = Surfarray((15,15))
-b = Surfarray((4,4))
-b.fill([255,255,255],(1,0,1,1))
-print(b.get_array())
+b = Surfarray((64,64))
+b.fill([255,255,255],(32,32,32,32))
+#print(b.get_array())
+image.save(surfarray.make_surface(b.get_array()),'test.png',)
 
 #img = surfarray.array3d(image.load("data\\bin\\img\\stone.png")).reshape((32*32*3)).tolist()
 
