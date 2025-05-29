@@ -2,6 +2,7 @@ from numpy import array as ndarray,uint8
 from json import dumps
 from pygame.surfarray import array3d, make_surface
 from pygame.image import load as imgload
+from cv2 import resize as arrayresize
 from pygame import Surface
 class Surfarray: 
     dimensions : tuple[int, int, int]
@@ -28,6 +29,11 @@ class Surfarray:
     def subarray(self, area: tuple[int, int, int, int]):
         arr = Surfarray((area[2],area[3]))
         arr.blit(self,(area[0],area[1]))
+        return arr
+    def resize(self,size: tuple[int,int]):
+        w,h = size
+        w,h = int(w), int(h)
+        arr = arrayresize(self.array,(w,h))
         return arr
     def setarray(self,arr: ndarray):
         pass

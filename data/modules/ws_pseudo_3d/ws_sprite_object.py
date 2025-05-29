@@ -11,10 +11,10 @@ class SpriteObject:
         self.app = app
         self.player = app.player
         self.x, self.y = pos
-        self.image = pg.image.load(path).convert_alpha()
-        self.IMAGE_WIDTH = self.image.get_width()
+        self.image_array = Surfarray((1,1)).load_from_file(path)
+        self.IMAGE_WIDTH = self.image_array.dimensions[0]
         self.IMAGE_H_WIDTH = self.IMAGE_WIDTH // 2
-        self.IMAGE_RATIO = self.IMAGE_WIDTH / self.image.get_height()
+        self.IMAGE_RATIO = self.IMAGE_WIDTH / self.image_array.dimensions[1]
         self.dx, self.dy, self.theta, self.screen_x, self.dist, self.norm_dist = 0,0,0,0,1,1
         self.sprite_half_width = 0
         self.SPRITE_SCALE = scale
@@ -23,7 +23,8 @@ class SpriteObject:
     def get_sprite_projection(self):
         proj = SCREEN_DIST / self.norm_dist * self.SPRITE_SCALE
         proj_width, proj_height = proj * self.IMAGE_RATIO,proj
-        image = Surfarray((1,1)).load_from_surface(pg.transform.scale(self.image,(proj_width,proj_height)))
+        
+        image = self.image_array.resize((proj_width,proj_height))
         
         self.sprite_half_width = proj_height // 2
         height_shift = proj_height * self.SPRITE_HEIGHT_SHIFT
