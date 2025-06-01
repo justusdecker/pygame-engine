@@ -59,16 +59,33 @@ class Surfarray:
         """
         self.array = Surfarray.fastblit(self.array,surface.array,self.dimensions,surface.dimensions,pos)
 
-    def fill(self,color: tuple[int, int, int], area: tuple[int, int, int, int] | None = None):
-        if area is not None:
-            if len(color) != self.dimensions[2]: raise Exception(f"color doesn't match dimensions: {len(color)} {self.dimensions[2]}")
-        color = tuple(int(i) for i in color)
+    def fastfill(arr, color, area):
+        color = [uint8(i) for i in color]
         if area is not None:
             x, y, w, h = area
             x, y, w, h = int(x), int(y), int(w), int(h)
-            self.array[x:x+w, y:y+h] = color
+            arr[x:x+w, y:y+h] = color
         else:
-            self.array[:][:] = color
+            arr[:][:] = color
+        return arr
+    def fast_col_mul(arr, multiplicator: float,shape):
+        for x in range(shape[0]):
+            for y in range(shape[1]):
+                for z in range(shape[2]):
+                    arr[x][y][z] *= multiplicator
+                    arr[x][y][z] = uint8(arr[x][y][z])
+                    if arr[x][y][z] > 255:
+                        arr[x][y][z] = 255
+        return arr
+            
+    def color_multiplication(self,multiplicator: float):
+        Surfarray.fast_col_mul(self.array,multiplicator,self.array.shape)
+    
+    
+    def fill(self,color: tuple[int, int, int], area: tuple[int, int, int, int] | None = None):
+        if area is not None:
+            if len(color) != self.dimensions[2]: raise Exception(f"color doesn't match dimensions: {len(color)} {self.dimensions[2]}")
+        self.array = Surfarray.fastfill(self.array,color,area)
     def get_surface(self) -> ndarray:
         return make_surface(self.array)
     def get_array(self) -> ndarray:

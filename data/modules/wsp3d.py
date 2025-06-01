@@ -6,7 +6,7 @@ from data.modules.constants import WIDTH, HEIGHT
 from data.modules.grop import blending_mul
 
 from pygame.transform import scale as surf_scale, smoothscale as surf_smoothscale
-from pygame import Surface,K_0,K_1,K_2,K_3,K_w,K_s,K_a,K_d
+from pygame import Surface,K_0,K_1,K_2,K_3,K_4,K_w,K_s,K_a,K_d
 from pygame.key import get_pressed as kb_get_pressed
 from pygame.surfarray import make_surface as sa_make_surface
 from pygame.image import load as img_load
@@ -209,7 +209,7 @@ class ObjectRenderer:
         
         # new rendering method
         
-        self.sky_surfarray = Surfarray((1,1)).load_from_file('data\\bin\\img\\sky.png').resize((W,HH))
+        self.sky_surfarray = Surfarray((1,1)).load_from_file('data\\bin\\img\\sky.png').resize((HH,W))
         
         self.background_surfarray = Surfarray((W,H))
         
@@ -228,6 +228,9 @@ class ObjectRenderer:
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
         elif k[K_3]:
             self.debugmode = 3
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[K_4]:
+            self.debugmode = 4
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
         
         self.background_surfarray.fill((24,24,24),(0,HH,W,H))
@@ -298,6 +301,8 @@ class ObjectRenderer:
             self.screen.render(surf_scale(self.background_layer,(WIDTH,HEIGHT)),(0,0))
         elif self.debugmode == 3:
             self.screen.render(surf_scale(self.floor_casting_surface,(WIDTH,HEIGHT)),(0,0))
+        elif self.debugmode == 4:
+            self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
         else:
             self.screen.render(surf_scale(blending_mul(self.background_layer,self.depth_buffer_surface),(WIDTH,HEIGHT)),(0,0))
         
