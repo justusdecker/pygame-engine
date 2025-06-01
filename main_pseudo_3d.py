@@ -1,8 +1,8 @@
 from data.modules.constants import *
 from data.modules.kernel.app import Application
 from data.modules.vector import Vector4
-from data.modules.ws_pseudo_3d.ws_map import Map
-from data.modules.ws_pseudo_3d.ws_player import Player
+from data.modules.wsp3d import Map
+from data.modules.wsp3d import Player
 from data.modules.wsp3d import RayCasting
 from data.modules.wsp3d import ObjectRenderer
 from data.modules.wsp3d import SpriteObject, AnimatedSprite
