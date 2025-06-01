@@ -1,0 +1,358 @@
+from math import pi, tan, cos, sin, atan2, hypot, tau
+from data.modules.constants import WIDTH as w, HEIGHT as h
+from pygame.transform import scale as surf_scale
+from pygame import Surface,K_0,K_1,K_2,K_3
+from pygame.key import get_pressed as kb_get_pressed
+from pygame.surfarray import make_surface as sa_make_surface
+from pygame.image import load as img_load
+from data.modules.kernel.opt_surfarray import Surfarray
+from data.modules.kernel.log import LOG
+from data.modules.constants import WIDTH, HEIGHT
+from data.modules.grop import blending_mul
+from numpy import array, char,deg2rad,rot90
+from numba import jit
+from collections import deque
+from time import time
+from os.path import isfile, join as pjoin
+from os import listdir
+# internal screen size
+
+W = w // 4
+H = h // 4
+
+HW = W // 2
+HH = H // 2
+
+QW = W // 4
+QH = H // 4
+
+# raycasting constants
+
+FOV = pi / 3
+H_FOV = FOV / 2
+NUM_RAYS = W // 2
+H_NUM_RAYS = NUM_RAYS // 2
+DELTA_ANGLE = FOV / NUM_RAYS
+MAX_DEPTH = 20
+SCREEN_DIST = HW / tan(H_FOV)
+SCALE = W // NUM_RAYS
+
+# object renderer
+
+TEXTURE_SIZE = 256
+H_TEXTURE_SIZE = TEXTURE_SIZE // 2
+
+class RayCasting:
+    def __init__(self,app):
+        self.app = app
+        self.ray_casting_result = []
+        self.objects_to_render = []
+        self.textures = self.app.object_renderer.wall_textures
+    def get_objects_to_render(self):
+        self.objects_to_render = []
+        for ray, values in enumerate(self.ray_casting_result):
+            depth, proj_height, texture, offset = values
+            if proj_height < H:
+                wall_column = self.textures[texture].subsurface(
+                    offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE
+                )
+                wall_column = surf_scale(wall_column,(SCALE,proj_height))
+                wall_pos = (ray * SCALE, HH - proj_height // 2)
+            else:
+                texture_height = TEXTURE_SIZE * H / proj_height
+                wall_column = self.textures[texture].subsurface(
+                    offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height
+                )
+                wall_column = surf_scale(wall_column,(SCALE,H))
+                wall_pos = (ray * SCALE,0)
+            self.objects_to_render.append((depth,wall_column,wall_pos))
+                 
+    def ray_cast(self):
+        self.ray_casting_result = []
+        px, py = self.app.player.pos
+        mx, my = self.app.player.map_pos
+        ray_angle = self.app.player.angle - H_FOV + 0.0001 #The small number is here to prevent further ZeroDivision Errors!
+        
+        texture_vert, texture_hor = 1, 1
+        
+        for ray in range(NUM_RAYS):
+            sin_a = sin(ray_angle)
+            cos_a = cos(ray_angle)
+            
+            #horizontals
+            
+            y_hor, dy = (my + 1, 1) if sin_a > 0 else (my - 1e-6, -1)
+            
+            depth_hor = (y_hor - py) / sin_a
+            x_hor = px + depth_hor * cos_a
+            delta_depth = dy / sin_a
+            dx = delta_depth * cos_a
+            
+            for i in range(MAX_DEPTH):
+                tile_hor = int(x_hor), int(y_hor)
+                if tile_hor in self.app.map.world_map:
+                    texture_hor = self.app.map.world_map[tile_hor]
+                    break
+                x_hor += dx
+                y_hor += dy
+                depth_hor += delta_depth
+            
+            #verticals
+            
+            x_vert, dx = (mx + 1, 1) if cos_a > 0 else (mx - 1e-6, -1)
+            
+            depth_vert = (x_vert - px) / cos_a
+            y_vert = py + depth_vert * sin_a
+            delta_depth = dx / cos_a
+            dy = delta_depth * sin_a
+            
+            for i in range(MAX_DEPTH):
+                tile_vert = int(x_vert), int(y_vert)
+                if tile_vert in self.app.map.world_map:
+                    texture_vert = self.app.map.world_map[tile_vert]
+                    break
+                x_vert += dx
+                y_vert += dy
+                depth_vert += delta_depth
+            
+            # depth, texture offset
+            
+            if depth_vert < depth_hor:
+                depth, texture = depth_vert, texture_vert
+                y_vert %= 1
+                offset = y_vert if cos_a > 0 else (1 - y_vert)
+            else:
+                depth, texture = depth_hor, texture_hor
+                x_hor %= 1
+                offset = (1 - x_hor) if sin_a > 0 else x_hor
+            
+            # debug drawing
+            
+            #pg.draw.line(self.app.window.surface,'yellow',(100*px,100*py),(100*px+100*depth*cos_a,100*py+100*depth*sin_a),2)
+            
+            # remove fishbowl effect
+            depth *= cos(self.app.player.angle - ray_angle)
+            
+            # projection
+            proj_height = SCREEN_DIST / (depth + 0.0001)
+            
+            """# draw walls
+            
+            color = [255 / (1 + depth ** 5 * 0.00002)] * 3
+            
+            pg.draw.rect(self.app.window.surface,color,
+                         (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))"""
+            
+            #ray casting result
+            
+            #distance color change
+
+
+            self.ray_casting_result.append((depth,proj_height,texture,offset))
+            
+            ray_angle += DELTA_ANGLE
+    def update(self):
+        self.ray_cast()
+        self.get_objects_to_render()
+
+class ObjectRenderer:
+    #TEXTURE_SIZE = 256
+    #H_TEXTURE_SIZE = TEXTURE_SIZE // 2
+    def __init__(self,app):
+        self.app = app
+        self.screen = app.window
+        self.wall_textures = self.load_wall_textures()
+        self.sky_image = self.get_texture('data\\bin\\img\\sky.png',(W,HH))
+        self.sky_offset = 0
+        self.this_frame_render_pixels = 0
+        self.background_layer = Surface((W,H))
+        self.depth_buffer_surface = Surface((W,H)).convert_alpha()
+        self.floor_casting_surface = Surface((W,HH)).convert_alpha()
+        
+        self.debugmode = 0
+    def draw(self):
+        
+        k = kb_get_pressed()
+        if k[K_0]:
+            self.debugmode = 0
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[K_1]:
+            self.debugmode = 1
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[K_2]:
+            self.debugmode = 2
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        elif k[K_3]:
+            self.debugmode = 3
+            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        
+        self.background_layer.fill((24,24,24),(0,HH,W,H))
+        #self.floor_casting()
+        self.draw_foreground()
+        self.render_game_objects()
+    #@jit
+    def fcjit(horizontal_resolution: int,
+              half_vertical_resolution: int,
+              pos_x: float,
+              pos_y: float,
+              angle: float,
+              arr: array):
+        fov = horizontal_resolution / 60
+        
+        for i in range(horizontal_resolution):
+            roti = angle + deg2rad(i / fov - 30)
+            sina,cosa = sin(roti), cos(roti)
+            for j in range(half_vertical_resolution):
+                n = half_vertical_resolution / (half_vertical_resolution - j)
+                
+                x, y = pos_x + cosa * n, pos_y + sina * n
+                if int(x) % 2 == int(y) % 2:
+                    arr[i][half_vertical_resolution*2-j-1] = [0] * 3
+                else:
+                    arr[i][half_vertical_resolution*2-j-1] = [255] * 3
+        return arr
+    def floor_casting(self):
+        #posx, posy, rot = 0,0,0
+        self.floor_casting_array = ObjectRenderer.fcjit(H,HW,*self.app.player.pos,self.app.player.angle,self.floor_casting_array)
+        self.floor_casting_surface = sa_make_surface(self.floor_casting_array)
+        self.background_layer.fill((24,24,24),(0,HH,W,H))
+        self.background_layer.blit(self.floor_casting_surface,(0,0))    
+    def draw_foreground(self):
+        self.sky_offset = (self.sky_offset + 0.5 * self.app.player.rel) % W # Sky rotation the mod value is currently dependent on the screen size
+        
+        # sky
+        
+        self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
+        self.background_layer.blit(self.sky_image,(-self.sky_offset + W,0))
+        
+        # floor
+        
+        
+    @jit
+    def fast_gamma_change(img,p,x,y) -> array:
+        for x in range(x):
+            for y in range(y):
+                img[x][y][0] *= p
+                img[x][y][1] *= p
+                img[x][y][2] *= p
+        return img
+    def render_game_objects(self):
+        list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
+        self.this_frame_render_pixels = 0
+        depthbuffer = []
+        for depth, image, pos in list_objects:
+            image : Surface
+            percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
+            depthbuffer.append((*pos,image.width,image.height,percentage))
+            #self.this_frame_render_pixels += image.get_width()*image.get_height()
+            self.background_layer.blit(image,pos)
+        
+        self.render_depth_buffer(depthbuffer)
+        if self.debugmode == 1: # show Depth-Buffer
+            self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))
+        elif self.debugmode == 2:
+            self.screen.render(surf_scale(self.background_layer,(WIDTH,HEIGHT)),(0,0))
+        elif self.debugmode == 3:
+            self.screen.render(surf_scale(self.floor_casting_surface,(WIDTH,HEIGHT)),(0,0))
+        else:
+            self.screen.render(surf_scale(blending_mul(self.background_layer,self.depth_buffer_surface),(WIDTH,HEIGHT)),(0,0))
+        
+        #print(self.this_frame_render_pixels)
+    def render_depth_buffer(self, db):
+        """
+        This function renders a depth buffer, use: to make tiles darker in the distance
+        """
+        self.depth_buffer_surface.fill((255,255,255))
+        for x, y, w, h, d in db:
+            d = (d*255) if d > 0 else 0
+            c = [d,d,d]
+            self.depth_buffer_surface.fill(c,(x,y,w,h))
+        
+        #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
+    @staticmethod
+    def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
+        texture = img_load(path).convert()
+        return surf_scale(texture,res)
+    def load_wall_textures(self):
+        return {
+            1: self.get_texture('data\\bin\\img\\stone.png'),
+            2: self.get_texture('data\\bin\\img\\stone_with_window.png'),
+            3: self.get_texture('data\\bin\\img\\dark_stone.png')
+        }
+        
+class SpriteObject:
+    def __init__(self, app, path,pos=(4.5,3.5),scale=0.5,shift=0.45):
+        self.app = app
+        self.player = app.player
+        self.x, self.y = pos
+        self.image = img_load(path).convert_alpha()
+        self.IMAGE_WIDTH = self.image.get_width()
+        self.IMAGE_H_WIDTH = self.IMAGE_WIDTH // 2
+        self.IMAGE_RATIO = self.IMAGE_WIDTH / self.image.get_height()
+        self.dx, self.dy, self.theta, self.screen_x, self.dist, self.norm_dist = 0,0,0,0,1,1
+        self.sprite_half_width = 0
+        self.SPRITE_SCALE = scale
+        self.SPRITE_HEIGHT_SHIFT = shift
+        
+    def get_sprite_projection(self):
+        proj = SCREEN_DIST / self.norm_dist * self.SPRITE_SCALE
+        proj_width, proj_height = proj * self.IMAGE_RATIO,proj
+        image = surf_scale(self.image,(proj_width,proj_height))
+        
+        self.sprite_half_width = proj_height // 2
+        height_shift = proj_height * self.SPRITE_HEIGHT_SHIFT
+        pos = self.screen_x - self.sprite_half_width, HH - proj_height // 2 + height_shift
+        self.app.raycasting.objects_to_render.append((self.norm_dist,image,pos))
+    def get_sprite(self):
+        dx = self.x - self.player.x
+        dy = self.y - self.player.y
+        self.dx, self.dy = dx,dy
+        self.theta = atan2(dy,dx)
+        
+        delta = self.theta - self.player.angle
+        if (dx > 0 and self.player.angle > pi) or (dx < 0 and dy < 0):
+            delta += tau
+        delta_rays = delta / DELTA_ANGLE
+        self.screen_x = (H_NUM_RAYS + delta_rays) * SCALE
+        
+        self.dist = hypot(dx,dy)
+        self.norm_dist = self.dist * cos(delta)
+        
+        if -self.IMAGE_H_WIDTH < self.screen_x < (WIDTH + self.IMAGE_H_WIDTH) and self.norm_dist > 0.5:
+            self.get_sprite_projection()
+        
+    def update(self):
+        self.get_sprite()
+
+
+class AnimatedSprite(SpriteObject):
+    def __init__(self, app, path:str, pos=(4.5, 3.5), scale=0.5, shift=0.45, animation_time=.1):
+        super().__init__(app, path, pos, scale, shift)
+        self.animation_time = animation_time
+        self.path = path.rsplit('\\',1)[0]
+        self.images = self.get_images(self.path)
+        self.animation_time_prev = time()
+        self.animation_trigger = False
+    def update(self):
+        super().update()
+        self.check_animation_time()
+        self.animate(self.images)
+    def animate(self,images: deque):
+        if self.animation_trigger:
+            images.rotate(-1)
+            self.image = images[0]
+    def check_animation_time(self):
+        self.animation_trigger = False
+        time_now = time()
+        if time_now - self.animation_time_prev > self.animation_time:
+            self.animation_time_prev = time_now
+            self.animation_trigger = True
+            
+    def get_images(self,path):
+        images = deque()
+        for file_name in listdir(path):
+            if isfile(pjoin(path,file_name)):
+                img = img_load(path + '\\' + file_name).convert_alpha()
+                images.append(img)
+                
+        return images
