@@ -11,10 +11,10 @@ class ObjectHandler:
         add_sprite = self.add_sprite
         add_npc = self.add_npc
         # sprite map
-        add_sprite(SpriteObject(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png'))
-        add_sprite(AnimatedSprite(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png',(3.7,3.5)))
+        #add_sprite(SpriteObject(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png'))
+        #add_sprite(AnimatedSprite(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png',(3.7,3.5)))
         
-        add_npc(NPC(app,'data\\bin\\img\\npc\\soul\\0.png',animation_time=0.2))
+        #add_npc(NPC(app,'data\\bin\\img\\npc\\soul\\0.png',animation_time=0.2))
     def update(self):
         [sprite.update() for sprite in self.sprite_list]
         [npc.update() for npc in self.npc_list]

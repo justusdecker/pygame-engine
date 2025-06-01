@@ -1,6 +1,6 @@
 from math import pi, tan, cos, sin, atan2, hypot, tau
-from data.modules.constants import WIDTH as w, HEIGHT as h
-from pygame.transform import scale as surf_scale
+from data.modules.constants import WIDTH as w, HEIGHT as h, HALF_WIDTH
+from pygame.transform import scale as surf_scale, smoothscale as surf_smoothscale
 from pygame import Surface,K_0,K_1,K_2,K_3
 from pygame.key import get_pressed as kb_get_pressed
 from pygame.surfarray import make_surface as sa_make_surface
@@ -15,6 +15,8 @@ from collections import deque
 from time import time
 from os.path import isfile, join as pjoin
 from os import listdir
+from random import randint
+from pygame.mouse import get_pressed as mouse_get_pressed
 # internal screen size
 
 W = w // 4
@@ -356,3 +358,240 @@ class AnimatedSprite(SpriteObject):
                 images.append(img)
                 
         return images
+
+class ObjectHandler:
+    def __init__(self, app):
+        self.app = app
+        self.sprite_list = []
+        self.npc_list = []
+        self.npc_sprite_path = 'data\\bin\\img\\npc\\'
+        self.static_sprite_path = 'data\\bin\\img\\static\\'
+        self.animated_sprite_path = 'data\\bin\\img\\animated\\'
+        add_sprite = self.add_sprite
+        add_npc = self.add_npc
+        # sprite map
+        add_sprite(SpriteObject(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png'))
+        add_sprite(AnimatedSprite(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png',(3.7,3.5)))
+        
+        add_npc(NPC(app,'data\\bin\\img\\npc\\soul\\0.png',animation_time=0.2))
+    def update(self):
+        [sprite.update() for sprite in self.sprite_list]
+        [npc.update() for npc in self.npc_list]
+    def add_npc(self,npc):
+        self.npc_list.append(npc)
+    def add_sprite(self,sprite):
+        self.sprite_list.append(sprite)
+
+class NPC(AnimatedSprite):
+    def __init__(self, app, path, pos=(4.5,3.5), scale=0.5, shift=0.45, animation_time=0.1):
+        super().__init__(app, path, pos, scale, shift, animation_time)
+        self.attack_images = self.get_images(self.path + '\\attack')
+        self.death_images = self.get_images(self.path + '\\death')
+        self.idle_images = self.get_images(self.path + '\\idle')
+        self.pain_images = self.get_images(self.path + '\\pain')
+        self.walk_images = self.get_images(self.path + '\\walk')
+        
+        # stats
+        self.attack_dist = randint(3,6)
+        self.speed = 0.01
+        self.size = .6
+        self.health = 100
+        self.attack_damage = 10
+        self.accuracy = 0.15
+        self.alive = True
+        self.pain = False
+        
+        self.on_me = False,False
+        
+        self.ray_cast_value = False
+        self.player_search_trigger = False
+        self.frame_counter = 0
+    def update(self):
+        self.check_animation_time()
+        self.get_sprite()
+        self.run_logic()
+        
+    def movement(self):
+        next_pos = self.app.pathfinding.get_path(self.map_pos, self.app.player.map_pos)
+        next_x, next_y = next_pos
+        angle = atan2(next_y + 0.5 - self.y, next_x + 0.5 - self.x)
+        dx = cos(angle) * self.speed
+        dy = sin(angle) * self.speed
+        self.check_wall_collision(dx,dy)
+    def check_wall(self,x,y):
+        return (x,y) not in self.app.map.world_map
+    def check_wall_collision(self,dx,dy):
+        if self.check_wall(int(self.x + dx * self.size),int(self.y)):
+            self.x += dx
+        if self.check_wall(int(self.x),int(self.y + dy * self.size)):
+            self.y += dy
+    def check_hit_in_npc(self):
+        on_me_l = self.on_me
+        self.on_me = self.app.player.shot, HW - self.sprite_half_width < self.screen_x < HW + self.sprite_half_width
+        if on_me_l[1] and not on_me_l[0] and all(self.on_me) and self.ray_cast_value:
+            #! SOUND: HIT MISSING
+            if HW - self.sprite_half_width < self.screen_x < HW + self.sprite_half_width:
+                self.app.player.shot = False
+                self.health -= self.app.weapon.anim_attack.damage
+                self.check_health()
+                self.pain = True
+    def check_health(self):
+        if self.health < 1:
+            self.alive = False
+            #! SOUND: DEATH MISSING
+    def animate_death(self):
+        if not self.alive:
+            if self.animation_trigger and self.frame_counter < len(self.death_images) - 1:
+                self.death_images.rotate(-1)
+                self.image = self.death_images[0]
+                self.frame_counter += 1
+    def animate_pain(self):
+        self.animate(self.pain_images)
+        if self.animation_trigger:
+            self.pain = False
+    def run_logic(self):
+        if self.alive:
+            self.ray_cast_value = self.ray_cast_player_npc()
+            self.check_hit_in_npc()
+            if self.pain:
+                self.animate_pain()
+            elif self.ray_cast_value:
+                self.player_search_trigger = True
+                self.animate(self.walk_images)
+                self.movement()
+            elif self.player_search_trigger:
+                self.animate(self.walk_images)
+                self.movement()
+            else:
+                self.animate(self.idle_images)
+        else:
+            self.animate_death()
+    @property
+    def map_pos(self):
+        return int(self.x), int(self.y)
+    
+    def ray_cast_player_npc(self):
+        if self.app.player.map_pos == self.map_pos:
+            return True
+        
+        wall_dist_v, wall_dist_h = 0,0
+        player_dist_v, player_dist_h = 0,0
+        
+        px, py = self.app.player.pos
+        mx, my = self.app.player.map_pos
+        ray_angle = self.theta #The small number is here to prevent further ZeroDivision Errors!
+
+        sin_a = sin(ray_angle)
+        cos_a = cos(ray_angle)
+        
+        #horizontals
+        
+        y_hor, dy = (my + 1, 1) if sin_a > 0 else (my - 1e-6, -1)
+        
+        depth_hor = (y_hor - py) / sin_a
+        x_hor = px + depth_hor * cos_a
+        delta_depth = dy / sin_a
+        dx = delta_depth * cos_a
+        
+        for i in range(MAX_DEPTH):
+            tile_hor = int(x_hor), int(y_hor)
+            if tile_hor == self.map_pos:
+                player_dist_h = depth_hor
+                break
+            if tile_hor in self.app.map.world_map:
+                wall_dist_h = depth_hor
+                break
+            x_hor += dx
+            y_hor += dy
+            depth_hor += delta_depth
+        
+        #verticals
+        
+        x_vert, dx = (mx + 1, 1) if cos_a > 0 else (mx - 1e-6, -1)
+        
+        depth_vert = (x_vert - px) / cos_a
+        y_vert = py + depth_vert * sin_a
+        delta_depth = dx / cos_a
+        dy = delta_depth * sin_a
+        
+        for i in range(MAX_DEPTH):
+            tile_vert = int(x_vert), int(y_vert)
+            if tile_vert == self.map_pos:
+                player_dist_v = depth_vert
+                break
+            if tile_vert in self.app.map.world_map:
+                wall_dist_v = depth_vert
+                break
+            x_vert += dx
+            y_vert += dy
+            depth_vert += delta_depth
+        player_dist = max(player_dist_v,player_dist_h)
+        wall_dist = max(wall_dist_v,wall_dist_h)
+        if 0 < player_dist < wall_dist or not wall_dist:
+            return True
+        return False
+
+class Weapon(AnimatedSprite):
+    def __init__(self, app, path,scale=1, animation_time=0.1,sc=True):
+        super().__init__(app, path, scale=scale, animation_time=animation_time)
+        
+        scale_func = surf_smoothscale if sc else surf_scale
+        self.images = deque([
+            scale_func(img, (self.image.get_width() * scale,self.image.get_height() * scale))
+        for img in self.images ])
+        self.weapon_pos = (HALF_WIDTH - self.images[0].get_width() // 2, HEIGHT - self.images[0].get_height())
+        self.reloading = False
+        self.num_images = len(self.images)
+        self.frame_counter = 0
+        self.damage = 50
+    def animate_shot(self):
+        if self.reloading:
+            
+            if self.animation_trigger:
+                self.images.rotate(-1)
+                self.image = self.images[0]
+                self.frame_counter += 1
+                if self.frame_counter == self.num_images:
+                    self.app.player.shot = False
+                    self.reloading = False
+                    self.frame_counter = 0
+                    
+    def animate_walk(self):
+        if self.app.player.moving:
+            if self.animation_trigger:
+                self.images.rotate(-1)
+                self.image = self.images[0]
+                self.frame_counter += 1
+                if self.frame_counter == self.num_images:
+                    self.frame_counter = 0
+    def draw(self):
+        self.app.window.render(self.images[0],self.weapon_pos)
+    def update(self,animation_callback):
+        self.check_animation_time()
+        animation_callback()
+        #self.app.player.single_fire_event()
+        #self.animate_shot()
+class WeaponHandler:
+    def __init__(self,app):
+        self.app = app
+        
+        self.state = 0 # 0 is default walking 1 is weapon shot 2 is others
+        self.reloading = False
+        self.anim_walk = Weapon(app,'data\\bin\\img\\lantern_animated\\lantern_f1.png',13,0.2,False)
+        self.anim_attack = Weapon(app,'data\\bin\\img\\lantern_attack_animated\\lantern_f1.png',13,0.1,False)
+    def update(self):
+        self.app.player.single_fire_event()
+        m = mouse_get_pressed()[0]
+        if m or self.reloading:
+            if m:
+                self.reloading = m
+                self.anim_attack.reloading = m
+            self.anim_attack.update(self.anim_attack.animate_shot)
+            self.anim_attack.draw()
+            self.reloading = self.anim_attack.reloading
+        elif self.app.player.moving: 
+            self.anim_walk.update(self.anim_walk.animate_walk)
+            self.anim_walk.draw()
+        elif not self.reloading and not m: 
+            self.anim_walk.update(self.anim_walk.animate_walk)
+            self.anim_walk.draw()

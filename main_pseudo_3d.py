@@ -6,8 +6,8 @@ from data.modules.ws_pseudo_3d.ws_player import Player
 from data.modules.wsp3d import RayCasting
 from data.modules.wsp3d import ObjectRenderer
 from data.modules.wsp3d import SpriteObject, AnimatedSprite
-from data.modules.ws_pseudo_3d.ws_object_handler import ObjectHandler
-from data.modules.ws_pseudo_3d.ws_weapon_handler import WeaponHandler
+from data.modules.wsp3d import ObjectHandler
+from data.modules.wsp3d import WeaponHandler
 from data.modules.algorithms.pathfinding import PathFinding
 from data.modules.audio_handler import AudioHandler
 from data.modules.ui.ui_element import UIM
@@ -35,7 +35,7 @@ class App(Application):
         self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
         self.obj_handler = ObjectHandler(self)
-        #self.weapon = WeaponHandler(self)
+        self.weapon = WeaponHandler(self)
         self.sound = AudioHandler({},{'attack': 'data\\bin\\sfx\\attack.mp3',
                                       'step_0': 'data\\bin\\sfx\\step_0.mp3',
                                       'step_1': 'data\\bin\\sfx\\step_1.mp3',
@@ -56,7 +56,7 @@ class App(Application):
 
             self.object_renderer.draw()
 
-            #self.weapon.update()
+            self.weapon.update()
 
             UIM.render_queue(self)
             
