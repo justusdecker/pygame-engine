@@ -4,6 +4,8 @@ from pygame.surfarray import array3d, make_surface
 from pygame.image import load as imgload
 from cv2 import resize as arrayresize
 from pygame import Surface
+
+from numba import jit
 class Surfarray: 
     dimensions : tuple[int, int, int]
     def __init__(self,
@@ -33,25 +35,29 @@ class Surfarray:
     def resize(self,size: tuple[int,int]):
         w,h = size
         w,h = int(w), int(h)
-        arr = arrayresize(self.array,(w,h))
-        return arr
+        self.array = arrayresize(self.array,(w,h))
+        self.dimensions = self.array.shape
+        return self
     def setarray(self,arr: ndarray):
         pass
+    @jit
+    def fastblit(a: Surfarray, b: Surfarray,dim_a: tuple[int, int, int], dim_b: tuple[int, int, int], pos: tuple[int, int]) -> bool:
+        x,y = pos
+        x,y = int(x-1),int(y-1)
+        w,h,_ = dim_b
+
+        if (x + w < 0 and y + h < 0) or (x > w and y > h):
+            return a
+        for offset_x in range(w):
+            for offset_y in range(h):
+                if x + offset_x >= 0 and y + offset_y >= 0 and x + offset_x < dim_a[0] and y + offset_y < dim_a[1]:
+                    a[x+offset_x][y+offset_y] = b[offset_x][offset_y]
+        return a
     def blit(self,surface: Surfarray,pos: tuple[int, int]) -> bool:
         """
         Will blit some another array onto this!
         """
-        x,y = pos
-        x,y = int(x-1),int(y-1)
-        w,h,_ = surface.dimensions
-
-        if (x + w < 0 and y + h < 0) or (x > surface.dimensions[0] and y > surface.dimensions[1]):
-            return False
-        for offset_x in range(surface.dimensions[0]):
-            for offset_y in range(surface.dimensions[1]):
-                if x + offset_x >= 0 and y + offset_y >= 0 and x + offset_x < self.dimensions[0] and y + offset_y < self.dimensions[1]:
-                    self.array[x+offset_x][y+offset_y] = surface.array[offset_x][offset_y]
-        return True
+        self.array = Surfarray.fastblit(self.array,surface.array,self.dimensions,surface.dimensions,pos)
 
     def fill(self,color: tuple[int, int, int], area: tuple[int, int, int, int] | None = None):
         if area is not None:

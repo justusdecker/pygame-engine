@@ -207,6 +207,12 @@ class ObjectRenderer:
         self.depth_buffer_surface = Surface((W,H)).convert_alpha()
         self.floor_casting_surface = Surface((W,HH)).convert_alpha()
         
+        # new rendering method
+        
+        self.sky_surfarray = Surfarray((1,1)).load_from_file('data\\bin\\img\\sky.png').resize((W,HH))
+        
+        self.background_surfarray = Surfarray((W,H))
+        
         self.debugmode = 0
     def draw(self):
         
@@ -224,7 +230,7 @@ class ObjectRenderer:
             self.debugmode = 3
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
         
-        self.background_layer.fill((24,24,24),(0,HH,W,H))
+        self.background_surfarray.fill((24,24,24),(0,HH,W,H))
         #self.floor_casting()
         self.draw_foreground()
         self.render_game_objects()
@@ -253,15 +259,15 @@ class ObjectRenderer:
         #posx, posy, rot = 0,0,0
         self.floor_casting_array = ObjectRenderer.fcjit(H,HW,*self.app.player.pos,self.app.player.angle,self.floor_casting_array)
         self.floor_casting_surface = sa_make_surface(self.floor_casting_array)
-        self.background_layer.fill((24,24,24),(0,HH,W,H))
-        self.background_layer.blit(self.floor_casting_surface,(0,0))    
+        self.background_surfarray.fill((24,24,24),(0,HH,W,H))
+        #self.background_surfarray.blit(self.floor_casting_surface,(0,0))    
     def draw_foreground(self):
         self.sky_offset = (self.sky_offset + 0.5 * self.app.player.rel) % W # Sky rotation the mod value is currently dependent on the screen size
         
         # sky
         
-        self.background_layer.blit(self.sky_image,(-self.sky_offset,0))
-        self.background_layer.blit(self.sky_image,(-self.sky_offset + W,0))
+        self.background_surfarray.blit(self.sky_surfarray,(-self.sky_offset,0))
+        self.background_surfarray.blit(self.sky_surfarray,(-self.sky_offset + W,0))
         
         # floor
         
