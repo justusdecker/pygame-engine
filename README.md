@@ -13,10 +13,17 @@ some features i tried to implement will not work properly in the engine currentl
 - The FloorCasting method itself is not slow, but overwriting pixels on a Surface is.
 - Simply overwriting a surface consumes too much frame time.
 
-**Optimizations in the future:**
-- ctypes.CDLL, C code & jit is currently in use
-- I will overwrite the entire logic so that the surface is only overwritten once at the end of a frame.
-    - This will be tested in the upcoming commits
+### Restructurization & optimizatization
+
+- [x] A better Method to create, edit & render pixels!
+- [ ] All of the WSP3D code will be restructurized in the new **data/modules/wsp3d.py**
+- [ ] The restructurized code will be using the new **data/modules/kernel/opt_surfarray.SurfArray** class to fast create, edit & render pixels to a surface.
+- [ ] **Pygame Surface** will be only called once every frame for performance reasons
+- [ ] ctypes.CDLL, C code & jit will be used to go vroom vroom!🐢 >> 🐇
+- [ ] the depth buffer will take into account the Sprites & other transparent stuff
+- [ ] A better system to track frame times
+- [ ] The pathfinding algorithm will be rewritten in C to go vroom vroom!
+
 
 ## The current Project [Version 0.3]:
 - engine logo blend in
