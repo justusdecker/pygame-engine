@@ -89,19 +89,31 @@ class RayCasting:
     def get_objects_to_render(self):
         self.objects_to_render = []
         for ray, values in enumerate(self.ray_casting_result):
-            depth, proj_height, texture, offset = values
+            depth, proj_height, texture, offset, _ = values
             if proj_height < H:
-                wall_column = self.textures[texture].subsurface(
-                    offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE
-                )
-                wall_column = surf_scale(wall_column,(SCALE,proj_height))
+                
+                
+                wall_column = self.textures[texture].subarray(
+                    (offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
+                ).resize((SCALE,proj_height))
+                
+                #wall_column = self.textures[texture].subsurface(
+                #    offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE
+                #)
+                #wall_column = surf_scale(wall_column,(SCALE,proj_height))
                 wall_pos = (ray * SCALE, HH - proj_height // 2)
             else:
                 texture_height = TEXTURE_SIZE * H / proj_height
-                wall_column = self.textures[texture].subsurface(
-                    offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height
-                )
-                wall_column = surf_scale(wall_column,(SCALE,H))
+                
+                wall_column = self.textures[texture].subarray(
+                    (offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height)
+                ).resize((SCALE,H))
+                #
+                #wall_column = self.textures[texture].subsurface(
+                #    offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height
+                #)
+                #wall_column = surf_scale(wall_column,(SCALE,H))
+                
                 wall_pos = (ray * SCALE,0)
             self.objects_to_render.append((depth,wall_column,wall_pos))
                  
@@ -186,7 +198,7 @@ class RayCasting:
             #distance color change
 
 
-            self.ray_casting_result.append((depth,proj_height,texture,offset))
+            self.ray_casting_result.append((depth,proj_height,texture,offset,True))
             
             ray_angle += DELTA_ANGLE
     def update(self):
@@ -287,12 +299,13 @@ class ObjectRenderer:
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
         self.this_frame_render_pixels = 0
         depthbuffer = []
-        for depth, image, pos in list_objects:
+        for depth, image, pos,no_sprite in list_objects:
             image : Surface
-            percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
-            depthbuffer.append((*pos,image.width,image.height,percentage))
-            #self.this_frame_render_pixels += image.get_width()*image.get_height()
-            self.background_layer.blit(image,pos)
+            if no_sprite:
+                percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
+                depthbuffer.append((*pos,image.width,image.height,percentage))
+                #self.this_frame_render_pixels += image.get_width()*image.get_height()
+                self.background_surfarray.blit(image,pos)
         
         self.render_depth_buffer(depthbuffer)
         if self.debugmode == 1: # show Depth-Buffer
@@ -320,6 +333,7 @@ class ObjectRenderer:
         #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
+        return Surfarray((1,1)).load_from_file(path).resize(res)
         texture = img_load(path).convert()
         return surf_scale(texture,res)
     def load_wall_textures(self):
@@ -351,7 +365,7 @@ class SpriteObject:
         self.sprite_half_width = proj_height // 2
         height_shift = proj_height * self.SPRITE_HEIGHT_SHIFT
         pos = self.screen_x - self.sprite_half_width, HH - proj_height // 2 + height_shift
-        self.app.raycasting.objects_to_render.append((self.norm_dist,image,pos))
+        self.app.raycasting.objects_to_render.append((self.norm_dist,image,pos,False))
     def get_sprite(self):
         dx = self.x - self.player.x
         dy = self.y - self.player.y
@@ -417,10 +431,10 @@ class ObjectHandler:
         add_sprite = self.add_sprite
         add_npc = self.add_npc
         # sprite map
-        add_sprite(SpriteObject(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png'))
-        add_sprite(AnimatedSprite(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png',(3.7,3.5)))
+        #!add_sprite(SpriteObject(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png'))
+        #!add_sprite(AnimatedSprite(app,'data\\bin\\img\\soul_stone_animated\\soul_stone_f1.png',(3.7,3.5)))
         
-        add_npc(NPC(app,'data\\bin\\img\\npc\\soul\\0.png',animation_time=0.2))
+        #!add_npc(NPC(app,'data\\bin\\img\\npc\\soul\\0.png',animation_time=0.2))
     def update(self):
         [sprite.update() for sprite in self.sprite_list]
         [npc.update() for npc in self.npc_list]

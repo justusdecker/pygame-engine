@@ -28,10 +28,14 @@ class Surfarray:
         self.array = array3d(surface) #we will currently use the pygame method to load images. Will be changed later
         self.dimensions = tuple(self.array.shape)
         return self
+    def load_from_array(self,arr: ndarray):
+        self.array = arr
+        self.dimensions = tuple(self.array.shape)
+        return self
     def subarray(self, area: tuple[int, int, int, int]):
         arr = Surfarray((area[2],area[3]))
         arr.blit(self,(area[0],area[1]))
-        return arr
+        return Surfarray((1,1)).load_from_array(arr.array)
     def resize(self,size: tuple[int,int]):
         w,h = size
         w,h = int(w), int(h)
