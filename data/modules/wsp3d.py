@@ -12,6 +12,9 @@ from pygame.surfarray import make_surface as sa_make_surface
 from pygame.image import load as img_load
 from pygame.mouse import get_pressed as mouse_get_pressed,get_pos as mouse_get_pos,set_pos as mouse_set_pos,get_rel as mouse_get_rel
 
+from pygame import event,display
+from time import sleep
+
 from numpy import array, deg2rad
 from numba import jit
 from collections import deque
@@ -94,7 +97,7 @@ class RayCasting:
             depth, proj_height, texture, offset, _ = values
             if proj_height < H:
                 
-                
+                offs = (offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
                 wall_column = self.textures[texture].subarray(
                     (offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
                 ).resize((proj_height,SCALE))
@@ -106,9 +109,9 @@ class RayCasting:
                 wall_pos = (ray * SCALE, HH - proj_height // 2)
             else:
                 texture_height = TEXTURE_SIZE * H / proj_height
-                
+                offs = (offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2,SCALE , texture_height)
                 wall_column = self.textures[texture].subarray(
-                    (offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height)
+                    offs
                 ).resize((H,SCALE))
                 #
                 #wall_column = self.textures[texture].subsurface(
@@ -228,6 +231,7 @@ class ObjectRenderer:
         self.background_surfarray = Surfarray((W,H))
         
         self.debugmode = 0
+        
     def draw(self):
         
         k = kb_get_pressed()
@@ -246,6 +250,7 @@ class ObjectRenderer:
         elif k[K_4]:
             self.debugmode = 4
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
+        
         
         self.background_surfarray.fill((24,24,24),(0,HH,W,H))
         #self.floor_casting()
@@ -300,7 +305,12 @@ class ObjectRenderer:
             self.depthbuffer.append((*pos,image.dimensions[0],image.dimensions[1],percentage))
             #self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_surfarray.blit(image,pos)
-        
+            
+            
+            self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
+            display.update()
+            event.get()
+            sleep(0.01)
         self.render_depth_buffer()
         if self.debugmode == 1: # show Depth-Buffer
             self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))

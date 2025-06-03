@@ -33,24 +33,28 @@ B = Surfarray().load_from_file('data\\bin\\img\\stone_with_window.png')
 
 #!A.fill((255,255,255,255))
 
-A.fill((255,255,255))
-A.array
-A.blit(B,(0,0))
-A.blit(B,(-64,-64))
-A.blit(B,(64,64))
-A.blit(B,(-16,16))
-A.blit(B,(16,-16))
+#A.fill((255,255,255))
+#A.array
+#A.blit(B,(0,0))
+#A.blit(B,(-64,-64))
+#A.blit(B,(64,64))
+#A.blit(B,(-16,16))
+#A.blit(B,(16,-16))
 
 A.array
 
 # NO UINT8 --> UINT64 CONVERSION IN THIS PART
 
-A.resize((64,64))
+#A.resize((64,64))
+#180 87 2 83
 
 
-C = A.subarray((0,0,16,16))
-image.save(C.get_surface(),'test.png') #!HERE CONVERSION! NOW ITS FIXED
-
+C = A.resize((256,256))
+image.save(C.get_surface(),'test.png')
+D = C.subarray((180,87,8,83))
+image.save(D.get_surface(),'test1.png')
+E = C.subarray((0,0,8,256))
+image.save(E.get_surface(),'test2.png')
 pass
 #b.fill([255,255,255],(32,32,32,32))
 #print(b.get_array())

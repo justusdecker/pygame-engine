@@ -48,7 +48,9 @@ class Surfarray:
         return self
     def subarray(self, area: tuple[int, int, int, int]):
         arr = Surfarray((area[2],area[3]))
-        arr.blit(self,(area[0],area[1]))
+        print(area[2],area[3])
+        arr.blit(self,(area[2] - area[0],area[3] - area[1])) # !here is the error!
+        print(area[0],area[1])
         return arr
 
     def resize(self,size: tuple[int,int]):
