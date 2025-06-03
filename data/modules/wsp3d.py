@@ -22,6 +22,8 @@ from random import randint
 
 from data.modules.kernel.opt_surfarray import Surfarray
 
+from data.modules.testing.timing_tests import timein
+
 # internal screen size
 
 W = w // 4
@@ -95,7 +97,7 @@ class RayCasting:
                 
                 wall_column = self.textures[texture].subarray(
                     (offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
-                ).resize((SCALE,proj_height))
+                ).resize((proj_height,SCALE))
                 
                 #wall_column = self.textures[texture].subsurface(
                 #    offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE
@@ -107,7 +109,7 @@ class RayCasting:
                 
                 wall_column = self.textures[texture].subarray(
                     (offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height)
-                ).resize((SCALE,H))
+                ).resize((H,SCALE))
                 #
                 #wall_column = self.textures[texture].subsurface(
                 #    offset * (TEXTURE_SIZE - SCALE), H_TEXTURE_SIZE - texture_height // 2, SCALE, texture_height
@@ -285,29 +287,21 @@ class ObjectRenderer:
         self.background_surfarray.blit(self.sky_surfarray,(-self.sky_offset + W,0))
         
         # floor
-        
-        
-    @jit
-    def fast_gamma_change(img,p,x,y) -> array:
-        for x in range(x):
-            for y in range(y):
-                img[x][y][0] *= p
-                img[x][y][1] *= p
-                img[x][y][2] *= p
-        return img
+
+    #@timein
     def render_game_objects(self):
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
         self.this_frame_render_pixels = 0
-        depthbuffer = []
-        for depth, image, pos,no_sprite in list_objects:
+        self.depthbuffer = []
+        for depth, image, pos in list_objects:
             image : Surface
-            if no_sprite:
-                percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
-                depthbuffer.append((*pos,image.width,image.height,percentage))
-                #self.this_frame_render_pixels += image.get_width()*image.get_height()
-                self.background_surfarray.blit(image,pos)
+
+            percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
+            self.depthbuffer.append((*pos,image.dimensions[0],image.dimensions[1],percentage))
+            #self.this_frame_render_pixels += image.get_width()*image.get_height()
+            self.background_surfarray.blit(image,pos)
         
-        self.render_depth_buffer(depthbuffer)
+        self.render_depth_buffer()
         if self.debugmode == 1: # show Depth-Buffer
             self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))
         elif self.debugmode == 2:
@@ -320,12 +314,13 @@ class ObjectRenderer:
             self.screen.render(surf_scale(blending_mul(self.background_layer,self.depth_buffer_surface),(WIDTH,HEIGHT)),(0,0))
         
         #print(self.this_frame_render_pixels)
-    def render_depth_buffer(self, db):
+    #@timein
+    def render_depth_buffer(self):
         """
         This function renders a depth buffer, use: to make tiles darker in the distance
         """
         self.depth_buffer_surface.fill((255,255,255))
-        for x, y, w, h, d in db:
+        for x, y, w, h, d in self.depthbuffer:
             d = (d*255) if d > 0 else 0
             c = [d,d,d]
             self.depth_buffer_surface.fill(c,(x,y,w,h))
@@ -333,7 +328,7 @@ class ObjectRenderer:
         #self.screen.render(blend_mult(self.background_layer, self.depth_buffer_surface),(0,0))
     @staticmethod
     def get_texture(path, res=(TEXTURE_SIZE,TEXTURE_SIZE)):
-        return Surfarray((1,1)).load_from_file(path).resize(res)
+        return Surfarray((1,1)).load_from_file(path).resize(res[::-1])
         texture = img_load(path).convert()
         return surf_scale(texture,res)
     def load_wall_textures(self):

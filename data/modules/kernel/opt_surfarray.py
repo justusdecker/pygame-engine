@@ -3,6 +3,7 @@ from json import dumps
 from pygame.surfarray import array3d, make_surface
 from pygame.image import load as imgload
 from cv2 import resize as arrayresize
+from data.modules.testing.result_tests import surfarray_result_check
 from pygame import Surface
 
 from numba import jit
@@ -13,13 +14,26 @@ class Surfarray:
                  alpha: bool = False):
         pass
 
+# Testing System:
+"""
+create
+scale
+blit
+fill
+pos:
+    floats must be converted to int
+
+"""
+
+
 class Surfarray:
     def __init__(self,
-                 size: tuple[int,int],
+                 size: tuple[int,int] = (1,1),
                  alpha: bool = False):
         self.dimensions : tuple[int, int, int] = (*size,4 if alpha else 3)
         self.dimensions = tuple([int(i) for i in self.dimensions])
-        self.array = ndarray([0 for i in range(self.dimensions[0] * self.dimensions[1] * self.dimensions[2])]).reshape(([*self.dimensions]))
+        self.array = ndarray([0 for i in range(self.dimensions[0] * self.dimensions[1] * self.dimensions[2])],dtype=uint8).reshape(([*self.dimensions]))
+    @surfarray_result_check
     def load_from_file(self,file_path: str):
         self.array = array3d(imgload(file_path)) #we will currently use the pygame method to load images. Will be changed later
         self.dimensions = tuple(self.array.shape)
@@ -35,11 +49,12 @@ class Surfarray:
     def subarray(self, area: tuple[int, int, int, int]):
         arr = Surfarray((area[2],area[3]))
         arr.blit(self,(area[0],area[1]))
-        return Surfarray((1,1)).load_from_array(arr.array)
+        return arr
+
     def resize(self,size: tuple[int,int]):
         w,h = size
         w,h = int(w), int(h)
-        self.array = arrayresize(self.array,(w,h))
+        self.array = arrayresize(self.array.astype(uint8),(w,h)) # .> self.array.astype(uint8) this i only a failsave
         self.dimensions = self.array.shape
         return self
     def setarray(self,arr: ndarray):

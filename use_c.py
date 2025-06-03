@@ -23,19 +23,38 @@ if x < 0
 import cv2 as ocv
 
 
+# Test Envoirment
+
+A = Surfarray().load_from_file('data\\bin\\img\\stone.png')
+
+B = Surfarray().load_from_file('data\\bin\\img\\stone_with_window.png')
+
+# 1. fill without args [COMP FILL]
+
+#!A.fill((255,255,255,255))
+
+A.fill((255,255,255))
+A.array
+A.blit(B,(0,0))
+A.blit(B,(-64,-64))
+A.blit(B,(64,64))
+A.blit(B,(-16,16))
+A.blit(B,(16,-16))
+
+A.array
+
+# NO UINT8 --> UINT64 CONVERSION IN THIS PART
+
+A.resize((64,64))
 
 
+C = A.subarray((0,0,16,16))
+image.save(C.get_surface(),'test.png') #!HERE CONVERSION! NOW ITS FIXED
 
-
-a.fill([255,255,255])
-
-c = Surfarray([1,1],True).load_from_file('data\\bin\\img\\stone.png')
-print(c.blit(b,[5,5]))
-c.array = ocv.resize(c.get_array(),dsize=(128,128))
-
+pass
 #b.fill([255,255,255],(32,32,32,32))
 #print(b.get_array())
-image.save(surfarray.make_surface(c.get_array()),'test.png',)
+#image.save(surfarray.make_surface(c.get_array()),'test.png',)
 
 #img = surfarray.array3d(image.load("data\\bin\\img\\stone.png")).reshape((32*32*3)).tolist()
 
