@@ -307,10 +307,10 @@ class ObjectRenderer:
             self.background_surfarray.blit(image,pos)
             
             
-            self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
-            display.update()
-            event.get()
-            sleep(0.01)
+            #self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
+            #display.update()
+            #event.get()
+            #sleep(0.01)
         self.render_depth_buffer()
         if self.debugmode == 1: # show Depth-Buffer
             self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))

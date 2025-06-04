@@ -51,8 +51,10 @@ A.array
 
 C = A.resize((256,256))
 image.save(C.get_surface(),'test.png')
+
 D = C.subarray((180,87,8,83))
 image.save(D.get_surface(),'test1.png')
+
 E = C.subarray((0,0,8,256))
 image.save(E.get_surface(),'test2.png')
 pass
