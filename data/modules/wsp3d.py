@@ -67,13 +67,20 @@ MOUSE_BORDER_RIGHT = WIDTH - MOUSE_BORDER_LEFT
 
 _ = False
 mini_map = [ #! Will be replaced later
-    [1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,_,_,_,_,_,1,1,1,_,_,_,1],
-    [1,1,1,_,1,_,_,1,_,2,_,_,1],
-    [1,1,1,_,_,_,1,1,_,2,_,1,1],
-    [1,_,1,_,_,_,1,_,1,_,_,_,1],
-    [1,_,_,_,_,_,_,_,_,_,_,_,1],
-    [3,3,3,3,3,3,1,1,1,1,1,1,1]
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,_,_,_,_,_,1,1,1,_,_,_,1,_,_,_,1,_,_,_,1,_,_,_,1,1],
+    [1,1,1,_,1,_,_,1,_,2,_,_,1,1,1,1,_,1,_,_,1,_,2,_,_,1],
+    [1,1,1,_,_,_,1,1,_,2,_,1,_,_,_,1,_,_,_,1,1,_,2,_,1,1],
+    [1,_,1,_,_,_,1,_,1,_,_,_,_,_,_,_,_,_,_,1,_,_,2,_,1,1],
+    [1,_,_,_,_,_,_,_,_,_,_,_,1,_,_,_,_,_,_,_,_,_,2,_,1,1],
+    [3,_,3,3,3,3,1,1,_,1,_,1,1,1,1,1,_,_,_,1,1,_,2,_,1,1],
+    [1,_,1,1,1,_,1,_,_,_,1,1,1,1,1,1,1,_,_,_,1,1,1,1,1,1],
+    [1,_,_,_,_,_,1,_,_,_,_,_,1,_,_,_,1,_,_,_,1,_,_,_,1,1],
+    [1,1,1,_,1,_,_,_,_,2,_,_,1,1,1,1,_,1,_,_,1,_,2,_,_,1],
+    [1,1,1,_,_,_,1,1,_,2,_,1,_,_,_,1,_,_,_,1,1,_,2,_,1,1],
+    [1,_,1,_,_,_,1,_,1,_,_,_,_,_,_,_,_,_,_,1,_,_,2,_,1,1],
+    [1,_,_,_,_,_,_,_,_,_,_,_,1,_,_,_,_,_,_,_,_,_,2,_,1,1],
+    [3,3,3,3,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1]
 ]
 
 class Map:
@@ -94,6 +101,7 @@ class RayCasting:
         self.ray_casting_result = []
         self.objects_to_render = []
         self.textures = self.app.object_renderer.wall_textures
+    @timein
     def get_objects_to_render(self):
         self.objects_to_render = []
         for ray, values in enumerate(self.ray_casting_result):
@@ -102,7 +110,7 @@ class RayCasting:
                 
                 offs = (offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
                 wall_column = self.textures[texture].subarray(
-                    (offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE)
+                    offs
                 ).resize((proj_height,SCALE))
                 
                 #wall_column = self.textures[texture].subsurface(
@@ -125,7 +133,7 @@ class RayCasting:
                 wall_pos = (ray * SCALE,0)
             #print(depth, wall_pos,(proj_height,SCALE))
             self.objects_to_render.append((depth,wall_column,wall_pos))
-
+    @timein
     def ray_cast(self):
         self.ray_casting_result = []
         px, py = self.app.player.pos
@@ -248,12 +256,6 @@ class ObjectRenderer:
         elif k[K_2]:
             self.debugmode = 2
             LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
-        elif k[K_3]:
-            self.debugmode = 3
-            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
-        elif k[K_4]:
-            self.debugmode = 4
-            LOG.nlog(0,"toggled WSP3D debug mode to $",[self.debugmode])
         
         
         self.background_surfarray.fill((24,24,24),(0,HH,W,H))
@@ -287,6 +289,7 @@ class ObjectRenderer:
         self.floor_casting_surface = sa_make_surface(self.floor_casting_array)
         self.background_surfarray.fill((24,24,24),(0,HH,W,H))
         #self.background_surfarray.blit(self.floor_casting_surface,(0,0))    
+    @timein
     def draw_foreground(self):
         self.sky_offset = (self.sky_offset + 0.5 * self.app.player.rel) % W # Sky rotation the mod value is currently dependent on the screen size
         
@@ -297,7 +300,7 @@ class ObjectRenderer:
         
         # floor
 
-    #@timein
+    @timein
     def render_game_objects(self):
         list_objects = sorted(self.app.raycasting.objects_to_render,key=lambda t: t[0], reverse=True)
         self.this_frame_render_pixels = 0
@@ -312,16 +315,12 @@ class ObjectRenderer:
         if self.debugmode == 1: # show Depth-Buffer
             self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))
         elif self.debugmode == 2:
-            self.screen.render(surf_scale(self.background_layer,(WIDTH,HEIGHT)),(0,0))
-        elif self.debugmode == 3:
-            self.screen.render(surf_scale(self.floor_casting_surface,(WIDTH,HEIGHT)),(0,0))
-        elif self.debugmode == 4:
             self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
         else:
-            self.screen.render(surf_scale(blending_mul(self.background_layer,self.depth_buffer_surface),(WIDTH,HEIGHT)),(0,0))
+            self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
         
         #print(self.this_frame_render_pixels)
-    #@timein
+    @timein
     def render_depth_buffer(self):
         """
         This function renders a depth buffer, use: to make tiles darker in the distance

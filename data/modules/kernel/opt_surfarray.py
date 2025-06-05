@@ -54,11 +54,14 @@ class Surfarray:
         self.array = arr
         self.dimensions = tuple(self.array.shape)
         return self
-    
+    @jit
+    def fastsa(arr,area) -> ndarray:
+        return arr[area[0] : area[0] + area[2] , area[1] : area[1] + area[3]]
     def subarray(self, area: tuple[int, int, int, int]):
         arr = Surfarray((area[2],area[3]))
-        area = [int(i) for i in area]
-        arr.array = self.array[area[0] : area[0] + area[2] , area[1] : area[1] + area[3]].copy()
+        arr.array = Surfarray.fastsa(self.array,area)
+        #area = [int(i) for i in area]
+        #rr.array = self.array[area[0] : area[0] + area[2] , area[1] : area[1] + area[3]].copy()
         return arr
 
     def resize(self,size: tuple[int,int]):

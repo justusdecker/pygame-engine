@@ -16,6 +16,7 @@ from pygame.mouse import set_visible
 from pygame.image import load
 import pygame.key as keys
 from time import perf_counter
+from data.modules.testing.timing_tests import T
 def test_print(*args):
     print(args, "Hello World!")
 
@@ -44,6 +45,7 @@ class App(Application):
     def run(self):
 
         while self.is_running:
+            T.clr()
             GLOBAL_DELTA_TIME.before()
             #self.window.surface.fill((36,36,36))
             #self.map.draw()
@@ -64,6 +66,9 @@ class App(Application):
 
             self.update()
             GLOBAL_DELTA_TIME.after()
+            for t in T.tims:
+                print(t)
+            print()
 if __name__ == "__main__":
     APP = App()
     APP.run()
