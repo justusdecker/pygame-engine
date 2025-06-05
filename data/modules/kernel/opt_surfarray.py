@@ -91,9 +91,8 @@ class Surfarray:
         Will blit some another array onto this!
         """
         self.array = Surfarray.fastblit(self.array,surface.array,self.dimensions,surface.dimensions,pos)
-
+    @jit
     def fastfill(arr, color, area):
-        color = [uint8(i) for i in color]
         if area is not None:
             x, y, w, h = area
             x, y, w, h = int(x), int(y), int(w), int(h)
@@ -119,7 +118,7 @@ class Surfarray:
     def fill(self,color: tuple[int, int, int], area: tuple[int, int, int, int] | None = None):
         if area is not None:
             if len(color) != self.dimensions[2]: raise Exception(f"color doesn't match dimensions: {len(color)} {self.dimensions[2]}")
-        self.array = Surfarray.fastfill(self.array,color,area)
+        self.array = Surfarray.fastfill(self.array,ndarray(color,uint8),area)
     
     def get_surface(self) -> ndarray:
         return make_surface(self.array)
