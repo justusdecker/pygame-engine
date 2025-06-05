@@ -9,7 +9,7 @@ from pygame.transform import scale as surf_scale, smoothscale as surf_smoothscal
 from pygame import Surface,K_0,K_1,K_2,K_3,K_4,K_w,K_s,K_a,K_d
 from pygame.key import get_pressed as kb_get_pressed
 from pygame.surfarray import make_surface as sa_make_surface
-from pygame.image import load as img_load
+from pygame.image import load as img_load, save as img_save
 from pygame.mouse import get_pressed as mouse_get_pressed,get_pos as mouse_get_pos,set_pos as mouse_set_pos,get_rel as mouse_get_rel
 
 from pygame import event,display
@@ -120,8 +120,9 @@ class RayCasting:
                 #wall_column = surf_scale(wall_column,(SCALE,H))
                 
                 wall_pos = (ray * SCALE,0)
+            print(depth, wall_pos,(proj_height,SCALE))
             self.objects_to_render.append((depth,wall_column,wall_pos))
-                 
+
     def ray_cast(self):
         self.ray_casting_result = []
         px, py = self.app.player.pos
@@ -299,18 +300,20 @@ class ObjectRenderer:
         self.this_frame_render_pixels = 0
         self.depthbuffer = []
         for depth, image, pos in list_objects:
-            image : Surface
+            image : Surfarray
 
             percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
             self.depthbuffer.append((*pos,image.dimensions[0],image.dimensions[1],percentage))
             #self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_surfarray.blit(image,pos)
-            
-            
-            #self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
-            #display.update()
-            #event.get()
-            #sleep(0.01)
+            kp = kb_get_pressed()
+            if kp[K_1]: continue
+            self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
+            display.update()
+            event.get()
+            #img_save(image.get_surface(),f'{c}_element.png')
+            print(depth,image.array.shape,pos)            
+            sleep(0.1)
         self.render_depth_buffer()
         if self.debugmode == 1: # show Depth-Buffer
             self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))
@@ -681,9 +684,9 @@ class Player:
                 self.app.sound.play_sound('attack')
                 self.shot = True
                 self.app.weapon.reloading = True
+                
     def movement(self):
-        sin_a = sin(self.angle)
-        cos_a = cos(self.angle)
+        sin_a, cos_a = sin(self.angle), cos(self.angle)
         dx, dy = 0,0
         speed = GLOBAL_DELTA_TIME.get() * self.speed
         speed_sin = speed * sin_a
@@ -699,6 +702,7 @@ class Player:
             dx += -speed_cos
             dy += -speed_sin
             self.moving = True
+            
         if keys[K_a]:
             dx += speed_sin
             dy += -speed_cos
@@ -707,11 +711,8 @@ class Player:
             dx += -speed_sin
             dy += speed_cos
             self.moving = True
+            
         self.check_wall_collision(dx,dy)
-        """if keys[pg.K_LEFT]:
-            self.angle -= self.rot_speed * GLOBAL_DELTA_TIME.get()
-        elif keys[pg.K_RIGHT]:
-            self.angle += self.rot_speed * GLOBAL_DELTA_TIME.get()"""
         self.angle %= tau
     def draw(self):
         
@@ -728,11 +729,10 @@ class Player:
         if self.check_wall(int(self.x),int(self.y + dy * scale)):
             self.y += dy
     def mouse_control(self):
-        mx,my = mouse_get_pos()
-        if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
+        mx = mouse_get_pos()[0]
+        if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT: # reset mouse position
             mouse_set_pos([HALF_WIDTH,HALF_HEIGHT])
-        self.rel = mouse_get_rel()[0]
-        self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self.rel))
+        self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, mouse_get_rel()[0]))
         self.angle += self.rel * MOUSE_SENSITIVITY * GLOBAL_DELTA_TIME.get()
     def update(self):
         self.movement()
