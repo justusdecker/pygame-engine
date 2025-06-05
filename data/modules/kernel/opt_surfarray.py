@@ -5,7 +5,7 @@ from pygame.image import load as imgload
 from cv2 import resize as arrayresize, INTER_AREA as INTERPOLATION_CV2
 from data.modules.testing.result_tests import surfarray_result_check
 from pygame import Surface
-
+from time import sleep
 from numba import jit
 
 class int3:
@@ -74,12 +74,16 @@ class Surfarray:
         x,y = int(x-1),int(y-1)
         w,h,_ = dim_b
 
-        if (x + w < 0 and y + h < 0) or (x > w and y > h):
-            return a
+        #print(x + w < 0 , y + h < 0 , x > w , y > h)
+        #if (x + w < 0 and y + h < 0) or (x > w and y > h): #!something went wrong here!
+        #    return a
+        # I dont know what this bullshit is but removing it fixes the depth issue #253
+        # Currently it works
         for offset_x in range(w):
             for offset_y in range(h):
                 if x + offset_x >= 0 and y + offset_y >= 0 and x + offset_x < dim_a[0] and y + offset_y < dim_a[1]:
                     a[x+offset_x][y+offset_y] = b[offset_x][offset_y]
+   
         return a
     
     def blit(self,surface: Surfarray,pos: tuple[int, int]) -> bool:

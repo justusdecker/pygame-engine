@@ -27,6 +27,9 @@ from data.modules.kernel.opt_surfarray import Surfarray
 
 from data.modules.testing.timing_tests import timein
 
+DEBUG_LOCK_MOUSE = False
+if DEBUG_LOCK_MOUSE:
+    LOG.nlog(2,"MOUSE IS LOCKED")
 # internal screen size
 
 W = w // 4
@@ -120,7 +123,7 @@ class RayCasting:
                 #wall_column = surf_scale(wall_column,(SCALE,H))
                 
                 wall_pos = (ray * SCALE,0)
-            print(depth, wall_pos,(proj_height,SCALE))
+            #print(depth, wall_pos,(proj_height,SCALE))
             self.objects_to_render.append((depth,wall_column,wall_pos))
 
     def ray_cast(self):
@@ -300,20 +303,11 @@ class ObjectRenderer:
         self.this_frame_render_pixels = 0
         self.depthbuffer = []
         for depth, image, pos in list_objects:
-            image : Surfarray
 
             percentage = (1 - depth ** 7 * 0.00002) # calculation of the gamma value
             self.depthbuffer.append((*pos,image.dimensions[0],image.dimensions[1],percentage))
-            #self.this_frame_render_pixels += image.get_width()*image.get_height()
             self.background_surfarray.blit(image,pos)
-            kp = kb_get_pressed()
-            if kp[K_1]: continue
-            self.screen.render(surf_scale(self.background_surfarray.get_surface(),(WIDTH,HEIGHT)),(0,0))
-            display.update()
-            event.get()
-            #img_save(image.get_surface(),f'{c}_element.png')
-            print(depth,image.array.shape,pos)            
-            sleep(0.1)
+
         self.render_depth_buffer()
         if self.debugmode == 1: # show Depth-Buffer
             self.screen.render(surf_scale(self.depth_buffer_surface,(WIDTH,HEIGHT)),(0,0))
@@ -669,6 +663,7 @@ class Player:
     speed = 1.6
     rot_speed = .6
     scale = .2
+    rel = 0
     def __init__(self,app):
         self.app = app
         self.x , self.y = 1.5, 5
@@ -729,6 +724,7 @@ class Player:
         if self.check_wall(int(self.x),int(self.y + dy * scale)):
             self.y += dy
     def mouse_control(self):
+        if DEBUG_LOCK_MOUSE: return
         mx = mouse_get_pos()[0]
         if mx < MOUSE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT: # reset mouse position
             mouse_set_pos([HALF_WIDTH,HALF_HEIGHT])
