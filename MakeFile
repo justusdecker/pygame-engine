@@ -1,0 +1,5 @@
+all:
+	gcc -fPIC -shared -o ./bin/graphics_rendering.so ./src/src_c/graphics_rendering.c
+	gcc -fPIC -shared -o ./bin/pixelarray_manipulation.so ./src/src_c/pixelarray_manipulation.c
+push:
+	python ./tools/easy_commit.py
